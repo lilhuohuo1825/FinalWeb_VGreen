@@ -1,1 +1,70 @@
-
+VGreen/
+├─ asset/                    #Tư liệu dùng chung (hình ảnh icon các kiểu)
+│  ├─ image/       
+│  ├─ icons/
+│  └─ favicon/
+│
+├─ style/
+│  ├─ page/                 #Này mình CSS theo page
+│  │  ├─ user/             #Các page của user
+│  │  └─ admin/         #Các page của admin 
+│  │
+│  ├─ template/          #Này mình lấy bootstrap về dùng
+│  └─ compoment/    #Mấy cái mình hay dùng đi dùng lại (button, header, footer)
+│  
+├─ src/
+│  ├─ user/                         # Giao diện & logic người dùng
+│  │  ├─ pages/                  #Giao diện từng trang (thiếu gì anh em add thêm vào nhe)
+│  │  │  ├─ index.html      # Trang chủ (từ trang chủ điều hướng tiếp về các page nhe)
+│  │  │  ├─ catalog.html                  # Danh mục sản phẩm
+│  │  │  ├─ product.html                  # Chi tiết sản phẩm
+│  │  │  ├─ cart.html                        # Giỏ hàng
+│  │  │  ├─ purchase.html                # Đặt hàng
+│  │  │  ├─ orders.html                    # Đơn hàng
+│  │  │  ├─ orderdetail.html            # Chi tiết đơn hàng
+│  │  │  ├─ payment.html               # Thanh toán
+│  │  │  ├─ account.html                 # Tài khoản
+│  │  │  ├─ blog.html                      # Blog
+│  │  │  └─ about.html                    # Giới thiệu / liên hệ
+│  │  ├─ js/
+│  │  │  ├─ app.js                         # Xử lý điều hướng cơ bản
+│  │  │  └─ function/		#Các hàm get thtin sản phẩm -> giỏ hàng -> đơn              hàng -> đặt hàng -> thanh toán -> đơn hàng -> account (lịch sử mua hàng) “ví dụ”
+│  │
+│  │
+│  │
+│  ├─ admin/                               # Giao diện quản trị viên
+│  │  ├─ pages/
+│  │  │  ├─ dashboard.html               # Tổng quan
+│  │  │  ├─ products.html                 # Quản lý sản phẩm
+│  │  │  ├─ productdetail.html          # Chi tiết sản phẩm
+│  │  │  ├─ orders.html                    # Quản lý đơn hàng
+│  │  │  ├─ orderdetail.html            # Chi tiết đơn hàng
+│  │  │  ├─ users.html                     # Quản lý khách hàng
+│  │  │  ├─ accountuser.html           # Chi tiết hồ sơ khách hàng
+│  │  │  ├─ blogs.html                     # Quản lý blog 
+│  │  │  ├─ blogdetail.html             # Chi tiết bài viết
+│  │  │  └─ chat.html                     # Tư vấn, tin nhắn
+│  │  ├─ js/
+│  │  │  ├─ app.js                         # Xử lý điều hướng cơ bản
+│  │  │  └─ function/                  #Mấy hàm thêm sửa xoá chỉnh sửa in nhóm 
+│  │
+│  │  
+│  ├─ schemas/                          # Chuẩn dữ liệu JSON
+│  │  ├─ product.schema.json
+│  │  ├─ order.schema.json
+│  │  └─ blog.schema.json
+│
+│  
+├─ data/                                   # Dữ liệu tổng hợp
+│  ├─ products/		    
+│  ├─ blogs/
+│  ├─ orders/
+│  ├─ cookbook/
+│  ├─ promotions/
+│  ├─ categories/
+│  └─ users/
+│
+├── tests/                      # Kiểm thử (unit, integration, e2e)
+│   ├─ client/
+│   └─ server/
+└─ README.md
