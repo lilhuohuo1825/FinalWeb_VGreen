@@ -1,1 +1,9 @@
+Quy tắc chung
+1. Tất cả tên file và thư mục phải được viết bằng chữ thường (lowercase), không dấu, không chứa khoảng trắng.
+2. Các từ được phân tách bằng gạch dưới (_)
+3. Không sử dụng ký tự đặc biệt như (! @ # $ % ^ & * ( ) [ ] { }...)
+4. Tên file phải thể hiện rõ ràng chức năng hoặc nội dung chính của tệp.
+5. Độ dài tên file nên ngắn gọn, tránh mô tả dài dòng.
+6. Mỗi file bắt buộc phải có phần mở rộng (extension) tương ứng, ví dụ: .html, .css, .js, .json, .csv. (bỏ vào thư mục tương ứng trong cấu trúc file luôn nha)
 
+=> t có gợi ý đặt tên một số file trong cây á, tham khảo nhe
