@@ -1,60 +1,11 @@
+1. Cấu trúc thư mục tổng thể của dự án:
 VGreen/
 ├─ asset/                    #Tư liệu dùng chung (hình ảnh icon các kiểu)
 │  ├─ image/       
 │  ├─ icons/
-│  └─ favicon/
-│
-├─ style/
-│  ├─ page/                 #Này mình CSS theo page
-│  │  ├─ user/             #Các page của user
-│  │  └─ admin/         #Các page của admin 
-│  │
-│  ├─ template/          #Này mình lấy bootstrap về dùng
+│  ├─ favicon/           #Này logo thể hiện trên tiêu đề web nè
 │  └─ compoment/    #Mấy cái mình hay dùng đi dùng lại (button, header, footer)
-│  
-├─ src/
-│  ├─ user/                         # Giao diện & logic người dùng
-│  │  ├─ pages/                  #Giao diện từng trang (thiếu gì anh em add thêm vào nhe)
-│  │  │  ├─ index.html      # Trang chủ (từ trang chủ điều hướng tiếp về các page nhe)
-│  │  │  ├─ catalog.html                  # Danh mục sản phẩm
-│  │  │  ├─ product.html                  # Chi tiết sản phẩm
-│  │  │  ├─ cart.html                        # Giỏ hàng
-│  │  │  ├─ purchase.html                # Đặt hàng
-│  │  │  ├─ orders.html                    # Đơn hàng
-│  │  │  ├─ orderdetail.html            # Chi tiết đơn hàng
-│  │  │  ├─ payment.html               # Thanh toán
-│  │  │  ├─ account.html                 # Tài khoản
-│  │  │  ├─ blog.html                      # Blog
-│  │  │  └─ about.html                    # Giới thiệu / liên hệ
-│  │  ├─ js/
-│  │  │  ├─ app.js                         # Xử lý điều hướng cơ bản
-│  │  │  └─ function/		#Các hàm get thtin sản phẩm -> giỏ hàng -> đơn              hàng -> đặt hàng -> thanh toán -> đơn hàng -> account (lịch sử mua hàng) “ví dụ”
-│  │
-│  │
-│  │
-│  ├─ admin/                               # Giao diện quản trị viên
-│  │  ├─ pages/
-│  │  │  ├─ dashboard.html               # Tổng quan
-│  │  │  ├─ products.html                 # Quản lý sản phẩm
-│  │  │  ├─ productdetail.html          # Chi tiết sản phẩm
-│  │  │  ├─ orders.html                    # Quản lý đơn hàng
-│  │  │  ├─ orderdetail.html            # Chi tiết đơn hàng
-│  │  │  ├─ users.html                     # Quản lý khách hàng
-│  │  │  ├─ accountuser.html           # Chi tiết hồ sơ khách hàng
-│  │  │  ├─ blogs.html                     # Quản lý blog 
-│  │  │  ├─ blogdetail.html             # Chi tiết bài viết
-│  │  │  └─ chat.html                     # Tư vấn, tin nhắn
-│  │  ├─ js/
-│  │  │  ├─ app.js                         # Xử lý điều hướng cơ bản
-│  │  │  └─ function/                  #Mấy hàm thêm sửa xoá chỉnh sửa in nhóm 
-│  │
-│  │  
-│  ├─ schemas/                          # Chuẩn dữ liệu JSON
-│  │  ├─ product.schema.json
-│  │  ├─ order.schema.json
-│  │  └─ blog.schema.json
 │
-│  
 ├─ data/                                   # Dữ liệu tổng hợp
 │  ├─ products/		    
 │  ├─ blogs/
@@ -64,7 +15,99 @@ VGreen/
 │  ├─ categories/
 │  └─ users/
 │
+├─ backend/            #Này t đang để giả lập backend để thao tác thêm thôi nhe
+│
+│
+├── my-user/        #Đóng vai trò như một my-app mình tạo ra á
+│  ├─ .angular/                  
+│  ├─ .vscode/                   
+│  ├─ node_module/         
+│  ├─ public/                     #cái này nơi bây lưu trữ mấy cái riêng nè
+│  │  ├─ asset/            
+│  │  └─ data/              
+│  │ 
+│  ├─ src/                             
+│  │  ├─ app/                 
+│  │  │  ├─ accountmanage/              #component tạo thêm, mỗi c có 4 file tương ứng
+│  │  │  │ ├─ accountmanage.css             #style riêng từng page
+│  │  │  │ ├─ accountmanage.html          #code giao diện page   
+│  │  │  │ ├─ accountmanage.ts               #chạy hàm liên quan đến page
+│  │  │  │ └─ accountmanage.spec.ts                           
+│  │  │  ├─ blog/ 
+│  │  │  │ ├─ …  
+│  │  │  │ └─ ….                      
+│  │  │  ├─ blogdetail/                 
+│  │  │  ├─ cart/                      
+│  │  │  ├─ ….              
+│  │  │  └─ …. (cho tới cuối đời)
+│  │  │
+│  │  │  ├─ appconfig.ts            
+│  │  │  ├─ app.css                    
+│  │  │  ├─ app.html                 
+│  │  │  ├─ app.routes.ts                   
+│  │  │  ├─ app.spec.ts                   
+│  │  │  └─ app.ts                     
+│  │  ├─ index.html 
+│  │  ├─ main.ts
+│  │  └─ style.css
+│  ├─ .editorconfig
+│  ├─ .gitignore
+│  ├─ angular.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.MD
+│  ├─ tsconfig.app.json
+│  ├─ tsconfig.json
+│  └─ tsconfig.spec.json
+│
+│
+│
+│
+├── my-admin/            
+│  ├─ .angular/       
+│  ├─ .vscode/    
+│  ├─ node_module/
+│  ├─ public/   
+│  │ 
+│  ├─ src/                             
+│  │  ├─ app/                 
+│  │  │  ├─ usermanage/     
+│  │  │  │ ├─  usermanage.css   
+│  │  │  │ ├─  usermanage.html               
+│  │  │  │ ├─  usermanage.ts               
+│  │  │  │ └─  usermanage.spec.ts                           
+│  │  │  ├─ blogmanage/ 
+│  │  │  │ ├─ …  
+│  │  │  │ └─ ….                      
+│  │  │  ├─ blogdetail/                 
+│  │  │  ├─ productmanage/ 
+│  │  │  ├─ productdetail/                      
+│  │  │  ├─ ….              
+│  │  │  └─ …. (cho tới cuối đời)    
+│  │  │
+│  │  │  ├─ appconfig.ts            
+│  │  │  ├─ app.css                
+│  │  │  ├─ app.html       
+│  │  │  ├─ app.routes.ts                      
+│  │  │  ├─ app.spec.ts                    
+│  │  │  └─ app.ts                    
+│  │  ├─ index.html
+│  │  ├─ main.ts
+│  │  └─ style.css
+│  ├─ .editorconfig
+│  ├─ .gitignore
+│  ├─ angular.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.MD
+│  ├─ tsconfig.app.json
+│  ├─ tsconfig.json
+│  └─ tsconfig.spec.json
+│
 ├── tests/                      # Kiểm thử (unit, integration, e2e)
 │   ├─ client/
 │   └─ server/
+│
+├──TreeStructure.txt                  # Cây thư mục
+├── NamingConventions.txt                     # Quy tắc đặt tên
 └─ README.md
