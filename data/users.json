@@ -1,0 +1,65 @@
+[{
+  "_id": {
+    "$oid": "68f4a60d4a434054ae2fc78b"
+  },
+  "user_id": 1,
+  "full_name": "Thu Hà",
+  "phone": 123456789,
+  "email": "alice@email.com",
+  "address": "Hà Nội",
+  "register_date": "2025-01-01",
+  "customer_type": "Regular",
+  "password": "pass1"
+},
+{
+  "_id": {
+    "$oid": "68f4a60d4a434054ae2fc78c"
+  },
+  "user_id": 2,
+  "full_name": "Yến Nhi",
+  "phone": 987654321,
+  "email": "bob@email.com",
+  "address": "Hồ Chí Minh",
+  "register_date": "2025-02-15",
+  "customer_type": "VIP",
+  "password": "pass2"
+},
+{
+  "_id": {
+    "$oid": "68f4a60d4a434054ae2fc78d"
+  },
+  "user_id": 3,
+  "full_name": "Như Huyền",
+  "phone": 111222333,
+  "email": "charlie@email.com",
+  "address": "Đà Nẵng",
+  "register_date": "2025-03-10",
+  "customer_type": "Regular",
+  "password": "pass3"
+},
+{
+  "_id": {
+    "$oid": "68f4a60d4a434054ae2fc78e"
+  },
+  "user_id": 4,
+  "full_name": "Huỳnh Hương",
+  "phone": 44556677,
+  "email": "david@email.com",
+  "address": "Huế",
+  "register_date": "2025-04-05",
+  "customer_type": "VIP",
+  "password": "pass4"
+},
+{
+  "_id": {
+    "$oid": "68f4a60d4a434054ae2fc78f"
+  },
+  "user_id": 5,
+  "full_name": "Huyền Linh",
+  "phone": 33221100,
+  "email": "eva@email.com",
+  "address": "Cần Thơ",
+  "register_date": "2025-05-20",
+  "customer_type": "Regular",
+  "password": "pass5"
+}]
