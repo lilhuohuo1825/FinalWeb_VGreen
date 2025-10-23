@@ -268,3 +268,18 @@
     font-size: 13px;
   }
 }
+
+/* Visual feedback states */
+.otp-digit.error-state {
+  border-color: #e53935 !important;
+  background-color: #ffebee !important;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.2) !important;
+  transition: all 0.3s ease;
+}
+
+.otp-digit.success-state {
+  border-color: #28a745 !important;
+  background-color: #d4edda !important;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2) !important;
+  transition: all 0.3s ease;
+}

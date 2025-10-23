@@ -70,8 +70,22 @@
         </div>
       </div>
 
+      <!-- Error Message -->
+      @if (loginError) {
+      <div class="error-message" style="margin-bottom: 16px; text-align: center; color: #e74c3c">
+        {{ loginError }}
+      </div>
+      }
+
       <!-- Login Button -->
-      <button type="submit" class="login-btn" [disabled]="!isFormValid()">ĐĂNG NHẬP</button>
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="!isFormValid() || isLoading"
+        [style.opacity]="isLoading ? '0.7' : '1'"
+      >
+        @if (isLoading) { Đang đăng nhập... } @else { ĐĂNG NHẬP }
+      </button>
     </form>
 
     <!-- Register Link -->

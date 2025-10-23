@@ -13,13 +13,17 @@
       <div class="otp-inputs">
         <input
           *ngFor="let digit of otpDigits; let i = index"
+          #otpInput
           type="text"
           maxlength="1"
           class="otp-digit"
-          [value]="digit"
-          (input)="onDigitInput($event, i)"
+          [value]="otpDigits[i]"
+          name="otp{{ i }}"
           (keydown)="onKeyDown($event, i)"
+          (input)="onInput($event, i)"
           (paste)="onPaste($event)"
+          autocomplete="one-time-code"
+          inputmode="numeric"
         />
       </div>
 

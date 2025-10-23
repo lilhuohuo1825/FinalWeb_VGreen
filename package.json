@@ -1,0 +1,17 @@
+{
+  "name": "vgreen-fullstack",
+  "version": "1.0.0",
+  "description": "VGreen Fullstack Application",
+  "scripts": {
+    "start": "node start-app.js",
+    "ng": "node ng-serve-with-backend.js",
+    "ng-serve": "node ng-serve-with-backend.js",
+    "backend": "cd backend && npm start",
+    "dev": "concurrently \"npm run backend\" \"npm run start\"",
+    "serve": "concurrently \"npm run backend\" \"cd my-user && ng serve --open\"",
+    "install-all": "npm install && cd backend && npm install && cd ../my-user && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

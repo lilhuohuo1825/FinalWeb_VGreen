@@ -1,7 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-otp',
@@ -15,13 +16,36 @@ export class OtpComponent implements OnInit, OnDestroy {
   otpDigits: string[] = ['', '', '', '', '', ''];
   otpError: string = '';
   countdown: number = 30;
-  isRegistrationFlow: boolean = true;
+  flowType: 'register' | 'forgot' = 'register';
+  isLoading: boolean = false;
+  currentOtp: string = '';
   private countdownInterval: any;
+  private isVerifying: boolean = false;
+  private lastInputValue: string[] = ['', '', '', '', '', '']; // Track giá trị trước đó
 
-  constructor(private router: Router) {}
+  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
+  private readonly OTP_LENGTH = 6;
+  private readonly COUNTDOWN_DURATION = 30;
+  private readonly SUCCESS_DELAY = 800;
+  private readonly ERROR_DELAY = 800;
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  private generateRandomOtp(): string {
+    const min = 400000;
+    const max = 600000;
+    let otp = Math.floor(min + Math.random() * (max - min + 1));
+
+    if (otp % 2 !== 0) {
+      otp = otp - 1;
+    }
+
+    return otp.toString();
+  }
 
   goBack(): void {
-    if (this.isRegistrationFlow) {
+    if (this.flowType === 'register') {
       this.router.navigate(['/register']);
     } else {
       this.router.navigate(['/forgot-password']);
@@ -29,42 +53,28 @@ export class OtpComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('OTP Component initialized');
+    console.log('=== OTP Component initialized ===');
     console.log('Current path:', window.location.pathname);
 
-    // Check if this is registration or forgot password flow
-    const registerPhone = sessionStorage.getItem('registerPhone');
-    const forgotPasswordPhone = sessionStorage.getItem('forgotPasswordPhone');
-
-    console.log('registerPhone:', registerPhone);
-    console.log('forgotPasswordPhone:', forgotPasswordPhone);
-
-    if (registerPhone) {
-      // Registration flow
-      this.phoneNumber = registerPhone;
-      this.isRegistrationFlow = true;
-      console.log('Using registration flow');
-    } else if (forgotPasswordPhone) {
-      // Forgot password flow
-      this.phoneNumber = forgotPasswordPhone;
-      this.isRegistrationFlow = false;
-      console.log('Using forgot password flow');
+    // Ưu tiên URL path để xác định flow type
+    if (window.location.pathname.includes('forgot-password')) {
+      this.flowType = 'forgot';
+      this.phoneNumber = sessionStorage.getItem('forgotPasswordPhone') || 'Unknown';
+      // console.log('🔍 Detected FORGOT flow from URL');
     } else {
-      // No phone number found
-      console.log('No phone number found, redirecting...');
-      if (window.location.pathname.includes('forgot-password')) {
-        this.router.navigate(['/forgot-password']);
-      } else {
-        this.router.navigate(['/register']);
-      }
-      return;
+      this.flowType = 'register';
+      this.phoneNumber = sessionStorage.getItem('registerPhone') || 'Unknown';
+      // console.log('🔍 Detected REGISTER flow from URL');
     }
 
-    console.log('Final isRegistrationFlow:', this.isRegistrationFlow);
-    console.log('Final phoneNumber:', this.phoneNumber);
+    // console.log('✅ Flow type:', this.flowType);
+    console.log('Phone:', this.phoneNumber);
 
-    // Start countdown
+    this.currentOtp = this.generateRandomOtp();
+    console.log('OTP LÀ:', this.currentOtp);
+
     this.startCountdown();
+    setTimeout(() => this.focusInput(0), 100);
   }
 
   ngOnDestroy(): void {
@@ -73,179 +83,449 @@ export class OtpComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDigitInput(event: any, index: number): void {
-    const value = event.target.value;
+  startCountdown(): void {
+    this.countdown = this.COUNTDOWN_DURATION;
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
+    this.countdownInterval = setInterval(() => {
+      this.countdown--;
+      if (this.countdown <= 0) {
+        clearInterval(this.countdownInterval);
+      }
+    }, 1000);
+  }
 
-    // Check if OTP has expired FIRST
-    if (this.countdown <= 0) {
-      this.otpError = 'Mã OTP đã hết hiệu lực';
+  resendOtp(): void {
+    if (this.countdown > 0 || this.isLoading) return;
+
+    this.isLoading = true;
+    this.otpError = '';
+
+    // Generate OTP mới
+    this.currentOtp = this.generateRandomOtp();
+    console.log('>>> NEW OTP:', this.currentOtp);
+
+    // Clear inputs và reset
+    this.clearOtpInputs();
+
+    if (this.flowType === 'register') {
+      this.resendRegistrationOtp();
+    } else {
+      this.resendForgotPasswordOtp();
+    }
+  }
+
+  private resendRegistrationOtp(): void {
+    const phoneNumber = sessionStorage.getItem('registerPhone');
+    if (!phoneNumber) {
+      this.otpError = 'Không tìm thấy số điện thoại đăng ký';
+      this.isLoading = false;
+      return;
+    }
+
+    this.authService.sendOtp(phoneNumber).subscribe({
+      next: (response: any) => {
+        console.log('(v) Resend OTP thành công:', response);
+        this.startCountdown();
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('(x) Lỗi resend OTP:', error);
+        this.otpError = 'Không thể gửi lại mã OTP. Vui lòng thử lại.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private resendForgotPasswordOtp(): void {
+    const phoneNumber = sessionStorage.getItem('forgotPasswordPhone');
+    if (!phoneNumber) {
+      this.otpError = 'Không tìm thấy số điện thoại';
+      this.isLoading = false;
+      return;
+    }
+
+    this.authService.sendForgotPasswordOtp(phoneNumber).subscribe({
+      next: (response: any) => {
+        console.log('(v) Resend forgot password OTP thành công:', response);
+        this.startCountdown();
+        this.isLoading = false;
+      },
+      error: (error: any) => {
+        console.error('(x) Lỗi resend forgot password OTP:', error);
+        this.otpError = 'Không thể gửi lại mã OTP. Vui lòng thử lại.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  // XỬ LÝ INPUT EVENT
+  onInput(event: Event, index: number): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // console.log(
+    //   '📝 [INPUT] Ô',
+    //   index,
+    //   '| Value:',
+    //   `"${value}"`,
+    //   '| Last:',
+    //   this.lastInputValue[index]
+    // );
+
+    // Kiểm tra OTP hết hạn
+    if (this.isOtpExpired()) {
+      input.value = '';
+      this.otpDigits[index] = '';
+      this.lastInputValue[index] = '';
+      this.otpError = 'Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.';
       this.showErrorState();
-
-      // Clear input after showing error
       setTimeout(() => {
-        event.target.value = '';
-        this.otpDigits[index] = '';
         this.hideErrorState();
+        this.clearOtpInputs();
       }, 1000);
       return;
     }
 
-    // Only allow numbers
-    if (!/^\d*$/.test(value)) {
-      event.target.value = this.otpDigits[index];
+    // Lọc chỉ lấy số
+    const numericValue = value.replace(/\D/g, '');
+
+    // Trường hợp rỗng
+    if (!numericValue) {
+      this.otpDigits[index] = '';
+      this.lastInputValue[index] = '';
+      input.value = '';
       return;
     }
 
-    // Set value AFTER checking expiration
-    this.otpDigits[index] = value;
-    this.otpError = '';
+    // Tìm ký tự mới được thêm vào
+    let newDigit = '';
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = event.target.parentElement.children[index + 1];
-      if (nextInput) {
-        nextInput.focus();
+    if (numericValue.length === 1) {
+      newDigit = numericValue;
+    } else {
+      // Nếu có nhiều ký tự, tìm ký tự khác với last value
+      for (let i = 0; i < numericValue.length; i++) {
+        if (numericValue[i] !== this.lastInputValue[index]) {
+          newDigit = numericValue[i];
+          break;
+        }
+      }
+      // Nếu không tìm thấy, lấy ký tự cuối
+      if (!newDigit) {
+        newDigit = numericValue[numericValue.length - 1];
       }
     }
 
-    // Auto-verify when all 6 digits are entered
-    if (this.isOtpComplete()) {
-      this.autoVerify();
+    // console.log('🔢 [INPUT] New digit:', newDigit);
+
+    // Cập nhật giá trị
+    this.otpDigits[index] = newDigit;
+    this.lastInputValue[index] = newDigit;
+    input.value = newDigit;
+
+    // Clear error
+    this.otpError = '';
+
+    // console.log('✅ [INPUT] Updated ô', index, '=', newDigit);
+    // console.log('📋 [INPUT] OTP:', this.otpDigits.join(''));
+
+    // Focus ô tiếp theo
+    if (index < this.OTP_LENGTH - 1) {
+      setTimeout(() => this.focusInput(index + 1), 10);
+    }
+
+    // Auto-verify khi đủ 6 số
+    if (this.otpDigits.every((d) => d !== '')) {
+      console.log('Đủ 6 số → Verify');
+      setTimeout(() => this.verifyOtp(), 100);
     }
   }
 
+  // XỬ LÝ KEYDOWN
   onKeyDown(event: KeyboardEvent, index: number): void {
-    // Handle backspace
-    if (event.key === 'Backspace' && !this.otpDigits[index] && index > 0) {
-      const prevInput = (event.target as HTMLElement).parentElement?.children[
-        index - 1
-      ] as HTMLInputElement;
-      if (prevInput) {
-        prevInput.focus();
+    const key = event.key;
+
+    // console.log('⌨️ [KEYDOWN] Key:', key, '| Ô:', index);
+
+    // Backspace
+    if (key === 'Backspace') {
+      event.preventDefault();
+
+      // Xóa ô hiện tại
+      this.otpDigits[index] = '';
+      this.lastInputValue[index] = '';
+      const input = event.target as HTMLInputElement;
+      input.value = '';
+
+      // console.log('🗑️ [KEYDOWN] Xóa ô', index);
+
+      // Kiểm tra xem tất cả các ô đã trống chưa
+      const allEmpty = this.otpDigits.every((digit) => digit === '');
+
+      if (allEmpty) {
+        // Nếu tất cả đã trống, focus về ô đầu tiên
+        // console.log('🎯 [KEYDOWN] Tất cả ô đã trống → Focus ô đầu');
+        setTimeout(() => this.focusInput(0), 10);
+      } else if (index > 0) {
+        // Nếu chưa trống hết, quay lại ô trước
+        setTimeout(() => this.focusInput(index - 1), 10);
+      } else {
+        // Nếu đã ở ô đầu, focus lại ô đầu
+        setTimeout(() => this.focusInput(0), 10);
       }
+      return;
+    }
+
+    // Delete
+    if (key === 'Delete') {
+      event.preventDefault();
+      this.otpDigits[index] = '';
+      this.lastInputValue[index] = '';
+      const input = event.target as HTMLInputElement;
+      input.value = '';
+      // console.log('🗑️ [KEYDOWN] Delete ô', index);
+      return;
+    }
+
+    // Arrow keys
+    if (key === 'ArrowLeft' && index > 0) {
+      event.preventDefault();
+      this.focusInput(index - 1);
+      return;
+    }
+
+    if (key === 'ArrowRight' && index < this.OTP_LENGTH - 1) {
+      event.preventDefault();
+      this.focusInput(index + 1);
+      return;
+    }
+
+    // Enter
+    if (key === 'Enter') {
+      event.preventDefault();
+      this.verifyOtp();
+      return;
+    }
+
+    // Tab
+    if (key === 'Tab') {
+      return;
+    }
+
+    // Chặn ký tự không phải số
+    if (!/^\d$/.test(key) && !event.metaKey && !event.ctrlKey) {
+      event.preventDefault();
     }
   }
 
   onPaste(event: ClipboardEvent): void {
     event.preventDefault();
 
-    // Check if OTP has expired
-    if (this.countdown <= 0) {
-      this.otpError = 'Mã OTP đã hết hiệu lực';
-      this.showErrorState();
+    // console.log('📋 [PASTE] Detected');
 
-      // Clear all inputs after showing error
+    if (this.isOtpExpired()) {
+      this.otpError = 'Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.';
+      this.showErrorState();
       setTimeout(() => {
-        this.otpDigits = ['', '', '', '', '', ''];
-        this.otpError = '';
         this.hideErrorState();
-        const firstInput = document.querySelector('.otp-digit') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
+        this.clearOtpInputs();
       }, 1000);
       return;
     }
 
     const pastedData = event.clipboardData?.getData('text') || '';
-    const digits = pastedData.replace(/\D/g, '').slice(0, 6);
+    const numbers = pastedData.replace(/\D/g, '');
 
-    for (let i = 0; i < 6; i++) {
-      this.otpDigits[i] = digits[i] || '';
-    }
+    // console.log('📋 [PASTE] Numbers:', numbers);
 
-    this.otpError = '';
-
-    // Auto-verify when all 6 digits are pasted
-    if (this.isOtpComplete()) {
-      this.autoVerify();
-    }
-  }
-
-  isOtpComplete(): boolean {
-    return this.otpDigits.every((digit) => digit !== '');
-  }
-
-  getOtpCode(): string {
-    return this.otpDigits.join('');
-  }
-
-  autoVerify(): void {
-    console.log('autoVerify called, countdown:', this.countdown);
-    console.log('otpDigits:', this.otpDigits);
-
-    // Check if OTP has expired first
-    if (this.countdown <= 0) {
-      console.log('OTP expired');
-      this.otpError = 'Mã OTP đã hết hiệu lực';
-      this.showErrorState();
-
-      // Clear all digits after showing error
-      setTimeout(() => {
-        this.otpDigits = ['', '', '', '', '', ''];
-        this.otpError = '';
-        this.hideErrorState();
-        const firstInput = document.querySelector('.otp-digit') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
+    if (numbers.length > 0) {
+      for (let i = 0; i < Math.min(numbers.length, this.OTP_LENGTH); i++) {
+        this.otpDigits[i] = numbers[i];
+        this.lastInputValue[i] = numbers[i];
+        const inputElement = this.otpInputs.toArray()[i];
+        if (inputElement?.nativeElement) {
+          inputElement.nativeElement.value = numbers[i];
         }
-      }, 1000);
+      }
+
+      this.otpError = '';
+
+      const focusIndex = Math.min(numbers.length, this.OTP_LENGTH - 1);
+      this.focusInput(focusIndex);
+
+      if (numbers.length >= this.OTP_LENGTH) {
+        // console.log('✨ [PASTE] Đủ 6 số → Verify');
+        setTimeout(() => this.verifyOtp(), 100);
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.verifyOtp();
+  }
+
+  private focusInput(index: number): void {
+    setTimeout(() => {
+      if (this.otpInputs && this.otpInputs.length > index) {
+        const input = this.otpInputs.toArray()[index];
+        if (input?.nativeElement) {
+          input.nativeElement.focus();
+          input.nativeElement.select();
+        }
+      }
+    }, 0);
+  }
+
+  verifyOtp(): void {
+    if (this.isVerifying) {
+      console.log('Already verifying, skip');
       return;
     }
 
-    const otpCode = this.getOtpCode();
-    const otpNumber = parseInt(otpCode);
-    console.log('OTP code:', otpCode, 'OTP number:', otpNumber);
+    const otpCode = this.otpDigits.join('');
 
-    // Check if OTP is in valid range (400000 < OTP < 600000)
-    if (otpNumber > 400000 && otpNumber < 600000) {
-      console.log('Valid OTP');
-      // Show success state
+    console.log('>>> [VERIFY] OTP vừa nhập:', otpCode);
+    console.log('>>> [VERIFY] OTP từ server:', this.currentOtp);
+
+    if (otpCode.length !== this.OTP_LENGTH) {
+      this.otpError = 'Vui lòng nhập đầy đủ 6 số OTP';
+      return;
+    }
+
+    this.isVerifying = true;
+    this.otpError = '';
+
+    // KIỂM TRA OTP CỤC BỘ (cho testing)
+    if (otpCode === this.currentOtp) {
+      // console.log('✅ [VERIFY] Local OTP match!');
+
+      // Show success
       this.showSuccessState();
 
-      // Valid OTP - wait 1-2 seconds then navigate
-      setTimeout(() => {
-        if (this.isRegistrationFlow) {
-          sessionStorage.setItem('otpVerified', 'true');
-          this.router.navigate(['/register/password']);
-        } else {
-          sessionStorage.setItem('forgotPasswordOtpVerified', 'true');
-          this.router.navigate(['/forgot-password/reset']);
-        }
-      }, 1200);
-    } else {
-      console.log('Invalid OTP');
-      // Invalid OTP - show error state
-      this.otpError = 'Mã OTP không chính xác';
-      this.showErrorState();
+      // Set session storage
+      if (this.flowType === 'register') {
+        sessionStorage.setItem('registerOtpVerified', 'true');
+        sessionStorage.setItem('registerOtp', otpCode);
 
-      // Clear all digits after showing error
-      setTimeout(() => {
-        this.otpDigits = ['', '', '', '', '', ''];
-        this.otpError = ''; // Hide error message
-        this.hideErrorState();
-        // Focus first input
-        const firstInput = document.querySelector('.otp-digit') as HTMLInputElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      }, 1000); // Show error for 2 seconds
+        setTimeout(() => {
+          this.router.navigate(['/register/password']);
+        }, this.SUCCESS_DELAY);
+      } else {
+        sessionStorage.setItem('forgotPasswordOtpVerified', 'true');
+        sessionStorage.setItem('forgotPasswordOtp', otpCode);
+
+        setTimeout(() => {
+          this.router.navigate(['/forgot-password/reset']);
+        }, this.SUCCESS_DELAY);
+      }
+
+      return;
+    }
+
+    // Nếu không match local, gọi API
+    // console.log('⚠️ [VERIFY] Local mismatch, calling API...');
+
+    if (this.flowType === 'register') {
+      this.verifyRegistrationOtp(otpCode);
+    } else if (this.flowType === 'forgot') {
+      this.verifyForgotPasswordOtp(otpCode);
     }
   }
 
-  showErrorState(): void {
-    console.log('showErrorState called');
+  private verifyRegistrationOtp(otpCode: string): void {
+    // console.log('🔄 Verifying registration OTP via API...');
 
-    // Use setTimeout to ensure DOM is ready
+    this.authService.verifyOtp(this.phoneNumber, otpCode).subscribe({
+      next: (response: any) => {
+        console.log('>>> Registration OTP verified successfully:', response);
+
+        this.showSuccessState();
+
+        sessionStorage.setItem('registerOtpVerified', 'true');
+        sessionStorage.setItem('registerOtp', otpCode);
+
+        setTimeout(() => {
+          this.router.navigate(['/register/password']);
+        }, this.SUCCESS_DELAY);
+      },
+      error: (error: any) => {
+        console.error('Registration OTP verification failed:', error);
+        this.handleOtpError(error);
+      },
+    });
+  }
+
+  private verifyForgotPasswordOtp(otpCode: string): void {
+    // console.log('🔄 Verifying forgot password OTP via API...');
+
+    this.authService.verifyForgotPasswordOtp(this.phoneNumber, otpCode).subscribe({
+      next: (response: any) => {
+        console.log('>>> Forgot password OTP verified successfully:', response);
+
+        this.showSuccessState();
+
+        sessionStorage.setItem('forgotPasswordOtpVerified', 'true');
+        sessionStorage.setItem('forgotPasswordOtp', otpCode);
+
+        setTimeout(() => {
+          this.router.navigate(['/forgot-password/reset']);
+        }, this.SUCCESS_DELAY);
+      },
+      error: (error: any) => {
+        console.error('Forgot password OTP verification failed:', error);
+        this.handleOtpError(error);
+      },
+    });
+  }
+
+  private handleOtpError(error: any): void {
+    this.isVerifying = false;
+
+    if (error.status === 400) {
+      this.otpError = 'Mã OTP không chính xác. Vui lòng kiểm tra lại.';
+    } else if (error.status === 404) {
+      this.otpError = 'Mã OTP đã hết hạn. Vui lòng yêu cầu mã mới.';
+    } else {
+      this.otpError = 'Có lỗi xảy ra. Vui lòng thử lại.';
+    }
+
+    this.showErrorState();
+
+    setTimeout(() => {
+      this.hideErrorState();
+      this.clearOtpInputs();
+    }, 1000);
+  }
+
+  canResendOtp(): boolean {
+    return this.countdown <= 0 && !this.isLoading;
+  }
+
+  getDisplayPhoneNumber(): string {
+    if (this.phoneNumber === 'Unknown') {
+      return 'số điện thoại của bạn';
+    }
+    return this.phoneNumber;
+  }
+
+  getTitle(): string {
+    return this.flowType === 'register' ? 'Xác thực đăng ký' : 'Xác thực quên mật khẩu';
+  }
+
+  getDescription(): string {
+    return this.flowType === 'register'
+      ? 'Nhập mã OTP đã gửi đến số điện thoại của bạn để hoàn tất đăng ký'
+      : 'Nhập mã OTP đã gửi đến số điện thoại của bạn để đặt lại mật khẩu';
+  }
+
+  showErrorState(): void {
+    // console.log('🔴 Showing error state');
     setTimeout(() => {
       const otpInputs = document.querySelectorAll('.otp-digit');
-      console.log('Found', otpInputs.length, 'OTP inputs');
-
-      otpInputs.forEach((input, index) => {
+      otpInputs.forEach((input) => {
         input.classList.add('error-state');
-        console.log(`Added error-state to input ${index}:`, input);
-
-        // Force style update
         (input as HTMLElement).style.borderColor = '#e53935';
         (input as HTMLElement).style.backgroundColor = '#ffebee';
         (input as HTMLElement).style.boxShadow = '0 0 0 3px rgba(229, 57, 53, 0.2)';
@@ -254,18 +534,11 @@ export class OtpComponent implements OnInit, OnDestroy {
   }
 
   showSuccessState(): void {
-    console.log('showSuccessState called');
-
-    // Use setTimeout to ensure DOM is ready
+    // console.log('🟢 Showing success state');
     setTimeout(() => {
       const otpInputs = document.querySelectorAll('.otp-digit');
-      console.log('Found', otpInputs.length, 'OTP inputs');
-
-      otpInputs.forEach((input, index) => {
+      otpInputs.forEach((input) => {
         input.classList.add('success-state');
-        console.log(`Added success-state to input ${index}:`, input);
-
-        // Force style update
         (input as HTMLElement).style.borderColor = '#28a745';
         (input as HTMLElement).style.backgroundColor = '#d4edda';
         (input as HTMLElement).style.boxShadow = '0 0 0 3px rgba(40, 167, 69, 0.2)';
@@ -274,42 +547,45 @@ export class OtpComponent implements OnInit, OnDestroy {
   }
 
   hideErrorState(): void {
+    // console.log('🔄 Hiding error state');
     const otpInputs = document.querySelectorAll('.otp-digit');
     otpInputs.forEach((input) => {
       input.classList.remove('error-state');
-
-      // Reset inline styles
       (input as HTMLElement).style.borderColor = '';
       (input as HTMLElement).style.backgroundColor = '';
       (input as HTMLElement).style.boxShadow = '';
     });
   }
 
-  startCountdown(): void {
-    this.countdown = 30;
-    this.countdownInterval = setInterval(() => {
-      this.countdown--;
-      if (this.countdown <= 0) {
-        clearInterval(this.countdownInterval);
-        this.countdown = 0;
-      }
-    }, 1000);
+  hideSuccessState(): void {
+    // console.log('🔄 Hiding success state');
+    const otpInputs = document.querySelectorAll('.otp-digit');
+    otpInputs.forEach((input) => {
+      input.classList.remove('success-state');
+      (input as HTMLElement).style.borderColor = '';
+      (input as HTMLElement).style.backgroundColor = '';
+      (input as HTMLElement).style.boxShadow = '';
+    });
   }
 
-  resendOtp(): void {
-    // Reset countdown
-    this.startCountdown();
+  private clearOtpInputs(): void {
+    // console.log('🧹 Clearing all OTP inputs');
     this.otpDigits = ['', '', '', '', '', ''];
-    this.otpError = '';
+    this.lastInputValue = ['', '', '', '', '', ''];
+    this.isVerifying = false;
 
-    // Here you would typically call an API to resend OTP
-    console.log('Resending OTP to:', this.phoneNumber);
+    if (this.otpInputs) {
+      this.otpInputs.forEach((input) => {
+        if (input.nativeElement) {
+          input.nativeElement.value = '';
+        }
+      });
+    }
+
+    setTimeout(() => this.focusInput(0), 100);
   }
 
-  onSubmit(): void {
-    // This method is now handled by autoVerify()
-    // Keep for manual submit if needed
-    if (!this.isOtpComplete()) return;
-    this.autoVerify();
+  private isOtpExpired(): boolean {
+    return this.countdown <= 0;
   }
 }

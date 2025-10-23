@@ -15,9 +15,6 @@ VGreen/
 │  ├─ categories/
 │  └─ users/
 │
-├─ backend/            #Này t đang để giả lập backend để thao tác thêm thôi nhe
-│
-│
 ├── my-user/        #Đóng vai trò như một my-app mình tạo ra á
 │  ├─ .angular/                  
 │  ├─ .vscode/                   

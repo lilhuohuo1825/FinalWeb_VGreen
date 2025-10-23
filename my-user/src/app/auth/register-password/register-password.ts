@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-password',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule],
   templateUrl: './register-password.html',
   styleUrls: ['./register-password.css'],
 })
@@ -22,16 +23,34 @@ export class RegisterPassword implements OnInit {
   showConfirm: boolean = false;
 
   showSuccessMessage: boolean = false;
+  isNavigating: boolean = false; // Flag để tránh redirect khi đang navigation
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   ngOnInit(): void {
     // Get phone number from session storage
     this.phoneNumber = sessionStorage.getItem('registerPhone') || '';
-    const otpVerified = sessionStorage.getItem('otpVerified');
+    const otpVerified = sessionStorage.getItem('registerOtpVerified');
+    const isRegistrationCompleted = sessionStorage.getItem('registrationCompleted');
 
+    // console.log('🔍 RegisterPassword ngOnInit:');
+    console.log('Phone:', this.phoneNumber);
+    console.log('OTP Verified:', otpVerified);
+    console.log('>>> Registration Completed:', isRegistrationCompleted);
+
+    // Nếu đã hoàn thành đăng ký, redirect về login
+    if (isRegistrationCompleted === 'true') {
+      // console.log('✅ Đăng ký đã hoàn thành, redirecting to login');
+      // Clear flag để tránh redirect loop
+      sessionStorage.removeItem('registrationCompleted');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Kiểm tra điều kiện truy cập trang
     if (!this.phoneNumber || !otpVerified) {
-      this.router.navigate(['/register']);
+      console.log('❌ Missing phone or OTP verification, redirecting to register');
+      // this.router.navigate(['/register']);
       return;
     }
   }
@@ -92,22 +111,32 @@ export class RegisterPassword implements OnInit {
   onSubmit(): void {
     if (!this.isFormValid()) return;
 
-    // Show success message
-    this.showSuccessMessage = true;
-
-    // Here you would typically call your registration API
-    console.log('Registration completed:', {
-      phone: this.phoneNumber,
+    const registerData = {
+      phoneNumber: this.phoneNumber,
       password: this.password,
+    };
+
+    this.http.post('/api/auth/register', registerData).subscribe({
+      next: (response: any) => {
+        console.log('>>> Đăng ký thành công!', response);
+        this.showSuccessMessage = true;
+
+        // Set flag đăng ký hoàn thành TRƯỚC KHI clear sessionStorage
+        sessionStorage.setItem('registrationCompleted', 'true');
+
+        // Clear session storage NGAY LẬP TỨC
+        sessionStorage.removeItem('registerPhone');
+        sessionStorage.removeItem('registerOtpVerified');
+        sessionStorage.removeItem('registerOtp');
+
+        // Navigate sau khi đã clear
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 800);
+      },
+      error: (error) => {
+        console.error('(x) Lỗi đăng ký:', error);
+      },
     });
-
-    // Clear session storage
-    sessionStorage.removeItem('registerPhone');
-    sessionStorage.removeItem('otpVerified');
-
-    // Navigate to login page after showing success message
-    setTimeout(() => {
-      this.router.navigate(['/']);
-    }, 2000); // Show success message for 2 seconds
   }
 }
