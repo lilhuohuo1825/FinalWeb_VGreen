@@ -13,5 +13,10 @@
     "promotion_id": "PROMO007",
     "target_type": "Brand",
     "target_ref": ["CO.OP SELECT"]
+  },
+    {
+    "promotion_id": "PROMO009",
+    "target_type": "Product",
+    "target_ref": ["3150382", "3305978"]
   }
 ]
