@@ -1,0 +1,1397 @@
+/* Orders Management Page Styles */
+
+.orders-page {
+  font-family: 'Lexend', sans-serif;
+  padding: 32px 40px;
+  background: transparent;
+  min-height: calc(100vh - var(--topbar-height, 90px));
+  position: relative;
+}
+
+.orders-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 16px;
+  font-weight: 400;
+}
+
+.breadcrumb .separator {
+  margin: 0 8px;
+}
+
+.breadcrumb .current {
+  color: #1A1A1A;
+  font-weight: 500;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.page-title {
+  font-family: 'SF Pro', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #256E05 0%, #3CB018 50%, #68CB3C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background: white;
+  color: #3CB018;
+  border: 2px solid #3CB018;
+  border-radius: 8px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(60, 176, 24, 0.1);
+}
+
+.btn-refresh:hover {
+  background: #F0FDF4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(60, 176, 24, 0.2);
+}
+
+.btn-refresh:active {
+  transform: translateY(0) rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.btn-add-order {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #256E05 0%, #3CB018 50%, #68CB3C 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 12px rgba(60, 176, 24, 0.3),
+    0 2px 4px rgba(37, 110, 5, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-add-order::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.btn-add-order:hover {
+  background: linear-gradient(135deg, #1f5a04 0%, #2d8d0c 50%, #5cb032 100%);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 16px rgba(60, 176, 24, 0.4),
+    0 3px 6px rgba(37, 110, 5, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.btn-add-order:hover::before {
+  opacity: 1;
+}
+
+.btn-add-order:active {
+  transform: translateY(0);
+  box-shadow: 
+    0 2px 6px rgba(60, 176, 24, 0.3),
+    0 1px 3px rgba(37, 110, 5, 0.2),
+    inset 0 2px 4px rgba(37, 110, 5, 0.2);
+}
+
+.btn-add-order img,
+.btn-add-order span {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-add-order img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+/* Statistics Grid */
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* Responsive: 4 columns on larger screens */
+@media (min-width: 1440px) {
+  .statistics-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Responsive: 2 columns on tablets */
+@media (max-width: 768px) {
+  .statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsive: 1 column on mobile */
+@media (max-width: 480px) {
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #f9fafb;
+}
+
+.stat-card.clickable:active {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Stat card colors by type */
+/* Tổng đơn hàng - Gray (Xám) */
+.stat-card.stat-all .stat-title {
+  color: #6B7280;
+}
+
+.stat-card.stat-all.active {
+  border: 2px solid #6B7280;
+  background: #F9FAFB;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.stat-card.stat-all.active .stat-title {
+  color: #6B7280;
+}
+
+.stat-card.stat-all.active .stat-value {
+  color: #1A1A1A;
+}
+
+/* Yêu cầu xác nhận - Yellow (Vàng) */
+.stat-card.stat-pending .stat-title {
+  color: #CA8A04;
+}
+
+.stat-card.stat-pending.active {
+  border: 2px solid #EAB308;
+  background: #FEF9C3;
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3);
+}
+
+.stat-card.stat-pending.active .stat-title {
+  color: #CA8A04;
+}
+
+.stat-card.stat-pending.active .stat-value {
+  color: #1A1A1A;
+}
+
+/* Đang giao - Yellow (Vàng) */
+.stat-card.stat-delivering .stat-title {
+  color: #CA8A04;
+}
+
+.stat-card.stat-delivering.active {
+  border: 2px solid #EAB308;
+  background: #FEF9C3;
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3);
+}
+
+.stat-card.stat-delivering.active .stat-title {
+  color: #CA8A04;
+}
+
+.stat-card.stat-delivering.active .stat-value {
+  color: #1A1A1A;
+}
+
+/* Unpaid - Red (Chưa thanh toán) */
+.stat-card.stat-unpaid .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-unpaid.active {
+  border: 2px solid #EF4444;
+  background: #FEF2F2;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.stat-card.stat-unpaid.active .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-unpaid.active .stat-value {
+  color: #1A1A1A;
+}
+
+/* Refund Requested - Red (Yêu cầu hủy/hoàn tiền) */
+.stat-card.stat-refund-requested .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-refund-requested.active {
+  border: 2px solid #EF4444;
+  background: #FEF2F2;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.stat-card.stat-refund-requested.active .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-refund-requested.active .stat-value {
+  color: #1A1A1A;
+}
+
+/* Hủy/Hoàn tiền - Red (Đỏ) */
+.stat-card.stat-refunded .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-refunded.active {
+  border: 2px solid #EF4444;
+  background: #FEF2F2;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.stat-card.stat-refunded.active .stat-title {
+  color: #DC2626;
+}
+
+.stat-card.stat-refunded.active .stat-value {
+  color: #1A1A1A;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-title {
+  font-family: 'SF Pro', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-family: 'SF Pro', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 20px;
+  overflow: visible !important; /* Allow dropdowns to overflow */
+  position: relative;
+  z-index: 99998 !important; /* Đảm bảo toolbar và dropdown luôn ở trên table container */
+}
+
+/* Search Container */
+.search-container {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+  margin-right: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 48px 12px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #3CB018;
+  box-shadow: 0 0 0 3px rgba(60, 176, 24, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9CA3AF;
+}
+
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+  background: #F5F7FA;
+}
+
+.search-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Actions Container */
+.actions-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  overflow: visible !important; /* Allow dropdowns to overflow */
+  position: relative;
+  z-index: 99997 !important; /* Đảm bảo actions container ở trên table container */
+}
+
+.selected-count {
+  font-size: 14px;
+  color: #6B7280;
+  margin-right: 8px;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1.5px solid #E5E7EB;
+  background: white;
+  border-radius: 8px;
+  font-family: 'Lexend', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-action img {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.btn-action .icon-sort {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.btn-action .dropdown-arrow {
+  font-size: 10px;
+  color: #9CA3AF;
+  transition: transform 0.2s ease;
+}
+
+.btn-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-edit:hover:not(:disabled),
+.btn-filter:hover:not(:disabled),
+.btn-sort:hover:not(:disabled) {
+  border-color: #3CB018;
+  color: #3CB018;
+  background: rgba(60, 176, 24, 0.05);
+}
+
+.btn-action.btn-filter:hover .dropdown-arrow,
+.btn-action.btn-sort:hover .dropdown-arrow {
+  color: #374151;
+}
+
+.btn-sort:hover:not(:disabled) .icon-sort {
+  opacity: 1;
+}
+
+.btn-print img,
+.btn-edit img,
+.btn-filter img {
+  opacity: 0.8;
+}
+
+.btn-print:hover:not(:disabled) img,
+.btn-edit:hover:not(:disabled) img,
+.btn-filter:hover:not(:disabled) img {
+  opacity: 1;
+  filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(95%) contrast(101%);
+}
+
+.btn-delete {
+  color: #EF4444;
+  border-color: #FEE2E2;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: #FEF2F2;
+  border-color: #EF4444;
+  color: #EF4444 !important;
+}
+
+.btn-delete img {
+  opacity: 0.9;
+}
+
+.btn-delete:hover:not(:disabled) img {
+  opacity: 1;
+}
+
+/* Orders Table Container */
+.orders-table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 420px);
+  position: relative;
+  z-index: 0 !important; /* Giảm z-index xuống 0 để đảm bảo table container luôn ở dưới dropdown menu */
+  margin-top: 8px; /* Thêm khoảng cách với toolbar để dropdown không bị che */
+}
+
+/* Custom Scrollbar for Table Container */
+.orders-table-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.orders-table-container::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 4px;
+}
+
+.orders-table-container::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.orders-table-container::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+.orders-table-container::-webkit-scrollbar-corner {
+  background: #F3F4F6;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Header */
+.orders-table thead {
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.orders-table thead th {
+  padding: 16px;
+  text-align: left;
+  font-family: 'SF Pro', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1A1A;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  background: #F9FAFB;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.col-checkbox {
+  width: 40px;
+  text-align: center !important;
+}
+
+.col-order-id {
+  width: 10%;
+  min-width: 100px;
+}
+
+.col-date {
+  width: 12%;
+  min-width: 120px;
+}
+
+.col-customer {
+  width: 15%;
+  min-width: 150px;
+}
+
+.col-status {
+  width: 15%;
+  min-width: 150px;
+  text-align: center !important;
+}
+
+.col-payment {
+  width: 15%;
+  min-width: 150px;
+  text-align: center !important;
+}
+
+.col-delivery {
+  width: 15%;
+  min-width: 140px;
+  text-align: center !important;
+}
+
+.col-total {
+  width: 10%;
+  min-width: 100px;
+  text-align: right !important;
+}
+
+/* Table Body */
+.orders-table tbody tr {
+  border-bottom: 1px solid #F3F4F6;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.orders-table tbody tr:hover {
+  background: #F0FDF4;
+  box-shadow: 0 2px 8px rgba(60, 176, 24, 0.15);
+  transform: translateY(-1px);
+}
+
+.orders-table tbody td {
+  padding: 16px;
+  font-size: 14px;
+  color: #1A1A1A;
+  vertical-align: middle;
+}
+
+/* Checkbox */
+.checkbox-all,
+.checkbox-item {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3CB018;
+}
+
+/* Status Badge */
+.status-badge,
+.payment-badge,
+.delivery-badge,
+.refund-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.status-dot,
+.payment-dot,
+.delivery-dot,
+.refund-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   STATUS COLORS - BADGES
+   ============================================ */
+
+/* VÀNG - Trạng thái chờ, yêu cầu xác nhận */
+.status-pending {
+  color: #B45309;
+}
+
+.status-pending .status-dot {
+  background: #F59E0B;
+}
+
+/* XANH LÁ - Đã hoàn thành (đã xác nhận) */
+.status-confirmed {
+  color: #047857;
+}
+
+.status-confirmed .status-dot {
+  background: #10B981;
+}
+
+/* ĐỎ - Yêu cầu hủy/hoàn tiền */
+.status-refund-requested {
+  color: #DC2626;
+}
+
+.status-refund-requested .status-dot {
+  background: #EF4444;
+}
+
+/* ĐỎ - Đã hủy */
+.status-cancelled {
+  color: #DC2626;
+}
+
+.status-cancelled .status-dot {
+  background: #EF4444;
+}
+
+/* ĐỎ - Đã hoàn tiền */
+.status-refunded {
+  color: #DC2626;
+}
+
+.status-refunded .status-dot {
+  background: #EF4444;
+}
+
+/* ============================================
+   PAYMENT COLORS - BADGES
+   ============================================ */
+
+/* XANH LÁ - Đã thanh toán (hoàn thành) */
+.payment-paid {
+  color: #047857;
+}
+
+.payment-paid .payment-dot {
+  background: #10B981;
+}
+
+/* ĐỎ - Chưa thanh toán */
+.payment-unpaid {
+  color: #DC2626;
+}
+
+.payment-unpaid .payment-dot {
+  background: #EF4444;
+}
+
+/* ============================================
+   DELIVERY COLORS - BADGES
+   ============================================ */
+
+/* ĐỎ - Chờ giao */
+.delivery-pending {
+  color: #DC2626;
+}
+
+.delivery-pending .delivery-dot {
+  background: #EF4444;
+}
+
+/* VÀNG - Đang giao */
+.delivery-delivering {
+  color: #B45309;
+}
+
+.delivery-delivering .delivery-dot {
+  background: #F59E0B;
+}
+
+/* XANH LÁ - Đã giao (hoàn thành) */
+.delivery-delivered {
+  color: #047857;
+}
+
+.delivery-delivered .delivery-dot {
+  background: #10B981;
+}
+
+/* None - Không hiển thị */
+.delivery-none {
+  display: none;
+}
+
+/* Refund Colors */
+.refund-none {
+  color: #6B7280;
+}
+
+.refund-none .refund-dot {
+  background: #9CA3AF;
+}
+
+.refund-requested {
+  color: #B45309;
+}
+
+.refund-requested .refund-dot {
+  background: #F59E0B;
+}
+
+.refund-refunded {
+  color: #1E40AF;
+}
+
+.refund-refunded .refund-dot {
+  background: #3B82F6;
+}
+
+/* ============================================
+   DROPDOWN MENUS FOR FILTER & SORT
+   ============================================ */
+
+.dropdown-container {
+  position: relative;
+  z-index: 99999 !important; /* Tăng z-index rất cao để dropdown container luôn ở trên cùng, không bị che bởi table container */
+  overflow: visible !important;
+}
+
+.btn-action.btn-filter,
+.btn-action.btn-sort {
+  position: relative;
+  white-space: nowrap;
+  min-width: 110px;
+  justify-content: center;
+}
+
+.btn-action.btn-filter img,
+.btn-action.btn-sort img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.btn-action.btn-filter:hover,
+.btn-action.btn-sort:hover {
+  background: #F9FAFB;
+  border-color: #3CB018;
+}
+
+.btn-action.btn-filter:hover img,
+.btn-action.btn-sort:hover img {
+  opacity: 1;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0;
+  min-width: 240px;
+  background: white !important;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+  z-index: 999999 !important; /* Tăng z-index rất cao để dropdown menu luôn hiển thị trên table container, không bị che */
+  padding: 8px 0;
+  animation: dropdownFadeIn 0.2s ease;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Multi-level Dropdown */
+.dropdown-menu-multilevel {
+  padding: 4px 0;
+}
+
+/* Dropdown Item Parent (contains item + submenu) */
+.dropdown-item-parent {
+  position: relative;
+}
+
+/* Dropdown Item (main clickable item with arrow) */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  color: #374151;
+  user-select: none;
+  position: relative;
+}
+
+.dropdown-item:hover {
+  background: #F3F4F6;
+  color: #3CB018;
+}
+
+.dropdown-item .item-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.dropdown-item .item-icon img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.8;
+}
+
+.dropdown-item .arrow-right {
+  margin-left: auto;
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover .arrow-right {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* Dropdown Submenu */
+.dropdown-submenu {
+  position: absolute;
+  right: calc(100% + 8px);
+  left: auto;
+  top: -6px;
+  min-width: 240px;
+  max-width: 320px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 6px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999999 !important; /* Tăng z-index để submenu luôn hiển thị trên table container */
+  pointer-events: none;
+}
+
+.dropdown-item-parent:hover > .dropdown-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.dropdown-submenu-scrollable {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdown-submenu-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-submenu-scrollable::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 3px;
+}
+
+.dropdown-submenu-scrollable::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+.dropdown-submenu-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+/* Dropdown Divider */
+.dropdown-divider {
+  height: 1px;
+  background: #E5E7EB;
+  margin: 8px 0;
+}
+
+/* Dropdown Options (in submenu) */
+.dropdown-submenu .dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  color: #374151;
+  user-select: none;
+  margin: 2px 4px;
+  border-radius: 6px;
+}
+
+.dropdown-submenu .dropdown-option:hover {
+  background: #F3F4F6;
+  color: #3CB018;
+}
+
+.dropdown-option input[type="checkbox"],
+.dropdown-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3CB018;
+}
+
+.dropdown-option span {
+  flex: 1;
+  font-weight: 400;
+}
+
+/* Dropdown Actions */
+.dropdown-actions {
+  padding: 8px;
+}
+
+/* Arrow Pointer */
+.dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+  filter: drop-shadow(0 -2px 2px rgba(0, 0, 0, 0.05));
+}
+
+
+.btn-clear-filter {
+  width: 100%;
+  padding: 10px 16px;
+  background: #FEF2F2;
+  border: 1px solid #FEE2E2;
+  border-radius: 8px;
+  color: #DC2626;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-clear-filter img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.btn-clear-filter:hover {
+  background: #FEE2E2;
+  border-color: #FECACA;
+  color: #B91C1C;
+}
+
+.btn-filter.active,
+.btn-sort.active {
+  background: #ECFDF5;
+  border-color: #3CB018;
+  color: #059669;
+}
+
+.btn-action.btn-filter.active .dropdown-arrow,
+.btn-action.btn-sort.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Sort Dropdown Menu */
+.dropdown-menu-sort {
+  min-width: 320px;
+  max-width: 360px;
+  padding: 8px;
+}
+
+/* Sort Option Container */
+.sort-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  background: white;
+  position: relative;
+}
+
+.sort-option:last-child {
+  margin-bottom: 0;
+}
+
+.sort-option:hover {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+}
+
+.sort-option.active {
+  background: #ECFDF5;
+  border-color: #3CB018;
+}
+
+.sort-option.active:hover {
+  background: #D1FAE5;
+}
+
+/* Sort Option Icon */
+.sort-option-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.sort-option-icon img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.sort-option.active .sort-option-icon {
+  background: white;
+  transform: scale(1.05);
+}
+
+.sort-option:hover .sort-option-icon {
+  transform: scale(1.05);
+}
+
+/* Sort Option Content */
+.sort-option-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sort-option-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F2937;
+  line-height: 1.2;
+}
+
+.sort-option.active .sort-option-label {
+  color: #16A34A;
+}
+
+.sort-option-desc {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.3;
+  font-weight: 400;
+}
+
+.sort-option.active .sort-option-desc {
+  color: #059669;
+}
+
+/* Sort Option Indicator */
+.sort-option-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.indicator-badge {
+  min-width: 50px;
+  height: 32px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 2px 4px rgba(60, 176, 24, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.indicator-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.indicator-badge.asc {
+  background: linear-gradient(135deg, #256E05 0%, #3CB018 50%, #68CB3C 100%);
+  color: white;
+}
+
+.indicator-badge.asc,
+.indicator-badge.desc {
+  position: relative;
+  z-index: 1;
+}
+
+.indicator-badge.desc {
+  background: linear-gradient(135deg, #1f5a04 0%, #2d8d0c 50%, #5cb032 100%);
+  color: white;
+}
+
+.sort-option:hover .indicator-badge {
+  transform: scale(1.05);
+  box-shadow: 
+    0 4px 8px rgba(60, 176, 24, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.sort-option:hover .indicator-badge::before {
+  opacity: 1;
+}
+
+.indicator-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Responsive for Dropdown */
+@media screen and (max-width: 768px) {
+  .dropdown-submenu {
+    right: auto;
+    left: calc(100% + 8px);
+    transform: translateX(-10px);
+  }
+  
+  .dropdown-item-parent:hover > .dropdown-submenu {
+    transform: translateX(0);
+  }
+  
+  .dropdown-menu {
+    right: auto;
+    left: 0;
+    min-width: 260px;
+  }
+  
+  .dropdown-menu::before {
+    right: auto;
+    left: 20px;
+  }
+
+  .dropdown-menu-sort {
+    min-width: 280px;
+    max-width: 300px;
+  }
+  
+  .sort-option {
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .sort-option-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .toolbar {
+    gap: 12px;
+  }
+
+  .search-container {
+    width: 350px;
+  }
+
+  .actions-container {
+    gap: 8px;
+  }
+
+  .btn-action {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .statistics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .actions-container {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .selected-count {
+    margin-right: auto;
+  }
+
+  .orders-table-container {
+    overflow-x: auto;
+    max-height: calc(100vh - 480px);
+  }
+
+  .orders-table {
+    min-width: 900px;
+  }
+
+  .actions-container {
+    flex-wrap: wrap;
+  }
+
+  .btn-action span {
+    display: none;
+  }
+}
+

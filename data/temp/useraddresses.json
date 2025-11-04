@@ -1,0 +1,160 @@
+[{
+  "_id": {
+    "$oid": "6903307b966225afa60220c9"
+  },
+  "CustomerID": "CUS305416310",
+  "addresses": [
+    {
+      "fullName": "Nguyen Hera",
+      "phone": "02183773673",
+      "email": "huyennn23406@microsoft.com",
+      "city": "hcm",
+      "district": "q2",
+      "ward": "p1",
+      "detail": "39 Nguyễn Huệ",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": true,
+      "createdAt": {
+        "$date": "2025-10-30T10:01:58.561Z"
+      },
+      "_id": {
+        "$oid": "69033796966225afa6022144"
+      }
+    }
+  ],
+  "__v": 5
+},
+{
+  "_id": {
+    "$oid": "690366ef7e7925fe993e29eb"
+  },
+  "CustomerID": "CUS881229734",
+  "addresses": [
+    {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "02183773673",
+      "email": "genecarlesi80y3@ceptos.com",
+      "city": "hcm",
+      "district": "q1",
+      "ward": "p1",
+      "detail": "Số nhà hehe",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": true,
+      "createdAt": {
+        "$date": "2025-11-01T14:26:09.996Z"
+      },
+      "_id": {
+        "$oid": "690618815a2f8e22456a65ef"
+      }
+    },
+    {
+      "fullName": "hjefef",
+      "phone": "02183773673",
+      "email": "genecarlesi80y3@ceptos.com",
+      "city": "hcm",
+      "district": "q2",
+      "ward": "p1",
+      "detail": "Số nhà hehe",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": false,
+      "createdAt": {
+        "$date": "2025-11-01T14:31:07.934Z"
+      },
+      "_id": {
+        "$oid": "690619ab5a2f8e22456a66e1"
+      }
+    }
+  ],
+  "__v": 20
+},
+{
+  "_id": {
+    "$oid": "69062c9a5a2f8e22456a84f6"
+  },
+  "CustomerID": "CUS646672569",
+  "addresses": [
+    {
+      "fullName": "Nguyễn Như ",
+      "phone": "02183773673",
+      "email": "genecarlesi80y3@ceptos.com",
+      "city": "hcm",
+      "district": "q2",
+      "ward": "p1",
+      "detail": "Số nhà hehe",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": true,
+      "createdAt": {
+        "$date": "2025-11-01T15:52:03.796Z"
+      },
+      "_id": {
+        "$oid": "69062ca35a2f8e22456a84fa"
+      }
+    }
+  ],
+  "__v": 1
+},
+{
+  "_id": {
+    "$oid": "6906bee33a3d368ca5b77224"
+  },
+  "CustomerID": "CUS735790727",
+  "addresses": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6906c1593a3d368ca5b772dc"
+  },
+  "CustomerID": "CUS326736493",
+  "addresses": [
+    {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "city": "hcm",
+      "district": "q2",
+      "ward": "p1",
+      "detail": "39 Nguyễn Huệ",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": true,
+      "createdAt": {
+        "$date": "2025-11-03T13:40:46.155Z"
+      },
+      "_id": {
+        "$oid": "6908b0dee79f402cc77a6b61"
+      }
+    },
+    {
+      "fullName": "hjefef",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "city": "hn",
+      "district": "q2",
+      "ward": "p2",
+      "detail": "Số nhà hehe, phường haha, huyện hichic, tỉnh huhuhu",
+      "notes": "",
+      "deliveryMethod": "standard",
+      "isDefault": false,
+      "createdAt": {
+        "$date": "2025-11-03T13:41:00.968Z"
+      },
+      "_id": {
+        "$oid": "6908b0ece79f402cc77a6b66"
+      }
+    }
+  ],
+  "__v": 18
+},
+{
+  "_id": {
+    "$oid": "690736e8ff49b6f0cd5086e8"
+  },
+  "CustomerID": "CUS740201512",
+  "addresses": [],
+  "__v": 0
+}]

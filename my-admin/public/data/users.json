@@ -1,0 +1,800 @@
+[
+  {
+    "_id": {
+      "$oid": "68f4a60d4a434054ae2fc78b"
+    },
+    "user_id": 1,
+    "full_name": "Thu Hà",
+    "phone": "123456789",
+    "email": "alice@email.com",
+    "address": "Hà Nội",
+    "register_date": "2025-01-01",
+    "customer_type": "Regular",
+    "password": "passhashed1"
+  },
+  {
+    "_id": {
+      "$oid": "68f4a60d4a434054ae2fc78c"
+    },
+    "user_id": 2,
+    "full_name": "Yến Nhi",
+    "phone": "987654321",
+    "email": "bob@email.com",
+    "address": "Hồ Chí Minh",
+    "register_date": "2025-02-15",
+    "customer_type": "VIP",
+    "password": "passhashed2"
+  },
+  {
+    "_id": {
+      "$oid": "68f4a60d4a434054ae2fc78d"
+    },
+    "user_id": 3,
+    "full_name": "Như Huyền",
+    "phone": "111222333",
+    "email": "charlie@email.com",
+    "address": "Đà Nẵng",
+    "register_date": "2025-03-10",
+    "customer_type": "Regular",
+    "password": "passhashed3"
+  },
+  {
+    "_id": {
+      "$oid": "68f4a60d4a434054ae2fc78e"
+    },
+    "user_id": 4,
+    "full_name": "Huỳnh Hương",
+    "phone": "44556677",
+    "email": "david@email.com",
+    "address": "Huế",
+    "register_date": "2025-04-05",
+    "customer_type": "VIP",
+    "password": "passhashed4"
+  },
+  {
+    "_id": {
+      "$oid": "68f4a60d4a434054ae2fc78f"
+    },
+    "user_id": 5,
+    "full_name": "Huyền Linh",
+    "phone": "33221100",
+    "email": "eva@email.com",
+    "address": "Cần Thơ",
+    "register_date": "2025-05-20",
+    "customer_type": "Regular",
+    "password": "passhashed5"
+  },
+  {
+    "_id": {
+      "$oid": "68f8948c00000000009c20b4"
+    },
+    "user_id": 6,
+    "full_name": "Test User Web",
+    "phone": "777777777",
+    "email": "testweb@example.com",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$0HYbrSpFiIrOEqtpoOutDuLIqHJS.URaZNBizSrAjzXpyadVtKEkm"
+  },
+  {
+    "_id": {
+      "$oid": "68f896750000000000db1905"
+    },
+    "user_id": 7,
+    "full_name": "Test User Frontend",
+    "phone": "888888888",
+    "email": "testfrontend@example.com",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$rxVwdp9dXEzsWT1695JTKugIvjRsdTbgj.FBOdMZ0AVGUxiAweT6S"
+  },
+  {
+    "_id": {
+      "$oid": "68f89c1f0000000000e76923"
+    },
+    "user_id": 8,
+    "full_name": "",
+    "phone": "999999999",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$CMNkWmo1Sb.kSddSK0lIS.6Bj7mBYf108DTNiAtXXmG5JWZxoW9iy"
+  },
+  {
+    "_id": {
+      "$oid": "68f89c410000000000510712"
+    },
+    "user_id": 9,
+    "full_name": "",
+    "phone": "815275677",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$pb2BX6gBpI2kDW6QcfgFcutphb0t/2WZAGrih3H2cvRL9nQtKt.Yi"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a014000000000069fc74"
+    },
+    "user_id": 10,
+    "full_name": "",
+    "phone": "987654321",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$hzTglyDwhpS.AXOtup7FXuebRO3Rd8I41/CdfIaLuVawmJlx4kaQy"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a0280000000000498b85"
+    },
+    "user_id": 11,
+    "full_name": "",
+    "phone": "912345678",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$jbw5WrtNpViA3UZYP1KgsekDWdpj0DflmAWJrlNdW5Vo9N3RUm2ba"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a03b0000000000eef07f"
+    },
+    "user_id": 12,
+    "full_name": "",
+    "phone": "901234567",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$Cc/QlmBEGD3gsM/OFvYVpOY4J.mgSwdfrzxz6NdQF4LeCtrtlYc0q"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a74400000000003d2c39"
+    },
+    "user_id": 13,
+    "full_name": "",
+    "phone": "555555555",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$5pfCxJgD.aCHz7LZQu9kKuBRMb1kdexR3oJ4chOtzzaW6IAr9WvT."
+  },
+  {
+    "_id": {
+      "$oid": "68f8a887000000000078bbf1"
+    },
+    "user_id": 14,
+    "full_name": "",
+    "phone": "666666666",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$ULM0IKiLXH1kG1PI3WyRruY.7dVK8.b6yFwWuSVgUfp0QvCOhF7iq"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a95800000000008be84c"
+    },
+    "user_id": 15,
+    "full_name": "",
+    "phone": "444444444",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$suo3h7x.bsDN0O5kqCssi.8AzRs7AsIqT/f55uzjdbN3/.pv271e."
+  },
+  {
+    "_id": {
+      "$oid": "68f8a97300000000006869ea"
+    },
+    "user_id": 16,
+    "full_name": "",
+    "phone": "333333333",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$oRZ8BYFVUQR4XdcDiM5CN.ytUmW5.pmnYYdgEhlTL6Xrsw8L.SrKu"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a9880000000000032335"
+    },
+    "user_id": 17,
+    "full_name": "",
+    "phone": "222222222",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$poZeGOuCiOUg7pjYF98i8OGBUuTWIkZKxtCawhm06bnNX47Xd1r42"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a99c000000000009132f"
+    },
+    "user_id": 18,
+    "full_name": "",
+    "phone": "111111111",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$QYQKP5AUlB5jc8I6BdTYWuTOaObkyWWqIdG/.7GYa66j/VQRDW.ti"
+  },
+  {
+    "_id": {
+      "$oid": "68f8a9c000000000009c3920"
+    },
+    "user_id": 19,
+    "full_name": "",
+    "phone": "0",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$5SJJrTTjnEKmqxsah0Hmneuqts21XoB0tBgqh8Dj.f1U.AAuz8ZI6"
+  },
+  {
+    "_id": {
+      "$oid": "68f8ab870000000000fa5799"
+    },
+    "user_id": 20,
+    "full_name": "",
+    "phone": "898765432",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$1SjnY3qswsXgwmAH7yywMOq2U7IXhUmZwEhEti.ItLtuqlGSAsUrq"
+  },
+  {
+    "_id": {
+      "$oid": "68f8acef0000000000419ea6"
+    },
+    "user_id": 21,
+    "full_name": "",
+    "phone": "0815275677",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$SIRDSxkaoSt6oN0TpHVdjeGMylXs5x6u/Hu5zxNtZ5iuv13JTuWIO",
+    "password_version": 36,
+    "last_password_reset": "2025-10-23T15:12:45.774Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f8ba580000000000be22e8"
+    },
+    "user_id": 22,
+    "full_name": "",
+    "phone": "2183773673",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$I7xfgNleuXt6JiilQRSs0.xSiJ2p3t3cZO3IFQTn7pO9RtEpWXrES"
+  },
+  {
+    "_id": {
+      "$oid": "68f8bc660000000000cd6801"
+    },
+    "user_id": 23,
+    "full_name": "",
+    "phone": "0835677892",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$NUAV0YOKgysiOd6f1IVqcuB6qgi/.6wOztxF66I70lCfVN/uDkc2m"
+  },
+  {
+    "_id": {
+      "$oid": "68f8bc950000000000306e9f"
+    },
+    "user_id": 24,
+    "full_name": "",
+    "phone": "21837736716",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$dlI6OrdPBLJ6HPje9Ic.jukXxb7NnNUyTRhtyxUlC8piXmF04RNJ2"
+  },
+  {
+    "_id": {
+      "$oid": "68f8bd090000000000ac9e98"
+    },
+    "user_id": 25,
+    "full_name": "",
+    "phone": "21837736731",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$K/BACJA1yucMYYF2FSbtmewMCtGti8pF34r8eJp7Hvh7pUj5KhE.G"
+  },
+  {
+    "_id": {
+      "$oid": "68f8be19000000000022fd4c"
+    },
+    "user_id": 26,
+    "full_name": "",
+    "phone": "08152756771",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$Wtd2Ijv5.fX.jMjQbfaqbOQmMmtJcks0CIh8h/IiMCYjsujkhc1Xq"
+  },
+  {
+    "_id": {
+      "$oid": "68f8c48800000000009d4774"
+    },
+    "user_id": 27,
+    "full_name": "",
+    "phone": "0815275677",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$XEdxsswRDpksf0PKxuZaT.gKGsE8W7cPz6dZgu03g70hHSDNUN2ey"
+  },
+  {
+    "_id": {
+      "$oid": "68f8c9520000000000e86b3f"
+    },
+    "user_id": 28,
+    "full_name": "",
+    "phone": "08152756771",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$84NKIH0vxFcZHlPrfFz82ulP3XxOddGQdgznTtz1jx7ADZPGnpmBi"
+  },
+  {
+    "_id": {
+      "$oid": "68f8ca3d0000000000a9410f"
+    },
+    "user_id": 29,
+    "full_name": "",
+    "phone": "08152756770",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$EpIOKuvqUH9hCrumpI4R5u1ZJRVsxti/VkMREqvO.fMBMpCGkLRMC"
+  },
+  {
+    "_id": {
+      "$oid": "68f8cadc0000000000bbf08b"
+    },
+    "user_id": 30,
+    "full_name": "",
+    "phone": "08152756772",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$mjqawzuASaPhYoJvpV5XgOiCO9mBKFJ8uzNLFLwChKk2gAsorFxPm"
+  },
+  {
+    "_id": {
+      "$oid": "68f8cb400000000000a75127"
+    },
+    "user_id": 31,
+    "full_name": "",
+    "phone": "08152756773",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$fobU7srTzMVourT78Ky0OOGht7qh.CYrd57twkrfwD2nImZ6XBs1e"
+  },
+  {
+    "_id": {
+      "$oid": "68f8cb6b0000000000122f17"
+    },
+    "user_id": 32,
+    "full_name": "",
+    "phone": "2183773673",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$1AYBQkUeSiWRQsuOKOcTvO2VcEaAIe40lBKaUl.CzUf6lPucCaGFq"
+  },
+  {
+    "_id": {
+      "$oid": "68f8cf22000000000071a5da"
+    },
+    "user_id": 33,
+    "full_name": "",
+    "phone": "08152756774",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$FOqnTdcnZuw/5rNBs8JWTeTV5SBnhnuHK5gV9VK.8Hk6.R8TrRhm."
+  },
+  {
+    "_id": {
+      "$oid": "68f8d4880000000000c166ee"
+    },
+    "user_id": 34,
+    "full_name": "",
+    "phone": "08152756775",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$GC/fYCbZl6c/td1DeIjmneTIF4B1WMx/RObTTgNj11Z.Yr009qmi."
+  },
+  {
+    "_id": {
+      "$oid": "68f8d4f800000000003b89f0"
+    },
+    "user_id": 35,
+    "full_name": "",
+    "phone": "08152756776",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$.XvDYW/tCyDGR.WGvWB.ZOtO5rA5qkpRlqhE9EbxyvfXxr33Hv1kq"
+  },
+  {
+    "_id": {
+      "$oid": "68f8da59000000000063c179"
+    },
+    "user_id": 36,
+    "full_name": "",
+    "phone": "21837736731",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$JkVUxbhsNXYPF.K9T9v3r.Z5trAfTLOz4POogUlHaexuimHTeIAFi"
+  },
+  {
+    "_id": {
+      "$oid": "68f8e57c000000000030235c"
+    },
+    "user_id": 37,
+    "full_name": "",
+    "phone": "08152756777",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$LtvIXUsFcOy/GU1zie9yaukx.Lu7p29xS3tKbG7.I6.cXhgvB/S6C"
+  },
+  {
+    "_id": {
+      "$oid": "68f8e768000000000070c8a2"
+    },
+    "user_id": 38,
+    "full_name": "",
+    "phone": "08152756778",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$7VFqP/K5.0VTbobVXzr5IOJYEdfpAPlUd4TsOgy30KdxAu7yPZ5DK"
+  },
+  {
+    "_id": {
+      "$oid": "68f8e93e0000000000ab755f"
+    },
+    "user_id": 39,
+    "full_name": "",
+    "phone": "08152756779",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$l8hFOoq1pDbgqkXCrbeW7.5GZkVGpHrZKdVwJn0aMq2SDGbbEl5h."
+  },
+  {
+    "_id": {
+      "$oid": "68f8eae600000000001b8b41"
+    },
+    "user_id": 40,
+    "full_name": "",
+    "phone": "21837736716",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$KM4u5nXjeTq5fhHI4njNsOB7pRPs5SHtUGDAuj6GJ5gvZqWJgfQGy"
+  },
+  {
+    "_id": {
+      "$oid": "68f8ebc50000000000f19022"
+    },
+    "user_id": 41,
+    "full_name": "",
+    "phone": "0815275678",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$EWkWgdMhDUDNL9azMdoIDugEyisUmXM64qcgOveAVG/K/0Xo/NJC6"
+  },
+  {
+    "_id": {
+      "$oid": "68f8ec120000000000a26a8c"
+    },
+    "user_id": 42,
+    "full_name": "",
+    "phone": "08152756781",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$Kptu3vzJQm04uk1oV1e.o.oehfCQyRfNNFlQNra92W8yC/RK.3VZ6"
+  },
+  {
+    "_id": {
+      "$oid": "68f8f1450000000000a8b310"
+    },
+    "user_id": 43,
+    "full_name": "",
+    "phone": "08152756782",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$o.6Jz8fwqeRyDxiUWgKsk.QllpOKZpcfYUHICv9W9xJ.SuPQBnlBe"
+  },
+  {
+    "_id": {
+      "$oid": "68f8f1d000000000004b9d17"
+    },
+    "user_id": 44,
+    "full_name": "",
+    "phone": "08152756783",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$bdKwjofuVFqOBiNgfHjcWOVa4K1/cGrn5fSgPyxHEMbHeduRgl52W"
+  },
+  {
+    "_id": {
+      "$oid": "68f8f3b40000000000805283"
+    },
+    "user_id": 45,
+    "full_name": "",
+    "phone": "08152756784",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$KgXSgH0quJM3FYHs0QPm8e50j/Hh6HLNA2qbR7ATrBUxBnQHB8Y5q"
+  },
+  {
+    "_id": {
+      "$oid": "68f8f4c200000000001450f8"
+    },
+    "user_id": 46,
+    "full_name": "",
+    "phone": "08152756787",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-22",
+    "customer_type": "Regular",
+    "password": "$2b$10$iXfpuIWB/db.qx0ovJoMlORvITFwGNoyHI.K8pvvV/2pWJgVFdoc2"
+  },
+  {
+    "_id": {
+      "$oid": "68f91dab0000000000ff9aa4"
+    },
+    "user_id": 47,
+    "full_name": "",
+    "phone": "0815275679",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$bJLid69sYglYInwFmGCb3O3m6ucYojy/FcNgUUC.e1xiyoc3DDBD6"
+  },
+  {
+    "_id": {
+      "$oid": "68f9748c00000000004c0837"
+    },
+    "user_id": 48,
+    "full_name": "",
+    "phone": "08152756790",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$.rrlGNx25aCzwifMC.FZjO9tpfanY1U7rzyd/6ECqFN8pGNs./.G."
+  },
+  {
+    "_id": {
+      "$oid": "68f97b990000000000c3357c"
+    },
+    "user_id": 49,
+    "full_name": "",
+    "phone": "0815275689",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$niXeKkxEjUL1EzuKsFmOlOanzgALeIo0/2IfmnTiHoPl8tPr4vqq."
+  },
+  {
+    "_id": {
+      "$oid": "68f9c52f0000000000f436a2"
+    },
+    "user_id": 50,
+    "full_name": "",
+    "phone": "08152756780",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$QCIAsll3ywyTqGviofzw9.ZhAJX9jE/M4k7kEzZorobvz.uej5xoa"
+  },
+  {
+    "_id": {
+      "$oid": "68f9df910000000000a28419"
+    },
+    "user_id": 51,
+    "full_name": "",
+    "phone": "08152756767",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$HeBGbD9vBudIf2NpF2KzAOiuKaI0Wpipb4BvxDt7WwQdmu4uXdKDW"
+  },
+  {
+    "_id": {
+      "$oid": "68f9e50d000000000012fe11"
+    },
+    "user_id": 52,
+    "full_name": "",
+    "phone": "0815275666",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$0YawGWqgE.froDyWfguC9uIg/A7r6GJzQy1ECOottIx/9jTbBK4m2"
+  },
+  {
+    "_id": {
+      "$oid": "68f9e60400000000001c4ba5"
+    },
+    "user_id": 53,
+    "full_name": "",
+    "phone": "08122746374",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$Ai/vVYdS1eL1.72hYCWT4e03Upzgm/xewAjFpNGxOLDA9A6mtpJFG",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T15:24:41.171Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9e8d800000000007f6c36"
+    },
+    "user_id": 54,
+    "full_name": "",
+    "phone": "0815275612",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$yKSKVnu5MTQrbzBPiTM.DeD2mgKqlwe0QC/X1b5QBCYjL0ewNJJC.",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T15:37:02.800Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9e99500000000009800ff"
+    },
+    "user_id": 55,
+    "full_name": "",
+    "phone": "08152756667",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$PQM2aCc2xl9U246rtzUu8ego/C.1LrFG.h2hNofftE26BfFaS72F6",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T15:39:10.007Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9ecb5000000000007482a"
+    },
+    "user_id": 56,
+    "full_name": "",
+    "phone": "09325014599",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$iGok/FpYuYP4VX1HMH2gC./mE5aELMwV2IBuLK034kxbjHuZAXhg6",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T15:53:00.042Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9ed200000000000d7f711"
+    },
+    "user_id": 57,
+    "full_name": "",
+    "phone": "09325014559",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$86XdiZxKXeEjTWDZzLvLl.cXeXXT7rNWxNSte2gw.NdFAibDl.aRy",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T15:54:19.065Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9eeaa0000000000ae174f"
+    },
+    "user_id": 58,
+    "full_name": "",
+    "phone": "0932501459",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$YY9k2sjkJ.hFhZM/5gDXB.Sf6vsZUVCG6BchKaOsxEDeTG4blcA8K",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T16:01:36.051Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9efa600000000002b1ec7"
+    },
+    "user_id": 59,
+    "full_name": "",
+    "phone": "0932501458",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$3izf4s4RXkbXPl4AmTPdduyfoojmhlQpASe1PRzXsFFgDESjsr7jy",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T16:05:50.127Z"
+  },
+  {
+    "_id": {
+      "$oid": "68f9f09a0000000000648eae"
+    },
+    "user_id": 60,
+    "full_name": "",
+    "phone": "0932501450",
+    "email": "",
+    "address": "",
+    "register_date": "2025-10-23",
+    "customer_type": "Regular",
+    "password": "$2b$10$jNuh5cemPxdM9ZHODriiAOG7fAEZJzHOajKLqpNSai9C4bZAcH4jW",
+    "password_version": 2,
+    "last_password_reset": "2025-10-23T16:09:57.487Z"
+  }
+]

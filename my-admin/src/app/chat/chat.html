@@ -1,0 +1,196 @@
+<!-- Chat/Consulting Page - VGreen Admin -->
+<div class="chat-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a href="#" class="breadcrumb-item">Quản trị viên</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="#" class="breadcrumb-item">Tư vấn</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-item active">Tin nhắn</span>
+      </div>
+      <h1 class="page-title">TIN NHẮN</h1>
+    </div>
+  </div>
+
+  <!-- Chat Layout -->
+  <div class="chat-layout">
+    <!-- Left Sidebar - Conversations List -->
+    <aside class="chat-sidebar">
+      <!-- Search Box -->
+      <div class="sidebar-search">
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Tìm kiếm"
+          [(ngModel)]="searchQuery"
+          (input)="searchConversations($event)"
+        >
+        <button class="search-btn">
+          <img src="asset/icons/search.png" alt="Search">
+        </button>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs">
+        <button 
+          class="filter-tab" 
+          [class.active]="currentFilter === 'all'"
+          (click)="filterConversations('all')"
+        >
+          Tất cả 
+          <span class="tab-icon">⏷</span>
+        </button>
+        
+        <button 
+          class="filter-tab" 
+          [class.active]="currentFilter === 'unread'"
+          (click)="filterConversations('unread')"
+        >
+          Chưa đọc 
+          <span class="tab-icon">⏺</span>
+        </button>
+        
+        <button 
+          class="filter-tab" 
+          [class.active]="currentFilter === 'starred'"
+          (click)="filterConversations('starred')"
+        >
+          Dấu sao 
+          <span class="tab-icon">★</span>
+        </button>
+      </div>
+
+      <!-- Conversations List -->
+      <div class="conversations-list">
+        <div 
+          *ngFor="let conv of filteredConversations"
+          class="conversation-item"
+          [class.active]="currentConversation?.id === conv.id"
+          [class.unread]="conv.unreadCount > 0"
+          (click)="selectConversation(conv)"
+        >
+          <!-- Star Icon -->
+          <button 
+            class="star-btn" 
+            [class.starred]="conv.isStarred"
+            (click)="toggleStar(conv, $event)"
+          >
+            ★
+          </button>
+          
+          <!-- Avatar -->
+          <div class="conv-avatar">
+            <img [src]="conv.customerAvatar" [alt]="conv.customerName">
+          </div>
+          
+          <!-- Content -->
+          <div class="conv-content">
+            <div class="conv-header">
+              <span class="conv-name">{{ conv.customerName }}</span>
+              <span class="conv-time">{{ conv.lastMessageTime }}</span>
+            </div>
+            <div class="conv-message">
+              {{ conv.lastMessage }}
+            </div>
+          </div>
+          
+          <!-- Unread Badge -->
+          <span class="unread-badge" *ngIf="conv.unreadCount > 0">
+            {{ conv.unreadCount }}
+          </span>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-conversations" *ngIf="filteredConversations.length === 0">
+          <p>Không có tin nhắn nào</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Side - Chat Area -->
+    <main class="chat-main">
+      <!-- No Conversation Selected -->
+      <div class="no-chat-selected" *ngIf="!currentConversation">
+        <div class="no-chat-content">
+          <div class="no-chat-icon">💬</div>
+          <h3>Chưa có tài khoản</h3>
+          <p>Chọn một cuộc trò chuyện từ danh sách bên trái</p>
+        </div>
+      </div>
+
+      <!-- Chat Active -->
+      <div class="chat-active" *ngIf="currentConversation">
+        <!-- Chat Header -->
+        <div class="chat-header">
+          <div class="chat-user-info">
+            <div class="chat-avatar">
+              <img [src]="currentConversation.customerAvatar" [alt]="currentConversation.customerName">
+            </div>
+            <div class="chat-user-details">
+              <h3 class="chat-user-name">{{ currentConversation.customerName }}</h3>
+              <p class="chat-user-status">Chưa có tài khoản</p>
+            </div>
+          </div>
+          
+          <div class="chat-actions">
+            <button class="chat-action-btn">
+              <img src="asset/icons/headphone.png" alt="Call">
+            </button>
+            <button class="chat-action-btn" title="Thêm">
+              <span class="more-icon">⋮</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages">
+          <div class="chat-messages-body">
+            <!-- Message Date -->
+            <div class="message-date">
+              <span>{{ currentConversation.messages[0]?.timestamp || 'Hôm nay' }}</span>
+            </div>
+
+            <!-- Messages -->
+            <div 
+              *ngFor="let message of currentConversation.messages"
+              [class]="'message ' + getMessageClass(message)"
+            >
+              <div class="message-avatar" *ngIf="message.sender === 'customer'">
+                <img [src]="currentConversation.customerAvatar" [alt]="currentConversation.customerName">
+              </div>
+              
+              <div class="message-bubble">
+                <p class="message-text">{{ message.content }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+          <button class="input-action-btn" title="Emoji">
+            <span class="emoji-icon">😊</span>
+          </button>
+          
+          <textarea 
+            class="message-textarea" 
+            placeholder="Nhập tin nhắn..."
+            [(ngModel)]="newMessageContent"
+            (keypress)="onMessageKeyPress($event)"
+            rows="1"
+          ></textarea>
+          
+          <button class="input-action-btn" title="Đính kèm">
+            <span class="attachment-icon">📎</span>
+          </button>
+          
+          <button class="send-btn" (click)="sendMessage()" title="Gửi">
+            <span class="send-icon">➤</span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
