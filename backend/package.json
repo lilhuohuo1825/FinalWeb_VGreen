@@ -1,0 +1,31 @@
+{
+  "name": "vgreen-backend",
+  "version": "1.0.0",
+  "description": "Backend API cho ứng dụng vgreen",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "init-db": "node scripts/init-collections.js",
+    "import-products": "node scripts/import-products.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "axios": "^1.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "authentication"
+  ],
+  "author": "vgreen Team",
+  "license": "MIT"
+}

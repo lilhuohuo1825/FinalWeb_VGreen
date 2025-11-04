@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853dff6"
+  },
+  "promotion_id": "PROMO005",
+  "target_type": "Subcategory",
+  "target_ref": [
+    "Cà phê"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853dffb"
+  },
+  "promotion_id": "PROMO006",
+  "target_type": "Subcategory",
+  "target_ref": [
+    "Mật ong"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853dffe"
+  },
+  "promotion_id": "PROMO007",
+  "target_type": "Brand",
+  "target_ref": [
+    "CO.OP SELECT"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853e000"
+  },
+  "promotion_id": "PROMO009",
+  "target_type": "Brand",
+  "target_ref": [
+    "TRUNG NGUYÊN",
+    "TRUNGNGUYEN"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853e003"
+  },
+  "promotion_id": "PROMO010",
+  "target_type": "Product",
+  "target_ref": [
+    "3150382",
+    "3305978",
+    "3457993",
+    "3422161",
+    "3583624"
+  ],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690478c2e96b8e07d853e005"
+  },
+  "promotion_id": "PROMO011",
+  "target_type": "Product",
+  "target_ref": [
+    "3150382",
+    "3305978"
+  ],
+  "__v": 0
+}]

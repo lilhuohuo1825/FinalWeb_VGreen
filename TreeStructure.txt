@@ -1,0 +1,110 @@
+1. Cấu trúc thư mục tổng thể của dự án:
+VGreen/
+├─ asset/                    #Tư liệu dùng chung (hình ảnh icon các kiểu)
+│  ├─ image/       
+│  ├─ icons/
+│  ├─ favicon/           #Này logo thể hiện trên tiêu đề web nè
+│  └─ compoment/    #Mấy cái mình hay dùng đi dùng lại (button, header, footer)
+│
+├─ data/                                   # Dữ liệu tổng hợp
+│  ├─ products/		    
+│  ├─ blogs/
+│  ├─ orders/
+│  ├─ cookbook/
+│  ├─ promotions/
+│  ├─ categories/
+│  └─ users/
+│
+├── my-user/        #Đóng vai trò như một my-app mình tạo ra á
+│  ├─ .angular/                  
+│  ├─ .vscode/                   
+│  ├─ node_module/         
+│  ├─ public/                     #cái này nơi bây lưu trữ mấy cái riêng nè
+│  │  ├─ asset/            
+│  │  └─ data/              
+│  │ 
+│  ├─ src/                             
+│  │  ├─ app/                 
+│  │  │  ├─ accountmanage/              #component tạo thêm, mỗi c có 4 file tương ứng
+│  │  │  │ ├─ accountmanage.css             #style riêng từng page
+│  │  │  │ ├─ accountmanage.html          #code giao diện page   
+│  │  │  │ ├─ accountmanage.ts               #chạy hàm liên quan đến page
+│  │  │  │ └─ accountmanage.spec.ts                           
+│  │  │  ├─ blog/ 
+│  │  │  │ ├─ …  
+│  │  │  │ └─ ….                      
+│  │  │  ├─ blogdetail/                 
+│  │  │  ├─ cart/                      
+│  │  │  ├─ ….              
+│  │  │  └─ …. (cho tới cuối đời)
+│  │  │
+│  │  │  ├─ appconfig.ts            
+│  │  │  ├─ app.css                    
+│  │  │  ├─ app.html                 
+│  │  │  ├─ app.routes.ts                   
+│  │  │  ├─ app.spec.ts                   
+│  │  │  └─ app.ts                     
+│  │  ├─ index.html 
+│  │  ├─ main.ts
+│  │  └─ style.css
+│  ├─ .editorconfig
+│  ├─ .gitignore
+│  ├─ angular.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.MD
+│  ├─ tsconfig.app.json
+│  ├─ tsconfig.json
+│  └─ tsconfig.spec.json
+│
+│
+│
+│
+├── my-admin/            
+│  ├─ .angular/       
+│  ├─ .vscode/    
+│  ├─ node_module/
+│  ├─ public/   
+│  │ 
+│  ├─ src/                             
+│  │  ├─ app/                 
+│  │  │  ├─ usermanage/     
+│  │  │  │ ├─  usermanage.css   
+│  │  │  │ ├─  usermanage.html               
+│  │  │  │ ├─  usermanage.ts               
+│  │  │  │ └─  usermanage.spec.ts                           
+│  │  │  ├─ blogmanage/ 
+│  │  │  │ ├─ …  
+│  │  │  │ └─ ….                      
+│  │  │  ├─ blogdetail/                 
+│  │  │  ├─ productmanage/ 
+│  │  │  ├─ productdetail/                      
+│  │  │  ├─ ….              
+│  │  │  └─ …. (cho tới cuối đời)    
+│  │  │
+│  │  │  ├─ appconfig.ts            
+│  │  │  ├─ app.css                
+│  │  │  ├─ app.html       
+│  │  │  ├─ app.routes.ts                      
+│  │  │  ├─ app.spec.ts                    
+│  │  │  └─ app.ts                    
+│  │  ├─ index.html
+│  │  ├─ main.ts
+│  │  └─ style.css
+│  ├─ .editorconfig
+│  ├─ .gitignore
+│  ├─ angular.json
+│  ├─ package-lock.json
+│  ├─ package.json
+│  ├─ README.MD
+│  ├─ tsconfig.app.json
+│  ├─ tsconfig.json
+│  └─ tsconfig.spec.json
+│
+├── tests/                      # Kiểm thử (unit, integration, e2e)
+│   ├─ client/
+│   └─ server/
+│
+├──TreeStructure.txt                  # Cây thư mục
+├── NamingConventions.txt                     # Quy tắc đặt tên
+└─ README.md

@@ -1,0 +1,15 @@
+[
+  {
+    "_id": {
+      "$oid": "69099293000000000099582e"
+    },
+    "user_id": 1,
+    "full_name": "",
+    "phone": "02183773674",
+    "email": "",
+    "address": "",
+    "register_date": "2025-11-04",
+    "customer_type": "Đồng",
+    "password": "$2b$10$fmsWIsa1TskNAzBgLBl2NO6JtfhFEi4VcDOfCivSQ7ZR2IZHvYE3S"
+  }
+]

@@ -1,0 +1,186 @@
+[{
+  "_id": {
+    "$oid": "6903678ffeb941e559d9b898"
+  },
+  "promotion_id": "PROMO001",
+  "user_id": [
+    "U001",
+    "U002",
+    "U005",
+    "U007"
+  ],
+  "order_id": [
+    "ORD1001",
+    "ORD1003",
+    "ORD1010",
+    "ORD1015"
+  ]
+},
+{
+  "_id": {
+    "$oid": "6903678ffeb941e559d9b899"
+  },
+  "promotion_id": "PROMO002",
+  "user_id": [
+    "U003",
+    "U004",
+    "U005",
+    "U006",
+    "U007"
+  ],
+  "order_id": [
+    "ORD1020",
+    "ORD1021",
+    "ORD1022",
+    "ORD1023",
+    "ORD1024"
+  ]
+},
+{
+  "_id": {
+    "$oid": "6903678ffeb941e559d9b89a"
+  },
+  "promotion_id": "PROMO003",
+  "user_id": [
+    "U001",
+    "U004"
+  ],
+  "order_id": [
+    "ORD1030",
+    "ORD1031"
+  ]
+},
+{
+  "_id": {
+    "$oid": "6903678ffeb941e559d9b89b"
+  },
+  "promotion_id": "PROMO004",
+  "user_id": [
+    "U002"
+  ],
+  "order_id": [
+    "ORD1040"
+  ]
+},
+{
+  "_id": {
+    "$oid": "6903678ffeb941e559d9b89c"
+  },
+  "promotion_id": "PROMO008",
+  "user_id": [
+    "U009",
+    "U010"
+  ],
+  "order_id": [
+    "ORD2001",
+    "ORD2002"
+  ]
+},
+{
+  "_id": {
+    "$oid": "69037dbcbacb39bd67323afa"
+  },
+  "promotion_id": "690369b10a01ba7c2bb51850",
+  "user_id": "CUS881229734",
+  "order_id": "ORD36476457311",
+  "used_at": {
+    "$date": "2025-10-30T15:01:16.488Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69037e9cbacb39bd67323b05"
+  },
+  "promotion_id": "690369b10a01ba7c2bb51855",
+  "user_id": "CUS881229734",
+  "order_id": "ORD36700381435",
+  "used_at": {
+    "$date": "2025-10-30T15:05:00.397Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690392eb1781711dd87b3fc7"
+  },
+  "promotion_id": "6903842bd5c4bce299c88190",
+  "user_id": "CUS881229734",
+  "order_id": "ORD41899609515",
+  "used_at": {
+    "$date": "2025-10-30T16:31:39.628Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690394d63de720ea5a39edbb"
+  },
+  "promotion_id": "6903842bd5c4bce299c88190",
+  "user_id": "CUS881229734",
+  "order_id": "ORD42390785188",
+  "used_at": {
+    "$date": "2025-10-30T16:39:50.822Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "690395083de720ea5a39edc5"
+  },
+  "promotion_id": "6903842bd5c4bce299c8818b",
+  "user_id": "CUS881229734",
+  "order_id": "ORD42440279747",
+  "used_at": {
+    "$date": "2025-10-30T16:40:40.291Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6905b36b44671746faccaf9b"
+  },
+  "promotion_id": "690478b1690b4d50af3a5460",
+  "user_id": "CUS881229734",
+  "order_id": "ORD81291824662",
+  "used_at": {
+    "$date": "2025-11-01T07:14:51.848Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69062cad5a2f8e22456a8504"
+  },
+  "promotion_id": "690478b1690b4d50af3a5460",
+  "user_id": "CUS646672569",
+  "order_id": "ORD12333161332",
+  "used_at": {
+    "$date": "2025-11-01T15:52:13.168Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6906a7d17e24e0b28478f219"
+  },
+  "promotion_id": "690478b1690b4d50af3a5460",
+  "user_id": "CUS646672569",
+  "order_id": "ORD43857061651",
+  "used_at": {
+    "$date": "2025-11-02T00:37:37.076Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69073b81ff49b6f0cd508834"
+  },
+  "promotion_id": "690478b1690b4d50af3a5460",
+  "user_id": "CUS326736493",
+  "order_id": "ORD81665731413",
+  "used_at": {
+    "$date": "2025-11-02T11:07:45.743Z"
+  },
+  "__v": 0
+}]

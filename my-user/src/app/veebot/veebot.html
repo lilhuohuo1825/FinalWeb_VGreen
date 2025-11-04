@@ -1,0 +1,80 @@
+<!-- Chatbot Button - Fixed at bottom left -->
+<button
+  class="veebot-button"
+  [class.chat-open]="isChatOpen"
+  (click)="toggleChat()"
+  aria-label="Mở chat hỗ trợ"
+  type="button"
+>
+  <img src="assets/icons/Veebot.png" alt="Veebot" class="veebot-icon" />
+  <span class="notification-badge" *ngIf="hasNewMessage">!</span>
+</button>
+
+<!-- Chat Window -->
+<div class="chat-window" [class.open]="isChatOpen">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <img src="assets/icons/Veebot.png" alt="Veebot" class="chat-avatar" />
+      <div class="chat-header-text">
+        <h3 class="chat-title">VGreen Chat</h3>
+        <p class="chat-status">Đang trực tuyến</p>
+      </div>
+    </div>
+    <button class="chat-close-btn" (click)="closeChat()" aria-label="Đóng chat" type="button">
+      <span>&times;</span>
+    </button>
+  </div>
+
+  <!-- Chat Messages -->
+  <div class="chat-messages" #chatMessages>
+    <div
+      class="message"
+      [class.bot-message]="message.isBot"
+      [class.user-message]="!message.isBot"
+      *ngFor="let message of messages"
+    >
+      <div class="message-content">
+        <p [innerHTML]="formatMessage(message.text)"></p>
+        <span class="message-time">{{ message.time }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="chat-input-container">
+    <input
+      type="text"
+      class="chat-input"
+      [(ngModel)]="inputMessage"
+      (keydown.enter)="$event.preventDefault(); sendMessage()"
+      placeholder="Nhập tin nhắn"
+      #messageInput
+    />
+    <button class="chat-send-btn" (click)="sendMessage()" aria-label="Gửi tin nhắn" type="button">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Chat Overlay -->
+<div
+  class="chat-overlay"
+  [class.active]="isChatOpen"
+  (click)="closeChat()"
+  *ngIf="isChatOpen"
+></div>
