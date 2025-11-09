@@ -44,3 +44,4 @@ Thumbs.db
 # Large data files
 public/data/
 public/data/*.json
+my-admin/.env
