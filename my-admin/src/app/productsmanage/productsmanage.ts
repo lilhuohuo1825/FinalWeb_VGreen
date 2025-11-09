@@ -2,6 +2,9 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
+import { NotificationService } from '../services/notification.service';
 
 /**
  * ============================================================================
@@ -46,6 +49,7 @@ interface ProductJSON {
  */
 export interface Product {
   id?: number;
+  _id?: string | any; // MongoDB _id field
   name: string;
   code: string;
   sku?: string;
@@ -119,10 +123,91 @@ function mapProductFromJSON(json: ProductJSON, index: number): Product {
     imageArray = [json.image];
   }
   
+  // Handle post_date - can be Date object from MongoDB or { $date: ... } from JSON
+  let updatedDate = '';
+  if (json.post_date) {
+    if (json.post_date instanceof Date) {
+      // MongoDB Date object
+      updatedDate = parsePostDate(json.post_date);
+    } else if (json.post_date.$date) {
+      // JSON format with $date
+      updatedDate = parsePostDate(json.post_date.$date);
+    } else if (typeof json.post_date === 'string') {
+      // ISO string
+      updatedDate = parsePostDate(json.post_date);
+    } else {
+      updatedDate = parsePostDate(json.post_date);
+    }
+  }
+  
+  // Tính stock từ các trường có thể có trong MongoDB
+  // Thử nhiều trường để đảm bảo tương thích với dashboard
+  let stock = 0;
+  const jsonAny = json as any;
+  if (jsonAny.quantity !== undefined && jsonAny.quantity !== null) {
+    stock = Number(jsonAny.quantity) || 0;
+  } else if (jsonAny.quantity_available !== undefined && jsonAny.quantity_available !== null) {
+    stock = Number(jsonAny.quantity_available) || 0;
+  } else if (jsonAny.stock !== undefined && jsonAny.stock !== null) {
+    stock = Number(jsonAny.stock) || 0;
+  } else if (jsonAny.Quantity !== undefined && jsonAny.Quantity !== null) {
+    stock = Number(jsonAny.Quantity) || 0;
+  } else {
+    // Nếu không có trường stock, tính dựa trên _id làm seed để đảm bảo cùng một product luôn có cùng stock
+    // Logic này giống với dashboard để đảm bảo nhất quán
+    const productId = json._id || '';
+    const seed = productId ? String(productId).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : index;
+    stock = seed % 100; // Stock từ 0-99 dựa trên _id
+  }
+  
+  // Handle _id - can be ObjectId from MongoDB or string
+  let productId = '';
+  if (json._id) {
+    // Convert ObjectId to string if needed
+    if (typeof json._id === 'object' && json._id !== null) {
+      // Handle MongoDB ObjectId or any object with toString
+      const idObj = json._id as any;
+      if (idObj.toString && typeof idObj.toString === 'function') {
+        productId = idObj.toString();
+      } else if (idObj.$oid) {
+        // Handle MongoDB extended JSON format: { $oid: "..." }
+        productId = idObj.$oid;
+      } else if (idObj.value) {
+        // Handle other object formats
+        productId = String(idObj.value);
+      } else {
+        // Try to stringify the object
+        productId = JSON.stringify(json._id);
+      }
+    } else {
+      // It's already a string or primitive
+      productId = String(json._id);
+    }
+  }
+  
+  // Ensure productId is not empty and is a valid string
+  if (!productId || productId === 'null' || productId === 'undefined') {
+    console.warn(`⚠️ Product ${index + 1} has invalid _id:`, json._id);
+    // Try to use SKU as fallback
+    productId = json.sku || `temp-${index}`;
+  }
+  
+  // Debug logging for first few products
+  if (index < 3) {
+    console.log(`📦 Mapping product ${index + 1}:`, {
+      original_id: json._id,
+      original_id_type: typeof json._id,
+      mapped_id: productId,
+      name: json.product_name,
+      sku: json.sku
+    });
+  }
+  
   return {
     id: index + 1,
+    _id: productId, // MongoDB _id as string
     name: json.product_name || '',
-    code: json._id || '', // Use _id from JSON as product code
+    code: productId || '', // Use _id as product code
     sku: json.sku || undefined,
     brand: json.brand || '',
     category: json.category || '',
@@ -132,7 +217,7 @@ function mapProductFromJSON(json: ProductJSON, index: number): Product {
     price: json.price || 0,
     originalPrice: json.base_price || json.price || 0,
     salePrice: 0,
-    stock: Math.floor(Math.random() * 100), // Random stock since not in JSON
+    stock: stock, // Sử dụng stock đã tính toán nhất quán với dashboard
     rating: json.rating || Math.floor(Math.random() * 5) + 1,
     image: imageUrl,
     images: imageArray,
@@ -146,7 +231,7 @@ function mapProductFromJSON(json: ProductJSON, index: number): Product {
     expiryDate: json.expiry_date,
     safetyWarning: json.safety_warning,
     responsibleOrg: json.responsible_org,
-    updated: parsePostDate(json.post_date), // Use post_date from JSON
+    updated: updatedDate,
     selected: false,
     groups: [] // Initialize groups
   };
@@ -250,18 +335,24 @@ function parsePostDate(postDate: any): string {
   }
   
   try {
-    // Handle MongoDB date format: { "$date": "2025-05-05T03:30:06.567Z" }
-    let dateString: string;
+    let date: Date;
     
-    if (typeof postDate === 'object' && postDate.$date) {
-      dateString = postDate.$date;
-    } else if (typeof postDate === 'string') {
-      dateString = postDate;
-    } else {
-      return getCurrentDate();
+    // Handle MongoDB Date object
+    if (postDate instanceof Date) {
+      date = postDate;
     }
-    
-    const date = new Date(dateString);
+    // Handle MongoDB date format: { "$date": "2025-05-05T03:30:06.567Z" }
+    else if (typeof postDate === 'object' && postDate.$date) {
+      date = new Date(postDate.$date);
+    }
+    // Handle ISO string
+    else if (typeof postDate === 'string') {
+      date = new Date(postDate);
+    }
+    // Handle other object formats
+    else {
+      date = new Date(postDate);
+    }
     
     // Check if valid date
     if (isNaN(date.getTime())) {
@@ -651,9 +742,14 @@ function exportProductsToCSV(products: Product[]): string {
 })
 export class ProductsManage implements OnInit {
   private http = inject(HttpClient);
+  private apiService = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
   
   showProductForm = false;
+  isSidebarCollapsed = false; // Track sidebar state
   editingProduct = false;
   currentProduct: Product = createEmptyProduct();
   originalProduct: Product | null = null; // Lưu bản sao ban đầu để revert khi hủy
@@ -677,6 +773,16 @@ export class ProductsManage implements OnInit {
   currentSortField: keyof Product = 'updated';
   currentSortOrder: 'asc' | 'desc' = 'desc';
   currentFilters: FilterCriteria = {};
+
+  // Popup notification
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  popupType: 'success' | 'error' | 'info' = 'success';
+
+  // Confirmation dialog
+  showConfirmDialog: boolean = false;
+  confirmMessage: string = '';
+  confirmCallback: (() => void) | null = null;
   
   // Available filter options
   availableCategories: string[] = [];
@@ -688,23 +794,182 @@ export class ProductsManage implements OnInit {
   selectedGroupToAdd = ''; // For selecting existing group from dropdown
   allGroupNames: string[] = []; // All unique group names in the system
 
+  // Auto-save with debounce
+  private autoSaveTimer: any = null;
+  private readonly AUTO_SAVE_DELAY = 1000; // 1 second debounce
+
+  // Map frontend field names to backend field names
+  private readonly fieldMapping: { [key: string]: string } = {
+    'name': 'product_name',
+    'code': '_id',
+    'sku': 'sku',
+    'brand': 'brand',
+    'category': 'category',
+    'subcategory': 'subcategory',
+    'origin': 'origin',
+    'weight': 'weight',
+    'unit': 'unit',
+    'stock': 'stock',
+    'ingredients': 'ingredients',
+    'usage': 'usage',
+    'storage': 'storage',
+    'color': 'color',
+    'producer': 'producer',
+    'responsibleOrg': 'responsible_org',
+    'manufactureDate': 'manufacture_date',
+    'expiryDate': 'expiry_date',
+    'safetyWarning': 'safety_warning',
+    'price': 'price',
+    'originalPrice': 'base_price'
+  };
+
   /**
    * Angular lifecycle hook - runs when component initializes
    */
   ngOnInit(): void {
+    // Đóng tất cả dropdowns khi component init
+    this.showFilterDropdown = false;
+    this.showSortDropdown = false;
+    
+    // Đọc query params để set filter nếu có
+    const params = this.route.snapshot.queryParams;
+    if (params['stockStatus']) {
+      const stockStatus = params['stockStatus'] as 'in-stock' | 'out-of-stock' | 'low-stock';
+      if (stockStatus === 'low-stock' || stockStatus === 'out-of-stock' || stockStatus === 'in-stock') {
+        this.currentFilters.stockStatus = stockStatus;
+        // Không mở dropdown, chỉ set filter để hiển thị danh sách
+      }
+    }
+    
     this.loadProducts();
     this.extractAllGroupNames();
+    
+    // Monitor sidebar state changes
+    this.checkSidebarState();
+    
+    // Use MutationObserver for better performance
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      const observer = new MutationObserver(() => {
+        this.checkSidebarState();
+      });
+      observer.observe(sidebar, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
   }
 
   /**
-   * Load products from JSON file
+   * Check sidebar collapsed state
+   */
+  checkSidebarState(): void {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      this.isSidebarCollapsed = sidebar.classList.contains('collapsed');
+    }
+  }
+
+  /**
+   * Load products from MongoDB API or JSON file
    */
   loadProducts(): void {
     this.isLoading = true;
     this.loadError = '';
     
-    // Path to product.json in the data folder
-    const dataPath = '/data/product.json';
+    console.log('🔄 Loading products from MongoDB API...');
+    // Try MongoDB API first
+    this.apiService.getProducts().subscribe({
+      next: (data) => {
+        console.log(`✅ Loaded ${data.length} products from MongoDB`);
+        console.log('📦 Sample product from API:', data[0]);
+        console.log('📦 Sample product _id type:', typeof data[0]?._id, data[0]?._id);
+        
+        // Map API data to Product interface
+        this.allProducts = data.map((item: any, index: number) => {
+          const mapped = mapProductFromJSON(item, index);
+          
+          // Ensure _id is set correctly
+          if (!mapped._id && item._id) {
+            mapped._id = String(item._id);
+            mapped.code = mapped._id;
+          }
+          
+          // Log first 3 products for debugging
+          if (index < 3) {
+            console.log(`📦 Mapped product ${index + 1}:`, {
+              original_id: item._id,
+              mapped_id: mapped._id,
+              mapped_code: mapped.code,
+              name: mapped.name,
+              sku: mapped.sku
+            });
+          }
+          
+          return mapped;
+        });
+        
+        console.log(`📊 Mapped ${this.allProducts.length} products`);
+        console.log('📦 Sample mapped product:', this.allProducts[0]);
+        
+        // Verify _id is set for all products
+        const productsWithoutId = this.allProducts.filter(p => !p._id || p._id === 'undefined' || p._id === 'null');
+        if (productsWithoutId.length > 0) {
+          console.warn(`⚠️ Found ${productsWithoutId.length} products without valid _id:`, productsWithoutId.slice(0, 3));
+        }
+        
+        // Extract unique categories for filter
+        this.extractCategories();
+        
+        // Apply default sort (by updated date, descending)
+        this.updateProductsList();
+        
+        // Reset selection state
+        this.selectedCount = 0;
+        this.selectAll = false;
+        this.updateSelectedCount();
+        
+        this.isLoading = false;
+        console.log('✅ Products loaded successfully:', this.products.length);
+        
+        // Extract group names
+        this.extractAllGroupNames();
+        
+        // Log category distribution
+        const categoryCount = new Map<string, number>();
+        this.products.forEach(p => {
+          const key = `${p.category} > ${p.subcategory}`;
+          categoryCount.set(key, (categoryCount.get(key) || 0) + 1);
+        });
+        console.log('Category distribution:', Array.from(categoryCount.entries()));
+        console.log('Available categories:', this.availableCategories);
+      },
+      error: (error) => {
+        console.error('❌ Error loading products from MongoDB:', error);
+        this.loadError = '❌ Không thể tải dữ liệu từ MongoDB';
+        this.isLoading = false;
+        // Don't fallback to JSON - only use MongoDB data
+        this.allProducts = [];
+        this.products = [];
+      }
+    });
+  }
+
+  /**
+   * REMOVED: No longer using JSON fallback - MongoDB only!
+   * Fallback: Load products from JSON file (deprecated - should not be called)
+   */
+  private loadProductsFromJSON(): void {
+    // This method is kept for reference but should not be called
+    // All data should come from MongoDB only
+    console.warn('⚠️ loadProductsFromJSON() is deprecated. Use MongoDB only.');
+    return; // Early return to prevent execution
+    
+    this.isLoading = true;
+    this.loadError = '';
+    
+    // Path to products.json in the data folder (relative path) (deprecated)
+    const dataPath = 'data/products.json';
     
     this.http.get<ProductJSON[]>(dataPath).subscribe({
       next: (data) => {
@@ -738,7 +1003,8 @@ export class ProductsManage implements OnInit {
         console.log('Available categories:', this.availableCategories);
       },
       error: (error) => {
-        console.error('Error loading products:', error);
+        console.error('❌ Error loading products:', error);
+        console.error('   Check if data/products.json exists in the unified data folder');
         this.loadError = 'Không thể tải dữ liệu sản phẩm. Vui lòng thử lại.';
         this.isLoading = false;
         
@@ -862,27 +1128,102 @@ export class ProductsManage implements OnInit {
     const validation = validateProduct(this.currentProduct);
     
     if (!validation.isValid) {
-      alert('Lỗi:\n' + validation.errors.join('\n'));
+      this.notificationService.showError('Lỗi: ' + validation.errors.join(', '));
       return;
     }
     
-    // Lưu dữ liệu vào danh sách sản phẩm
-    this.products = saveProductData(this.products, this.currentProduct, this.editingProduct);
+    // Map Product interface to backend format
+    const productData: any = {
+      _id: this.currentProduct.code || this.currentProduct.id?.toString(),
+      product_name: this.currentProduct.name,
+      sku: this.currentProduct.sku || this.currentProduct.code,
+      category: this.currentProduct.category,
+      subcategory: this.currentProduct.subcategory || '',
+      brand: this.currentProduct.brand || '',
+      unit: this.currentProduct.unit,
+      price: this.currentProduct.price,
+      base_price: this.currentProduct.originalPrice || this.currentProduct.price,
+      stock: this.currentProduct.stock || 0, // Thêm trường stock
+      image: this.currentProduct.images || (this.currentProduct.image ? [this.currentProduct.image] : []),
+      origin: this.currentProduct.origin || '',
+      weight: this.currentProduct.weight || '',
+      ingredients: this.currentProduct.ingredients || '',
+      usage: this.currentProduct.usage || '',
+      storage: this.currentProduct.storage || '',
+      manufacture_date: this.currentProduct.manufactureDate || '',
+      expiry_date: this.currentProduct.expiryDate || '',
+      producer: this.currentProduct.producer || '',
+      safety_warning: this.currentProduct.safetyWarning || '',
+      responsible_org: this.currentProduct.responsibleOrg || '',
+      color: this.currentProduct.color || '',
+      status: 'Active'
+    };
     
-    // Cập nhật allProducts nếu đang chỉnh sửa
+    // Gọi API để lưu sản phẩm
+    // Khi chỉnh sửa, luôn dùng _id gốc từ originalProduct để đảm bảo tìm đúng sản phẩm
+    // (vì user có thể đã thay đổi code trong form)
+    let productId = '';
     if (this.editingProduct && this.originalProduct) {
-      const index = this.allProducts.findIndex(p => p.id === this.originalProduct!.id);
-      if (index !== -1) {
-        this.allProducts[index] = { ...this.currentProduct };
-      }
+      // Ưu tiên dùng code từ originalProduct (là _id gốc)
+      productId = this.originalProduct.code || this.originalProduct.id?.toString() || '';
+    } else {
+      // Khi tạo mới hoặc không có originalProduct, dùng code hiện tại
+      productId = this.currentProduct.code || this.currentProduct.id?.toString() || '';
     }
     
-    console.log(this.editingProduct ? 'Updated product' : 'Added new product');
+    console.log('💾 Saving product:', {
+      editing: this.editingProduct,
+      productId: productId,
+      currentCode: this.currentProduct.code,
+      originalCode: this.originalProduct?.code,
+      name: this.currentProduct.name
+    });
     
-    // Xóa bản sao ban đầu vì đã lưu thành công
-    this.originalProduct = null;
-    this.showProductForm = false;
-    this.editingProduct = false;
+    if (this.editingProduct && productId) {
+      // Cập nhật sản phẩm hiện có
+      console.log(`📤 Calling API: PUT /api/products/${productId}`);
+      this.apiService.updateProduct(productId, productData).subscribe({
+        next: (response) => {
+          console.log('✅ Product updated successfully:', response);
+          this.notificationService.showSuccess('Đã cập nhật sản phẩm thành công!');
+          
+          // Reload products để lấy ngày cập nhật mới nhất
+          this.loadProducts();
+          
+          // Xóa bản sao ban đầu vì đã lưu thành công
+          this.originalProduct = null;
+          this.showProductForm = false;
+          this.editingProduct = false;
+        },
+        error: (error) => {
+          console.error('❌ Error updating product:', error);
+          console.error('❌ Error details:', {
+            status: error.status,
+            message: error.message,
+            error: error.error
+          });
+          this.notificationService.showError('Lỗi khi cập nhật sản phẩm: ' + (error.error?.message || error.message));
+        }
+      });
+    } else {
+      // Tạo sản phẩm mới
+      this.apiService.createProduct(productData).subscribe({
+        next: (response) => {
+          console.log('✅ Product created successfully:', response);
+          this.notificationService.showSuccess('Đã tạo sản phẩm mới thành công!');
+          
+          // Reload products để lấy sản phẩm mới với ngày cập nhật
+          this.loadProducts();
+          
+          this.showProductForm = false;
+          this.editingProduct = false;
+        },
+        error: (error) => {
+          console.error('❌ Error creating product:', error);
+          this.notificationService.showError('Lỗi khi tạo sản phẩm: ' + (error.error?.message || error.message));
+        }
+      });
+    }
   }
 
   /**
@@ -947,6 +1288,70 @@ export class ProductsManage implements OnInit {
   }
 
   /**
+   * Handle field change with auto-save (debounced)
+   */
+  onFieldChange(fieldName: string, value: any): void {
+    // Chỉ tự động cập nhật khi đang chỉnh sửa sản phẩm đã tồn tại
+    if (!this.editingProduct || !this.originalProduct) {
+      return;
+    }
+
+    // Clear existing timer
+    if (this.autoSaveTimer) {
+      clearTimeout(this.autoSaveTimer);
+    }
+
+    // Set new timer
+    this.autoSaveTimer = setTimeout(() => {
+      this.autoUpdateField(fieldName, value);
+    }, this.AUTO_SAVE_DELAY);
+  }
+
+  /**
+   * Auto-update a specific field in MongoDB and sync with JSON
+   */
+  private autoUpdateField(fieldName: string, value: any): void {
+    if (!this.editingProduct || !this.originalProduct) {
+      return;
+    }
+
+    // Get product ID
+    const productId = this.originalProduct.code || this.originalProduct.id?.toString() || '';
+    if (!productId) {
+      console.warn('⚠️ Cannot auto-update: Product ID not found');
+      return;
+    }
+
+    // Map frontend field name to backend field name
+    const backendFieldName = this.fieldMapping[fieldName] || fieldName;
+    
+    // Special handling for certain fields
+    let backendValue = value;
+    if (fieldName === 'code') {
+      // Don't update _id via PATCH, it's handled differently
+      return;
+    }
+    if (fieldName === 'originalPrice') {
+      backendValue = value || this.currentProduct.price;
+    }
+
+    console.log(`🔄 Auto-updating field "${fieldName}" (${backendFieldName}) = ${backendValue}`);
+
+    // Call PATCH API to update the field
+    this.apiService.updateProductField(productId, backendFieldName, backendValue).subscribe({
+      next: (response) => {
+        console.log(`✅ Field "${fieldName}" auto-updated successfully`);
+        // Optionally show a subtle notification
+        // this.notificationService.showInfo(`Đã cập nhật ${fieldName}`);
+      },
+      error: (error) => {
+        console.error(`❌ Error auto-updating field "${fieldName}":`, error);
+        // Don't show error notification for auto-updates to avoid spam
+      }
+    });
+  }
+
+  /**
    * Edit selected products
    */
   editProducts(): void {
@@ -958,9 +1363,9 @@ export class ProductsManage implements OnInit {
       this.editingProduct = true;
       this.showProductForm = true;
     } else if (selected.length > 1) {
-      alert('Vui lòng chọn chỉ 1 sản phẩm để chỉnh sửa');
+      this.notificationService.showWarning('Vui lòng chọn chỉ 1 sản phẩm để chỉnh sửa');
     } else {
-      alert('Vui lòng chọn sản phẩm để chỉnh sửa');
+      this.notificationService.showWarning('Vui lòng chọn sản phẩm để chỉnh sửa');
     }
   }
 
@@ -979,18 +1384,173 @@ export class ProductsManage implements OnInit {
    * Delete selected products
    */
   deleteProducts(): void {
-    const selected = getSelectedProducts(this.products);
+    // Check if any products are selected
+    const selected = this.products.filter(p => p.selected);
+    
     if (selected.length === 0) {
-      alert('Vui lòng chọn sản phẩm để xóa');
+      this.displayPopup('Vui lòng chọn sản phẩm cần xóa', 'error');
       return;
     }
+
+    // Show confirmation dialog
+    this.showConfirmation(
+      `Bạn có chắc chắn muốn xóa ${selected.length} sản phẩm?`,
+      () => {
+        // Delete products via API
+        const deletePromises = selected.map(product => {
+          // IMPORTANT: Only use MongoDB _id, code, or sku - NOT product.id (which is just index)
+          // Priority: _id (MongoDB ObjectId) > code (same as _id) > sku > name (fallback)
+          // DO NOT use product.id as it's just the sequential index (1, 2, 3...), not MongoDB _id
+          let productId = product._id || product.code || product.sku || product.name;
+          
+          // Convert to string if needed
+          if (productId) {
+            productId = String(productId);
+          }
+          
+          if (!productId || productId === 'undefined' || productId === 'null') {
+            console.error('⚠️ Product missing valid ID:', {
+              product,
+              _id: product._id,
+              code: product.code,
+              sku: product.sku,
+              name: product.name,
+              id: product.id // This is just index, not MongoDB _id
+            });
+            return Promise.resolve(null);
+          }
+          
+          // Validate that we're not using the sequential index
+          if (product.id && String(productId) === String(product.id)) {
+            console.warn('⚠️ Warning: Using product.id (index) instead of MongoDB _id!', {
+              productId,
+              productIndex: product.id,
+              _id: product._id,
+              code: product.code,
+              sku: product.sku
+            });
+          }
+          
+          // Log what we're sending for debugging
+          console.log(`🗑️ Deleting product:`, {
+            id: productId,
+            name: product.name,
+            _id: product._id,
+            code: product.code,
+            sku: product.sku,
+            fullProduct: product
+          });
+          
+          return this.apiService.deleteProduct(productId).toPromise().then(response => {
+            console.log(`✅ Delete API response for ${productId}:`, response);
+            return response;
+          }).catch(error => {
+            console.error(`❌ Delete API error for ${productId}:`, error);
+            throw error;
+          });
+        });
+
+        Promise.all(deletePromises).then(results => {
+          console.log('📊 Delete results:', results);
+          
+          // Filter out null results and check for errors
+          const validResults = results.filter(r => r !== null && r !== undefined);
+          const successResults = validResults.filter(r => {
+            // Check if result has success property or is an error
+            if (r && typeof r === 'object') {
+              return r.success !== false;
+            }
+            return true;
+          });
+          
+          const successCount = successResults.length;
+          const failedCount = validResults.length - successCount;
+          
+          console.log(`✅ Deleted ${successCount} products successfully`);
+          if (failedCount > 0) {
+            console.warn(`⚠️ Failed to delete ${failedCount} products`);
+          }
+          
+          // Reload products from MongoDB to get updated list
+          this.loadProducts();
+          
+          this.selectedCount = 0;
+          this.selectAll = false;
+          
+          if (failedCount > 0) {
+            this.displayPopup(`Đã xóa ${successCount} sản phẩm, ${failedCount} sản phẩm lỗi`, 'error');
+          } else {
+            this.displayPopup(`Đã xóa ${successCount} sản phẩm thành công`, 'success');
+          }
+        }).catch(error => {
+          console.error('❌ Error deleting products:', error);
+          console.error('❌ Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            message: error.message,
+            error: error.error,
+            url: error.url
+          });
+          
+          const errorMessage = error.error?.message || error.error?.error || error.message || 'Lỗi không xác định';
+          this.displayPopup('Lỗi khi xóa sản phẩm: ' + errorMessage, 'error');
+          
+          // Still reload to sync with server
+          this.loadProducts();
+        });
+      }
+    );
+  }
+
+  /**
+   * Display popup notification
+   */
+  displayPopup(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+    this.popupMessage = message;
+    this.popupType = type;
+    this.showPopup = true;
+  }
+
+  /**
+   * Close popup
+   */
+  closePopup(): void {
+    this.showPopup = false;
+    this.popupMessage = '';
+  }
+
+  /**
+   * Show confirmation dialog
+   */
+  showConfirmation(message: string, callback: () => void): void {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.showConfirmDialog = true;
     
-    if (confirm(`Bạn có chắc chắn muốn xóa ${selected.length} sản phẩm?`)) {
-      this.products = deleteSelectedProducts(this.products);
-      this.selectedCount = 0;
-      this.selectAll = false;
-      console.log('Deleted products');
+    // Force change detection to ensure popup shows
+    if (this.cdr) {
+      this.cdr.detectChanges();
     }
+  }
+
+  /**
+   * Confirm action
+   */
+  confirmDelete(): void {
+    if (this.confirmCallback) {
+      this.confirmCallback();
+      this.confirmCallback = null;
+    }
+    this.showConfirmDialog = false;
+  }
+
+  /**
+   * Cancel action
+   */
+  cancelDelete(): void {
+    this.showConfirmDialog = false;
+    this.confirmCallback = null;
+    this.confirmMessage = '';
   }
 
   /**
@@ -1333,7 +1893,7 @@ export class ProductsManage implements OnInit {
   openGroupModal(): void {
     const selected = getSelectedProducts(this.products);
     if (selected.length < 2) {
-      alert('Vui lòng chọn ít nhất 2 sản phẩm để nhóm');
+      this.notificationService.showWarning('Vui lòng chọn ít nhất 2 sản phẩm để nhóm');
       return;
     }
     this.newGroupName = '';
@@ -1353,7 +1913,7 @@ export class ProductsManage implements OnInit {
    */
   createGroup(): void {
     if (!this.newGroupName || this.newGroupName.trim() === '') {
-      alert('Vui lòng nhập tên nhóm');
+      this.notificationService.showWarning('Vui lòng nhập tên nhóm');
       return;
     }
 
@@ -1393,7 +1953,7 @@ export class ProductsManage implements OnInit {
     // Update group names list
     this.extractAllGroupNames();
 
-    alert(`Đã nhóm ${selected.length} sản phẩm vào nhóm "${groupName}"`);
+    this.notificationService.showSuccess(`Đã nhóm ${selected.length} sản phẩm vào nhóm "${groupName}"`);
     this.closeGroupModal();
   }
 

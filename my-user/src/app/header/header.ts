@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -8,6 +8,8 @@ import { AuthPopupService } from '../services/auth-popup.service';
 import { ProductService, Product } from '../services/product.service';
 import { Logout } from '../auth/logout/logout';
 import { ToastService } from '../services/toast.service';
+import { NotificationService } from '../services/notification.service';
+import { Subscription } from 'rxjs';
 
 interface Category {
   name: string;
@@ -21,7 +23,7 @@ interface Category {
   templateUrl: './header.html',
   styleUrls: ['./header.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
  // Sticky header state
   isSticky: boolean = false;
 
@@ -55,8 +57,12 @@ export class HeaderComponent implements OnInit {
   private dropdownCloseTimer: any;
 
  // Counters
-  notificationCount: number = 2;
+  notificationCount: number = 0;
   cartCount: number = 0;
+  private notificationSubscription: Subscription = new Subscription();
+  
+  // Notifications data
+  notifications: any[] = [];
 
  // Data
   categories: Category[] = [];
@@ -92,7 +98,8 @@ export class HeaderComponent implements OnInit {
     private cartService: CartService,
     private authPopupService: AuthPopupService,
     private productService: ProductService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private notificationService: NotificationService
   ) {
  // Subscribe to cartCount changes from CartService
     effect(() => {
@@ -108,6 +115,30 @@ export class HeaderComponent implements OnInit {
     this.loadCategoriesFromMongoDB();
  // Load all products for search
     this.loadAllProducts();
+    
+    // Load customerId and set it in notification service
+    this.loadCustomerId();
+    
+    // Subscribe to notification count
+    const countSub = this.notificationService.unreadCount$.subscribe(count => {
+      this.notificationCount = count;
+    });
+    this.notificationSubscription.add(countSub);
+    
+    // Subscribe to notifications
+    const notifSub = this.notificationService.notifications$.subscribe(notifications => {
+      // Get latest 3 unread notifications
+      this.notifications = notifications
+        .filter(n => !n.read && !n.isRead)
+        .slice(0, 3);
+    });
+    this.notificationSubscription.add(notifSub);
+    
+    // Load initial count
+    this.notificationService.loadUnreadCount();
+    
+    // Load notifications
+    this.notificationService.loadNotifications();
   }
 
   @HostListener('window:scroll')
@@ -594,6 +625,74 @@ export class HeaderComponent implements OnInit {
       this.closeAllDropdowns();
     }
  // Nếu chưa đăng nhập thì chỉ toggle popup (đã có sẵn trong template)
+  }
+
+  ngOnDestroy(): void {
+    this.notificationSubscription.unsubscribe();
+  }
+
+  private loadCustomerId(): void {
+    const userInfo = localStorage.getItem('user');
+    if (userInfo) {
+      try {
+        const user = JSON.parse(userInfo);
+        const customerId = user.CustomerID;
+        if (customerId) {
+          this.notificationService.setCustomerId(customerId);
+          // Reload notifications when customerId is set
+          this.notificationService.loadNotifications();
+          this.notificationService.loadUnreadCount();
+        }
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+    }
+  }
+  
+  getNotificationIcon(type: string): string {
+    switch(type) {
+      case 'order':
+        return '/assets/icons/order_dark.png';
+      case 'promotion':
+        return '/assets/icons/flash_sale.png';
+      case 'other':
+        return '/assets/icons/info_blue.png';
+      default:
+        return '/assets/icons/info_blue.png';
+    }
+  }
+  
+  formatNotificationTime(date: Date | string | undefined): string {
+    if (!date) {
+      return '';
+    }
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      if (isNaN(dateObj.getTime())) {
+        return '';
+      }
+      const now = new Date();
+      const diff = now.getTime() - dateObj.getTime();
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      
+      if (minutes < 1) {
+        return 'Vừa xong';
+      } else if (minutes < 60) {
+        return `${minutes} phút trước`;
+      } else if (hours < 24) {
+        return `${hours} giờ trước`;
+      } else if (days < 7) {
+        return `${days} ngày trước`;
+      } else {
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        return `${day}/${month}`;
+      }
+    } catch (error) {
+      return '';
+    }
   }
 
   onViewCart(): void {

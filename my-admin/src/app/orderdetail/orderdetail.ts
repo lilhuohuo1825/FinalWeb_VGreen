@@ -30,7 +30,22 @@ export class OrderDetail implements OnInit {
   backButtonText: string = 'Quay lại trang đơn hàng'; // Dynamic back button text
   breadcrumbText: string = 'Quản lý đơn hàng'; // Dynamic breadcrumb text
   isNewOrder: boolean = false; // Flag to check if this is a new order
+  isEditMode: boolean = false; // Flag to check if this is edit mode
   users: any[] = []; // List of users for customer selection
+  customerIDSearch: string = ''; // Customer ID search input
+
+  // Product selection modal
+  showProductModal: boolean = false;
+  allProducts: any[] = []; // All products for selection
+  filteredProducts: any[] = []; // Products filtered by category
+  categories: string[] = []; // All categories
+  selectedCategory: string = ''; // Selected category filter
+  searchQuery: string = ''; // Search query for products
+
+  // Popup state
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  popupType: 'success' | 'error' | 'info' = 'success';
 
   // Address data for delivery info
   provinces: any[] = [];
@@ -45,6 +60,7 @@ export class OrderDetail implements OnInit {
     id: '',
     date: '',
     customer: '',
+    customerID: '', // Store CustomerID for saving order
     status: 'pending',
     delivery: 'pending',
     payment: 'unpaid',
@@ -52,7 +68,9 @@ export class OrderDetail implements OnInit {
     items: [] as any[],
     subtotal: 0,
     discount: 0,
-    shipping: 0,
+    shippingFee: 30000, // Default shipping fee
+    shippingDiscount: 0, // Shipping discount from promotion
+    shipping: 0, // Final shipping fee after discount
     total: 0,
     promotion: {
       name: '',
@@ -65,7 +83,10 @@ export class OrderDetail implements OnInit {
       name: '',
       phone: '',
       email: '',
-      address: ''
+      address: '',
+      totalOrders: 0,
+      totalSpent: 0,
+      debt: 0
     },
     deliveryInfo: {
       name: '',
@@ -97,6 +118,12 @@ export class OrderDetail implements OnInit {
       }
     }
     
+    // Check if we are in edit mode
+    if (state?.['editMode']) {
+      this.isEditMode = true;
+      console.log('Edit mode enabled');
+    }
+    
     this.route.params.subscribe(params => {
       this.orderId = params['id'];
       this.isNewOrder = this.orderId === 'new';
@@ -111,6 +138,12 @@ export class OrderDetail implements OnInit {
       } else {
         // Load existing order
         this.loadProducts();
+        // If in edit mode, also load address data and users for editing
+        if (this.isEditMode) {
+          this.loadUsers();
+          this.loadAddressData();
+          this.loadPromotions();
+        }
       }
     });
   }
@@ -272,6 +305,7 @@ export class OrderDetail implements OnInit {
       id: 'VGNEW',
       date: formattedDate,
       customer: '',
+      customerID: '',
       status: 'pending',
       delivery: 'pending',
       payment: 'unpaid',
@@ -279,7 +313,9 @@ export class OrderDetail implements OnInit {
       items: [],
       subtotal: 0,
       discount: 0,
-      shipping: 30000, // Auto set shipping fee to 30000
+      shippingFee: 30000, // Default shipping fee
+      shippingDiscount: 0, // Shipping discount from promotion
+      shipping: 30000, // Final shipping fee after discount
       total: 0,
       promotion: {
         name: '',
@@ -292,7 +328,10 @@ export class OrderDetail implements OnInit {
         name: '',
         phone: '',
         email: '',
-        address: ''
+        address: '',
+        totalOrders: 0,
+        totalSpent: 0,
+        debt: 0
       },
       deliveryInfo: {
         name: '',
@@ -308,6 +347,9 @@ export class OrderDetail implements OnInit {
       paymentMethod: 'COD'
     };
     
+    // Reset customer search
+    this.customerIDSearch = '';
+    
     this.backButtonText = 'Quay lại trang đơn hàng';
     this.breadcrumbText = 'Quản lý đơn hàng';
     console.log('✅ Initialized new order');
@@ -321,19 +363,27 @@ export class OrderDetail implements OnInit {
     const customerName = select.value;
     
     if (customerName) {
-      // Find user by name
-      const user = this.users.find(u => (u.full_name || u.name) === customerName);
+      // Find user by name (support both formats)
+      const user = this.users.find(u => {
+        const fullName = u.FullName || u.full_name || u.name || '';
+        return fullName === customerName;
+      });
       if (user) {
         this.selectCustomer(user);
       }
     } else {
       // Reset customer info
       this.orderData.customer = '';
+      this.orderData.customerID = '';
+      this.customerIDSearch = '';
       this.orderData.customerInfo = {
         name: '',
         phone: '',
         email: '',
-        address: ''
+        address: '',
+        totalOrders: 0,
+        totalSpent: 0,
+        debt: 0
       };
     }
   }
@@ -364,7 +414,7 @@ export class OrderDetail implements OnInit {
   }
 
   /**
-   * Load order detail
+   * Load order detail from MongoDB
    */
   loadOrderDetail(): void {
     // Skip loading if this is a new order
@@ -372,47 +422,621 @@ export class OrderDetail implements OnInit {
       return;
     }
     
-    // Load order details with products
-    this.http.get<any[]>('data/orderdetail.json').subscribe({
-      next: (orderDetails) => {
-        const orderIdNum = parseInt(this.orderId.replace('VG', ''));
-        this.order = orderDetails.find(o => o.order_id === orderIdNum);
-        
-        if (this.order) {
-          this.transformOrderData();
-        } else {
-          console.warn('Order not found in orderdetail.json, falling back to orders.json');
-          this.loadFromOrdersJson();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading order details:', error);
-        this.loadFromOrdersJson();
-      }
-    });
-  }
-
-  /**
-   * Fallback: Load from orders.json if orderdetail.json not available
-   */
-  private loadFromOrdersJson(): void {
-    this.http.get<any[]>('data/orders.json').subscribe({
+    console.log('🔄 Loading order detail from MongoDB...');
+    console.log('Order ID:', this.orderId);
+    
+    // Try MongoDB API first
+    this.apiService.getOrders().subscribe({
       next: (orders) => {
-        const orderIdNum = parseInt(this.orderId.replace('VG', ''));
-        this.order = orders.find(o => o.order_id === orderIdNum);
+        console.log(`✅ Loaded ${orders.length} orders from MongoDB`);
+        
+        // Find order by OrderID or _id
+        // Support both formats: VG123456 or ORD123456 or just the ID
+        const orderIdClean = this.orderId.replace('VG', '').replace('ORD', '');
+        this.order = orders.find((o: any) => {
+          // Check OrderID field
+          if (o.OrderID && o.OrderID.includes(orderIdClean)) {
+            return true;
+          }
+          // Check _id field
+          if (o._id && (o._id.toString().includes(orderIdClean) || o._id.$oid?.includes(orderIdClean))) {
+            return true;
+          }
+          // Check order_id field (old format)
+          if (o.order_id && o.order_id.toString() === orderIdClean) {
+            return true;
+          }
+          return false;
+        });
         
         if (this.order) {
-          this.transformOrderData();
+          console.log('✅ Found order:', this.order);
+          // If in edit mode, load address data first, then load users
+          if (this.isEditMode) {
+            // Load address data first, then load users
+            this.loadAddressData();
+            // Use setTimeout to wait for address data to be loaded
+            setTimeout(() => {
+              this.loadUsersForOrder();
+            }, 500);
+          } else {
+          // Load users to get customer info
+          this.loadUsersForOrder();
+          }
+        } else {
+          console.warn('⚠️ Order not found in MongoDB, trying fallback...');
+          this.loadFromOrdersJsonFallback();
         }
       },
       error: (error) => {
-        console.error('Error loading orders:', error);
+        console.error('❌ Error loading orders from MongoDB:', error);
+        console.log('⚠️ Falling back to JSON file...');
+        this.loadFromOrdersJsonFallback();
       }
     });
   }
 
   /**
-   * Transform order data for display
+   * Load users for order to get customer info and calculate statistics
+   */
+  private loadUsersForOrder(): void {
+    this.apiService.getUsers().subscribe({
+      next: (users) => {
+        console.log(`✅ Loaded ${users.length} users from MongoDB`);
+        this.users = users;
+        
+        // Calculate customer statistics from all orders, then transform
+        this.calculateCustomerStatistics();
+      },
+      error: (error) => {
+        console.error('❌ Error loading users from MongoDB:', error);
+        // Still transform order even without users
+        this.transformOrderDataFromMongoDB();
+      }
+    });
+  }
+
+  /**
+   * Calculate customer statistics (total products, total spent from paid orders, debt from unpaid/delivering orders)
+   */
+  private calculateCustomerStatistics(): void {
+    if (!this.order || !this.order.CustomerID) {
+      // Transform without stats if no CustomerID
+      this.transformOrderDataFromMongoDB();
+      return;
+    }
+
+    // Load all orders to calculate statistics
+    this.apiService.getOrders().subscribe({
+      next: (allOrders) => {
+        const customerId = this.order.CustomerID;
+        
+        // Filter orders for this customer
+        const customerOrders = allOrders.filter((o: any) => o.CustomerID === customerId);
+        
+        console.log(`📊 Calculating stats for customer ${customerId}, found ${customerOrders.length} orders`);
+        
+        // Calculate total orders (number of orders, not products)
+        const totalOrders = customerOrders.length;
+        
+        console.log(`📦 Total orders: ${totalOrders}`);
+        
+        // Calculate total spent from paid orders only
+        // An order is considered PAID if:
+        // - status = 'completed' hoặc 'delivered' → always paid (both are considered final completed status)
+        // - status = 'shipping'/'processing'/'confirmed' → paid if NOT cod (non-COD already paid)
+        const totalSpent = customerOrders.reduce((sum: number, o: any) => {
+          const orderStatus = (o.status || '').toLowerCase();
+          const paymentMethod = (o.paymentMethod || '').toLowerCase();
+          const totalAmount = o.totalAmount || 0;
+          
+          // Skip cancelled and returned/refunded orders
+          if (orderStatus === 'cancelled' || orderStatus === 'returned') {
+            return sum;
+          }
+          
+          // Check if order is paid
+          let isPaid = false;
+          
+          if (orderStatus === 'completed' || orderStatus === 'delivered') {
+            // Completed/delivered orders are always paid (both are considered final completed status)
+            isPaid = true;
+          } else if (orderStatus === 'shipping' || orderStatus === 'processing' || orderStatus === 'confirmed') {
+            // These statuses: paid if NOT COD (non-COD paid before shipping)
+            isPaid = paymentMethod !== 'cod' && paymentMethod !== '';
+          }
+          // pending, cancelled, returned orders are never paid
+          
+          if (isPaid) {
+            console.log(`✅ Paid order: ${o.OrderID}, status: ${orderStatus}, paymentMethod: ${paymentMethod}, amount: ${totalAmount}`);
+            return sum + totalAmount;
+          }
+          return sum;
+        }, 0);
+        
+        console.log(`💰 Total spent (paid orders): ${totalSpent}`);
+        
+        // Calculate debt from unpaid orders
+        // Debt includes orders that are:
+        // - status = 'pending' (not confirmed yet) OR
+        // - status = 'shipping'/'processing' AND paymentMethod = 'cod' (delivering COD, not paid yet) OR
+        // - status = 'confirmed' AND paymentMethod = 'cod' (COD confirmed but not delivered/paid yet)
+        // Note: Exclude cancelled/returned orders from debt calculation
+        // Note: delivered orders are considered paid (goods delivered, payment received)
+        const debt = customerOrders.reduce((sum: number, o: any) => {
+          const orderStatus = (o.status || '').toLowerCase();
+          const paymentMethod = (o.paymentMethod || '').toLowerCase();
+          const totalAmount = o.totalAmount || 0;
+          
+          // Skip cancelled and returned/refunded orders
+          if (orderStatus === 'cancelled' || orderStatus === 'returned') {
+            return sum;
+          }
+          
+          // Skip completed and delivered orders (these are paid)
+          if (orderStatus === 'completed' || orderStatus === 'delivered') {
+            return sum;
+          }
+          
+          // Check if order is delivering (and COD unpaid)
+          const isDelivering = (orderStatus === 'shipping' || orderStatus === 'processing') && paymentMethod === 'cod';
+          
+          // Check if order is unpaid
+          const isUnpaid = 
+            orderStatus === 'pending' ||
+            (orderStatus === 'confirmed' && paymentMethod === 'cod');
+          
+          if (isDelivering || isUnpaid) {
+            console.log(`❌ Unpaid/Delivering order: ${o.OrderID}, status: ${orderStatus}, paymentMethod: ${paymentMethod}, amount: ${totalAmount}`);
+            return sum + totalAmount;
+          }
+          return sum;
+        }, 0);
+        
+        console.log(`💳 Total debt (unpaid/delivering): ${debt}`);
+        
+        // Update user info if found
+        const user = this.users.find((u: any) => u.CustomerID === customerId);
+        if (user) {
+          user.totalOrders = totalOrders; // Store total orders
+          user.totalSpent = totalSpent;
+          user.debt = debt;
+        }
+        
+        // Store in orderData for display
+        this.order.customerStats = {
+          totalOrders: totalOrders, // Total number of orders
+          totalSpent: totalSpent,
+          debt: debt
+        };
+        
+        console.log(`✅ Final customer stats: ${totalOrders} orders, ${totalSpent} spent (paid), ${debt} debt`);
+        
+        // Transform after stats are calculated
+        this.transformOrderDataFromMongoDB();
+      },
+      error: (error) => {
+        console.error('❌ Error loading orders for statistics:', error);
+        // Transform even if stats failed
+        this.transformOrderDataFromMongoDB();
+      }
+    });
+  }
+
+  /**
+   * Fallback: Load from temp folder JSON if MongoDB not available
+   */
+  private loadFromOrdersJsonFallback(): void {
+    console.log('🔄 Loading from temp folder JSON...');
+    this.http.get<any[]>('data/temp/orders.json').subscribe({
+      next: (orders) => {
+        console.log(`✅ Loaded ${orders.length} orders from temp JSON`);
+        
+        const orderIdClean = this.orderId.replace('VG', '').replace('ORD', '');
+        this.order = orders.find((o: any) => {
+          if (o.OrderID && o.OrderID.includes(orderIdClean)) {
+            return true;
+          }
+          if (o._id && (o._id.toString().includes(orderIdClean) || o._id.$oid?.includes(orderIdClean))) {
+            return true;
+          }
+          return false;
+        });
+        
+        if (this.order) {
+          console.log('✅ Found order in temp JSON:', this.order);
+          // Load users from temp folder
+          this.http.get<any[]>('data/temp/users.json').subscribe({
+            next: (users) => {
+              console.log(`✅ Loaded ${users.length} users from temp JSON`);
+              this.users = users;
+              this.transformOrderDataFromMongoDB();
+            },
+            error: (error) => {
+              console.error('❌ Error loading users from temp JSON:', error);
+              this.transformOrderDataFromMongoDB();
+            }
+          });
+        } else {
+          console.error('❌ Order not found in temp JSON');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading orders from temp JSON:', error);
+      }
+    });
+  }
+
+  /**
+   * Transform order data from MongoDB format for display
+   */
+  transformOrderDataFromMongoDB(): void {
+    if (!this.order) {
+      console.error('No order data to transform');
+      return;
+    }
+
+    console.log('🔄 Transforming order data from MongoDB format:', this.order);
+
+    // Extract OrderID
+    const orderId = this.order.OrderID || this.order._id?.$oid || this.order.order_id || this.orderId;
+    this.orderData.id = orderId;
+
+    // Format date from createdAt
+    let formattedDate = '';
+    if (this.order.createdAt) {
+      const dateStr = this.order.createdAt.$date || this.order.createdAt;
+      const dateObj = new Date(dateStr);
+      if (!isNaN(dateObj.getTime())) {
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        formattedDate = `${day}/${month}/${year}`;
+      }
+    }
+    if (!formattedDate && this.order.order_date) {
+      const dateParts = this.order.order_date.split('-');
+      formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    }
+    this.orderData.date = formattedDate || 'N/A';
+
+    // Map status from MongoDB format
+    let status = 'pending';
+    let delivery = 'pending';
+    let payment = 'unpaid';
+    let refund = 'none';
+
+    const orderStatus = (this.order.status || '').toLowerCase();
+    
+    if (orderStatus === 'completed' || orderStatus === 'delivered') {
+      // Both completed and delivered are considered the same final status
+      status = 'confirmed';
+      delivery = 'delivered';
+      payment = this.order.paymentMethod === 'cod' ? 'paid' : (this.order.paymentMethod ? 'paid' : 'unpaid');
+      refund = 'none';
+    } else if (orderStatus === 'pending') {
+      status = 'pending';
+      delivery = 'pending';
+      payment = 'unpaid';
+      refund = 'none';
+    } else if (orderStatus === 'cancelled') {
+      status = 'cancelled';
+      delivery = 'none';
+      payment = 'unpaid';
+      refund = 'none';
+    } else if (orderStatus === 'processing_return' || orderStatus === 'returning') {
+      // Đang xử lý hoàn trả / đang hoàn trả
+      status = 'refund-requested';
+      delivery = 'delivering';
+      payment = this.order.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'requested';
+    } else if (orderStatus === 'returned') {
+      status = 'refunded';
+      delivery = 'none';
+      payment = 'unpaid';
+      refund = 'refunded';
+    } else if (orderStatus === 'processing' || orderStatus === 'shipping') {
+      status = 'confirmed';
+      delivery = 'delivering';
+      payment = this.order.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'none';
+    } else if (orderStatus === 'confirmed') {
+      status = 'confirmed';
+      delivery = 'delivering'; // Khi xác nhận đơn hàng, tự động chuyển sang đang giao
+      payment = this.order.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'none';
+    }
+
+    // Map items/products from MongoDB format
+    let items: any[] = [];
+    
+    if (this.order.items && this.order.items.length > 0) {
+      items = this.order.items.map((item: any) => {
+        // Try to find product in productsMap by SKU or _id
+        let productInfo = null;
+        if (item.sku) {
+          // Find by SKU
+          for (const [key, product] of this.productsMap.entries()) {
+            if (product.sku === item.sku || product.SKU === item.sku) {
+              productInfo = product;
+              break;
+            }
+          }
+        }
+        
+        // Fallback: find by _id if available
+        if (!productInfo && item._id) {
+          productInfo = this.productsMap.get(item._id.$oid || item._id);
+        }
+
+        return {
+          name: item.productName || item.product_name || 'Sản phẩm',
+          sku: item.sku || 'N/A',
+          image: item.image || productInfo?.image || productInfo?.Image?.[0] || 'asset/icons/image.png',
+          quantity: item.quantity || 1,
+          price: item.price || 0,
+          total: (item.price || 0) * (item.quantity || 1)
+        };
+      });
+      
+      console.log('✅ Mapped products:', items.length, 'items');
+    } else {
+      console.warn('⚠️ No items found in order');
+    }
+
+    // Calculate subtotal from items
+    const subtotal = this.order.subtotal || items.reduce((sum, item) => sum + item.total, 0);
+    
+    // Get promotion info and check scope
+    let discount = this.order.discount || 0;
+    let shippingDiscount = this.order.shippingDiscount || 0;
+    let promotionInfo = {
+      name: this.order.promotionName || '',
+      code: this.order.code || '',
+      description: '',
+      value: discount || shippingDiscount,
+      type: 'percentage'
+    };
+
+    // Check if promotion code exists and get promotion details to determine scope
+    let promotionScope = null;
+    if (this.order.code) {
+      // Try to find promotion from promotionsMap by code
+      for (const [key, promo] of this.promotionsMap.entries()) {
+        const promoCode = promo.code || promo.promotion_code || '';
+        if (promoCode.toLowerCase() === this.order.code.toLowerCase()) {
+          promotionScope = (promo.scope || '').toLowerCase();
+          promotionInfo = {
+            name: promo.name || promo.promotion_name || this.order.promotionName || '',
+            code: promoCode || this.order.code || '',
+            description: promo.description || promo.promotion_description || '',
+            value: promo.discount_value || promo.discountValue || promo.promotion_value || 0,
+            type: promo.discount_type || promo.discountType || promo.promotion_type || ''
+          };
+          // If in edit mode, set selected promotion ID
+          if (this.isEditMode) {
+            this.selectedPromotionId = promo.promotion_id || key;
+          }
+          break;
+        }
+      }
+    }
+
+    // Apply logic: if scope = "shipping" → only shippingDiscount, no discount
+    //              if scope = "order" or no promotion → only discount, no shippingDiscount
+    if (promotionScope === 'shipping') {
+      // Free ship voucher: only apply shippingDiscount, remove discount
+      discount = 0;
+      // shippingDiscount already set from order data
+    } else {
+      // Normal discount voucher or no promotion: only apply discount, remove shippingDiscount
+      shippingDiscount = 0;
+      // discount already set from order data
+    }
+
+    // Calculate shipping
+    const shippingFee = this.order.shippingFee || 30000; // Default shipping fee
+    const shipping = shippingFee - shippingDiscount;
+    
+    // Calculate total: Thành tiền = Tổng tiền hàng - Giảm giá + Phí vận chuyển (30000) - Giảm giá phí vận chuyển
+    const vatAmount = this.order.vatAmount || 0;
+    const total = this.order.totalAmount || (subtotal - discount + shippingFee - shippingDiscount + vatAmount);
+
+    // Get customer info from shippingInfo or users
+    let customerName = '';
+    let customerInfo = {
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      totalOrders: 0,
+      totalSpent: 0,
+      debt: 0
+    };
+
+    // Try to find customer from users array - first by shippingInfo (more accurate), then by CustomerID
+    let customerUser = null;
+    let correctCustomerID = this.order.CustomerID;
+    
+    // If we have shippingInfo, try to find customer by name + phone for accuracy
+    if (this.order.shippingInfo && this.users.length > 0) {
+      const shippingName = (this.order.shippingInfo.fullName || '').trim();
+      const shippingPhone = (this.order.shippingInfo.phone || '').trim();
+      const shippingEmail = (this.order.shippingInfo.email || '').trim();
+      
+      // Priority 1: Find by name + phone (most accurate)
+      if (shippingName && shippingPhone) {
+        customerUser = this.users.find((u: any) => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const phone = (u.Phone || u.phone || '').trim();
+          return fullName === shippingName && phone === shippingPhone;
+        });
+      }
+      
+      // Priority 2: Find by name + email
+      if (!customerUser && shippingName && shippingEmail) {
+        customerUser = this.users.find((u: any) => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const email = (u.Email || u.email || '').trim();
+          return fullName === shippingName && email === shippingEmail;
+        });
+      }
+      
+      // Priority 3: Find by phone only
+      if (!customerUser && shippingPhone) {
+        customerUser = this.users.find((u: any) => {
+          const phone = (u.Phone || u.phone || '').trim();
+          return phone === shippingPhone;
+        });
+      }
+      
+      // Priority 4: Find by name only
+      if (!customerUser && shippingName) {
+        customerUser = this.users.find((u: any) => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          return fullName === shippingName;
+        });
+      }
+      
+      // If found customer but CustomerID is different, update it
+      if (customerUser && customerUser.CustomerID) {
+        if (customerUser.CustomerID !== this.order.CustomerID) {
+          console.log(`⚠️ Order ${this.order.OrderID}: CustomerID không khớp!`);
+          console.log(`   Current: ${this.order.CustomerID}, Correct: ${customerUser.CustomerID}`);
+          console.log(`   Customer: ${shippingName} (${shippingPhone})`);
+          correctCustomerID = customerUser.CustomerID;
+          // Update order in MongoDB with correct CustomerID (async, don't wait)
+          this.updateOrderCustomerID(this.order.OrderID, correctCustomerID);
+        }
+      }
+    }
+    
+    // If not found by shippingInfo, try by CustomerID
+    if (!customerUser && this.order.CustomerID && this.users.length > 0) {
+      customerUser = this.users.find((u: any) => u.CustomerID === this.order.CustomerID);
+    }
+    
+    if (customerUser) {
+      customerName = customerUser.FullName || customerUser.Email || correctCustomerID;
+      customerInfo.name = customerUser.FullName || '';
+      customerInfo.phone = customerUser.Phone || '';
+      customerInfo.email = customerUser.Email || '';
+      customerInfo.address = customerUser.Address || '';
+      customerInfo.totalSpent = customerUser.TotalSpent || 0;
+      
+      // Update orderData.customerID with correct value
+      this.orderData.customerID = correctCustomerID;
+      this.order.CustomerID = correctCustomerID; // Update in-memory order object
+    }
+
+    // Override with shippingInfo if available (shippingInfo takes priority for display)
+    if (this.order.shippingInfo) {
+      customerInfo.name = this.order.shippingInfo.fullName || customerInfo.name;
+      customerInfo.phone = this.order.shippingInfo.phone || customerInfo.phone;
+      customerInfo.email = this.order.shippingInfo.email || customerInfo.email;
+      
+      // Build address from shippingInfo.address
+      if (this.order.shippingInfo.address) {
+        const addr = this.order.shippingInfo.address;
+        const addressParts = [
+          addr.detail,
+          addr.ward,
+          addr.district,
+          addr.city
+        ].filter(Boolean);
+        customerInfo.address = addressParts.join(', ');
+      }
+      
+      if (!customerName) {
+        customerName = customerInfo.name;
+      }
+    }
+
+    if (!customerName) {
+      customerName = 'Khách hàng #' + (correctCustomerID || 'N/A');
+    }
+
+    // Use calculated statistics if available, otherwise use user data
+    if (this.order.customerStats) {
+      customerInfo.totalOrders = this.order.customerStats.totalOrders || 0;
+      customerInfo.totalSpent = this.order.customerStats.totalSpent || customerInfo.totalSpent;
+      customerInfo.debt = this.order.customerStats.debt || 0;
+    } else if (customerUser) {
+      customerInfo.totalOrders = customerUser.totalOrders || 0;
+      customerInfo.totalSpent = customerInfo.totalSpent || customerUser.TotalSpent || 0;
+      // Calculate debt from current order if COD and unpaid
+      if (this.order.paymentMethod === 'cod' && this.order.status !== 'completed' && this.order.status !== 'delivered' && this.order.status !== 'paid') {
+        customerInfo.debt = this.order.totalAmount || 0;
+      }
+    }
+
+    // Get delivery info from shippingInfo
+    const provinceName = this.order.shippingInfo?.address?.city || '';
+    const districtName = this.order.shippingInfo?.address?.district || '';
+    const wardName = this.order.shippingInfo?.address?.ward || '';
+    
+    const deliveryInfo = {
+      name: this.order.shippingInfo?.fullName || customerInfo.name,
+      phone: this.order.shippingInfo?.phone || customerInfo.phone,
+      email: this.order.shippingInfo?.email || customerInfo.email,
+      address: customerInfo.address,
+      province: provinceName,
+      district: districtName,
+      ward: wardName,
+      streetAddress: this.order.shippingInfo?.address?.detail || ''
+    };
+
+    // If in edit mode, set selected address values after address data is loaded
+    // This will be called from setSelectedAddressValues() after address data loads
+
+    // Set customerIDSearch to display CustomerID in the input field
+    const finalCustomerID = correctCustomerID || this.order.CustomerID || '';
+    if (finalCustomerID) {
+      this.customerIDSearch = finalCustomerID;
+      console.log(`✅ Set customerIDSearch to: ${finalCustomerID}`);
+    }
+
+    // Update orderData
+    this.orderData = {
+      id: orderId,
+      date: formattedDate,
+      customer: customerName,
+      customerID: finalCustomerID,
+      status: status,
+      delivery: delivery,
+      payment: payment,
+      refund: refund,
+      items: items,
+      subtotal: subtotal,
+      discount: discount,
+      shippingFee: shippingFee,
+      shippingDiscount: shippingDiscount,
+      shipping: shipping,
+      total: total,
+      promotion: promotionInfo,
+      customerInfo: customerInfo,
+      deliveryInfo: deliveryInfo,
+      note: this.order.shippingInfo?.notes || '',
+      paymentMethod: this.order.paymentMethod || 'COD'
+    };
+
+    console.log('✅ Order data transformed:', this.orderData);
+    
+    // If in edit mode, set selected promotion ID
+    if (this.isEditMode && this.orderData.promotion.code) {
+      // Find promotion by code
+      for (const [key, promo] of this.promotionsMap.entries()) {
+        const promoCode = promo.code || promo.promotion_code || '';
+        if (promoCode.toLowerCase() === this.orderData.promotion.code.toLowerCase()) {
+          this.selectedPromotionId = promo.promotion_id || key;
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Transform order data for display (old format - kept for compatibility)
    */
   transformOrderData(): void {
     // Format date from YYYY-MM-DD to DD/MM/YYYY
@@ -426,7 +1050,8 @@ export class OrderDetail implements OnInit {
     let refund = 'none';
 
     // Map status
-    if (this.order.status === 'Delivered') {
+    if (this.order.status === 'Delivered' || this.order.status === 'Completed') {
+      // Both Delivered and Completed are considered the same final status
       status = 'confirmed';
       delivery = 'delivered';
       payment = 'paid';
@@ -498,6 +1123,7 @@ export class OrderDetail implements OnInit {
     
     // Get promotion info and calculate discount
     let discount = 0;
+    let shippingDiscount = 0;
     let promotionInfo = {
       name: '',
       code: '',
@@ -517,26 +1143,49 @@ export class OrderDetail implements OnInit {
           type: promotion.promotion_type
         };
         
-        // Calculate discount based on promotion type
-        if (promotion.promotion_type === 'Discount') {
+        // Check promotion scope
+        const promotionScope = (promotion.scope || '').toLowerCase();
+        
+        // Calculate discount based on promotion type and scope
+        if (promotionScope === 'shipping') {
+          // Free shipping voucher: only apply shippingDiscount
+          shippingDiscount = Math.min(30000, promotion.promotion_value || 0);
+          discount = 0;
+        } else if (promotion.promotion_type === 'Discount') {
           // Discount is percentage
           discount = Math.floor((subtotal * promotion.promotion_value) / 100);
+          shippingDiscount = 0;
         } else if (promotion.promotion_type === 'Shipping') {
           // Free shipping - will be handled in shipping calculation
+          shippingDiscount = Math.min(30000, promotion.promotion_value || 0);
           discount = 0;
+        } else {
+          discount = 0;
+          shippingDiscount = 0;
         }
         
-        console.log('Applied promotion:', promotionInfo, 'Discount:', discount);
+        console.log('Applied promotion:', promotionInfo, 'Discount:', discount, 'ShippingDiscount:', shippingDiscount);
       }
+
     }
     
-    const shipping = 0; // Assume free shipping or no shipping cost
-    const total = subtotal - discount + shipping;
+    const shippingFee = 30000; // Default shipping fee
+    const shipping = shippingFee - shippingDiscount;
+    // Calculate total: Thành tiền = Tổng tiền hàng - Giảm giá + Phí vận chuyển (30000) - Giảm giá phí vận chuyển
+    const total = subtotal - discount + shippingFee - shippingDiscount;
 
+    // Set customerIDSearch to display CustomerID in the input field
+    const finalCustomerID = this.order.CustomerID || this.order.user_id?.toString() || '';
+    if (finalCustomerID) {
+      this.customerIDSearch = finalCustomerID;
+      console.log(`✅ Set customerIDSearch to: ${finalCustomerID}`);
+    }
+    
     this.orderData = {
       id: 'VG' + this.order.order_id,
       date: formattedDate,
       customer: this.order.full_name || 'Khách hàng #' + this.order.user_id,
+      customerID: finalCustomerID,
       status: status,
       delivery: delivery,
       payment: payment,
@@ -544,6 +1193,8 @@ export class OrderDetail implements OnInit {
       items: items,
       subtotal: subtotal,
       discount: discount,
+      shippingFee: shippingFee,
+      shippingDiscount: shippingDiscount,
       shipping: shipping,
       total: total,
       promotion: promotionInfo,
@@ -551,7 +1202,10 @@ export class OrderDetail implements OnInit {
         name: this.order.full_name || '',
         phone: this.order.phone || '',
         email: '',
-        address: this.order.address || ''
+        address: this.order.address || '',
+        totalOrders: 0,
+        totalSpent: 0,
+        debt: 0
       },
       deliveryInfo: {
         name: this.order.full_name || '',
@@ -605,42 +1259,176 @@ export class OrderDetail implements OnInit {
   }
 
   /**
+   * Get OrderID from order object or orderData
+   */
+  private getOrderID(): string {
+    // Priority 1: Get from order.OrderID (MongoDB format: ORD123456789)
+    if (this.order?.OrderID) {
+      return this.order.OrderID;
+    }
+    
+    // Priority 2: Get from orderData.id (format: VG123456 or ORD123456)
+    if (this.orderData.id) {
+      // Remove VG prefix if exists, keep ORD prefix
+      return this.orderData.id.replace('VG', '');
+    }
+    
+    // Priority 3: Get from route orderId (format: VG123456 or ORD123456 or just the ID)
+    if (this.orderId && this.orderId !== 'new') {
+      // Remove VG prefix if exists, keep ORD prefix
+      return this.orderId.replace('VG', '');
+    }
+    
+    return '';
+  }
+
+  /**
    * Confirm order
    */
   confirmOrder(): void {
-    console.log('Confirm order:', this.orderId);
-    // Update order status
-    this.orderData.status = 'confirmed';
-    this.orderData.delivery = 'delivering';
-    alert('Đơn hàng đã được xác nhận!');
-    // TODO: Implement API call to update order status
+    console.log('📦 Confirm order:', this.orderId);
+    
+    // Get OrderID from order object
+    const orderID = this.getOrderID();
+    
+    if (!orderID) {
+      this.displayPopup('Không tìm thấy mã đơn hàng!', 'error');
+      return;
+    }
+    
+    console.log('📦 Updating order status to confirmed:', orderID);
+    
+    // Call API to update order status
+    this.apiService.updateOrderStatus(orderID, 'confirmed').subscribe({
+      next: (response) => {
+        console.log('✅ Order status updated successfully:', response);
+        // Reload order data to get latest status from MongoDB
+        this.loadOrderDetail();
+        // Set flag to navigate after popup closes
+        this.shouldNavigateAfterPopup = true;
+        this.displayPopup('Đơn hàng đã được xác nhận!', 'success');
+      },
+      error: (error) => {
+        console.error('❌ Error updating order status:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi cập nhật trạng thái đơn hàng';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
   }
 
   /**
-   * Confirm refund
+   * Confirm refund - Chấp nhận yêu cầu trả hàng (bước 1)
+   * Chuyển từ processing_return -> returning
    */
   confirmRefund(): void {
-    console.log('Confirm refund:', this.orderId);
-    if (confirm('Bạn có chắc chắn muốn xác nhận huỷ/hoàn tiền cho đơn hàng này?')) {
-      // Update order status
-      this.orderData.refund = 'refunded';
-      this.orderData.status = 'cancelled';
-      alert('Đã xác nhận huỷ/hoàn tiền!');
-      // TODO: Implement API call to update refund status
+    console.log('💰 Confirm refund (step 1):', this.orderId);
+    
+    // Get OrderID from order object
+    const orderID = this.getOrderID();
+    
+    if (!orderID) {
+      this.displayPopup('Không tìm thấy mã đơn hàng!', 'error');
+      return;
     }
+    
+    // Chuyển từ đang chờ xử lý -> đang trả hàng
+    const nextStatus = 'returning';
+    
+    console.log(`💰 Updating order status to ${nextStatus}:`, orderID);
+    
+    // Call API to update order status
+    this.apiService.updateOrderStatus(orderID, nextStatus as any).subscribe({
+      next: (response) => {
+        console.log(`✅ Order status updated to ${nextStatus}:`, response);
+        // Reload order data to get latest status from MongoDB
+        this.loadOrderDetail();
+        // Set flag to navigate after popup closes
+        this.shouldNavigateAfterPopup = true;
+        this.displayPopup('Đã chấp nhận yêu cầu trả hàng. Đơn hàng đang trong quá trình trả hàng.', 'success');
+      },
+      error: (error) => {
+        console.error('❌ Error updating refund status:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi cập nhật trạng thái hoàn tiền';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
   }
 
   /**
-   * Reject refund
+   * Complete return - Hoàn tất trả hàng/hoàn tiền (bước 2)
+   * Chuyển từ returning -> returned
+   */
+  completeReturn(): void {
+    console.log('✅ Complete return (step 2):', this.orderId);
+    
+    // Get OrderID from order object
+    const orderID = this.getOrderID();
+    
+    if (!orderID) {
+      this.displayPopup('Không tìm thấy mã đơn hàng!', 'error');
+      return;
+    }
+    
+    // Chuyển từ đang trả hàng -> đã trả hàng/hoàn tiền
+    const nextStatus = 'returned';
+    
+    console.log(`✅ Completing return, updating order status to ${nextStatus}:`, orderID);
+    
+    // Call API to update order status
+    this.apiService.updateOrderStatus(orderID, nextStatus as any).subscribe({
+      next: (response) => {
+        console.log(`✅ Order status updated to ${nextStatus}:`, response);
+        // Reload order data to get latest status from MongoDB
+        this.loadOrderDetail();
+        // Set flag to navigate after popup closes
+        this.shouldNavigateAfterPopup = true;
+        this.displayPopup('Đã hoàn tất trả hàng/hoàn tiền! Đơn hàng đã được xử lý xong.', 'success');
+      },
+      error: (error) => {
+        console.error('❌ Error completing return:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi hoàn tất trả hàng';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
+  }
+
+  /**
+   * Reject refund - Từ chối yêu cầu trả hàng
+   * Chuyển về trạng thái completed (đơn hàng đã hoàn thành)
    */
   rejectRefund(): void {
-    console.log('Reject refund:', this.orderId);
-    if (confirm('Bạn có chắc chắn muốn từ chối yêu cầu huỷ/hoàn tiền?')) {
-      // Update order status
-      this.orderData.refund = 'none';
-      alert('Đã từ chối yêu cầu huỷ/hoàn tiền!');
-      // TODO: Implement API call to update refund status
+    console.log('❌ Reject refund:', this.orderId);
+    
+    // Get OrderID from order object
+    const orderID = this.getOrderID();
+    
+    if (!orderID) {
+      this.displayPopup('Không tìm thấy mã đơn hàng!', 'error');
+      return;
     }
+    
+    // Khi từ chối yêu cầu trả hàng, chuyển về trạng thái completed
+    // (đơn hàng vẫn được giữ, không hoàn trả)
+    const nextStatus = 'completed';
+    
+    console.log(`❌ Rejecting refund, updating order status to ${nextStatus}:`, orderID);
+    
+    // Call API to update order status back to completed
+    this.apiService.updateOrderStatus(orderID, nextStatus).subscribe({
+      next: (response) => {
+        console.log(`✅ Order status updated to ${nextStatus} (refund rejected):`, response);
+        // Reload order data to get latest status from MongoDB
+        this.loadOrderDetail();
+        // Set flag to navigate after popup closes
+        this.shouldNavigateAfterPopup = true;
+        this.displayPopup('Đã từ chối yêu cầu trả hàng/hoàn tiền!', 'success');
+      },
+      error: (error) => {
+        console.error('❌ Error rejecting refund:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi từ chối yêu cầu hoàn tiền';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
   }
 
   /**
@@ -664,7 +1452,7 @@ export class OrderDetail implements OnInit {
     const labels: any = {
       'pending': 'Chờ giao',
       'delivering': 'Đang giao',
-      'delivered': 'Đã giao',
+      'delivered': 'Hoàn thành',
       'none': ''
     };
     return labels[delivery] || delivery;
@@ -689,21 +1477,150 @@ export class OrderDetail implements OnInit {
   }
 
   /**
-   * Add product to order
+   * Add product to order - Opens product selection modal
    */
   addProductToOrder(): void {
-    // TODO: Open product selection modal
-    console.log('Add product to order');
-    // For now, add a placeholder product
-    this.orderData.items.push({
-      name: 'Tên sản phẩm',
-      sku: 'SKU',
-      image: 'asset/icons/shop.png',
-      quantity: 1,
-      price: 0,
-      total: 0
+    console.log('Opening product selection modal');
+    this.showProductModal = true;
+    this.loadProductsForSelection();
+  }
+
+  /**
+   * Load products for selection modal
+   */
+  loadProductsForSelection(): void {
+    this.apiService.getProducts().subscribe({
+      next: (products) => {
+        console.log(`✅ Loaded ${products.length} products for selection`);
+        this.allProducts = products;
+        this.filterProducts();
+        // After products are loaded, load categories (will use products as fallback if API fails)
+        this.loadCategories();
+      },
+      error: (error) => {
+        console.error('❌ Error loading products for selection:', error);
+        // Fallback to productsMap if available
+        this.allProducts = Array.from(this.productsMap.values());
+        this.filterProducts();
+        // Load categories with products available for fallback
+        this.loadCategories();
+      }
     });
+  }
+
+  /**
+   * Load categories for filter
+   */
+  loadCategories(): void {
+    this.apiService.getCategories().subscribe({
+      next: (categories) => {
+        console.log(`✅ Loaded ${categories.length} categories`);
+        this.categories = categories;
+      },
+      error: (error) => {
+        console.error('❌ Error loading categories:', error);
+        // Extract categories from products
+        const categorySet = new Set<string>();
+        if (this.allProducts && this.allProducts.length > 0) {
+          this.allProducts.forEach(product => {
+            if (product.category) {
+              categorySet.add(product.category);
+            }
+          });
+          this.categories = Array.from(categorySet).sort();
+        }
+      }
+    });
+  }
+
+  /**
+   * Filter products by category and search query
+   */
+  filterProducts(): void {
+    if (!this.allProducts || this.allProducts.length === 0) {
+      this.filteredProducts = [];
+      return;
+    }
+
+    let filtered = [...this.allProducts];
+
+    // Filter by category
+    if (this.selectedCategory) {
+      filtered = filtered.filter(p => p.category === this.selectedCategory);
+    }
+
+    // Filter by search query
+    if (this.searchQuery && this.searchQuery.trim() !== '') {
+      const query = this.searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(p => {
+        const productName = (p.product_name || p.productName || '').toLowerCase();
+        const sku = (p.sku || '').toLowerCase();
+        return productName.includes(query) || sku.includes(query);
+      });
+    }
+
+    this.filteredProducts = filtered;
+  }
+
+  /**
+   * Handle category filter change
+   */
+  onCategoryFilterChange(): void {
+    this.filterProducts();
+  }
+
+  /**
+   * Handle search query change
+   */
+  onSearchQueryChange(): void {
+    this.filterProducts();
+  }
+
+  /**
+   * Select product and add to order
+   */
+  selectProduct(product: any): void {
+    console.log('Selected product:', product);
+    
+    // Map product data to order item format
+    const productImage = product.Image?.[0] || product.image || 'asset/icons/shop.png';
+    const productName = product.product_name || product.productName || 'Sản phẩm';
+    const productSku = product.sku || 'SKU';
+    const productPrice = product.price || product.ProductPrice || 0;
+
+    // Store product reference in productsMap if not already there
+    if (product._id && !this.productsMap.has(product._id)) {
+      this.productsMap.set(product._id, product);
+    }
+
+    const orderItem = {
+      name: productName,
+      sku: productSku,
+      image: productImage,
+      quantity: 1,
+      price: productPrice,
+      total: productPrice,
+      productId: product._id || null, // Store product ID for reference
+      category: product.category || '',
+      subcategory: product.subcategory || ''
+    };
+
+    // Add to order items
+    this.orderData.items.push(orderItem);
     this.updateOrderSummary();
+
+    // Close modal
+    this.closeProductModal();
+  }
+
+  /**
+   * Close product selection modal
+   */
+  closeProductModal(): void {
+    this.showProductModal = false;
+    this.selectedCategory = '';
+    this.searchQuery = '';
+    this.filteredProducts = [];
   }
 
   /**
@@ -735,56 +1652,104 @@ export class OrderDetail implements OnInit {
   }
 
   /**
-   * Update order summary (subtotal, total, etc.)
+   * Update order summary with promotion logic
+   * - If promotion scope = "Shipping" → only apply shippingDiscount, no discount
+   * - If promotion scope = "Order" → only apply discount, no shippingDiscount
+   * Formula: Thành tiền = Tổng tiền hàng - Giảm giá + Phí vận chuyển (30000) - Giảm giá phí vận chuyển
    */
   updateOrderSummary(): void {
     // Calculate subtotal from items
     this.orderData.subtotal = this.orderData.items.reduce((sum, item) => sum + (item.total || 0), 0);
     
-    // Calculate discount (if promotion applied)
+    // Get shipping fee (default 30000)
+    const shippingFee = this.orderData.shippingFee || 30000;
+    
+    // Calculate discount and shipping discount based on promotion
+    let discount = 0;
+    let shippingDiscount = 0;
+    
     if (this.selectedPromotionId && this.orderData.subtotal > 0) {
       const promotion = this.promotionsMap.get(this.selectedPromotionId);
       if (promotion) {
+        const promotionScope = (promotion.scope || '').toLowerCase();
+        const promoType = (promotion.promotion_type || promotion.discount_type || '').toLowerCase();
+        const discountValue = promotion.promotion_value || promotion.discount_value || 0;
+        
         this.orderData.promotion = {
           name: promotion.promotion_name || promotion.name || '',
           code: promotion.promotion_code || promotion.code || '',
           description: promotion.promotion_description || promotion.description || '',
-          value: promotion.promotion_value || promotion.discount_value || 0,
-          type: promotion.promotion_type || promotion.discount_type || ''
+          value: discountValue,
+          type: promoType
         };
         
-        // Calculate discount based on promotion type
-        // Support both naming conventions: promotion_type/discount_type
-        const promoType = (promotion.promotion_type || promotion.discount_type || '').toLowerCase();
-        const discountValue = promotion.promotion_value || promotion.discount_value || 0;
-        
-        if (promoType === 'discount' || promoType === 'percent' || promoType === 'percentage') {
-          // Discount is percentage
-          let discount = Math.floor((this.orderData.subtotal * discountValue) / 100);
+        // Apply logic based on promotion scope
+        if (promotionScope === 'shipping') {
+          // Free ship voucher: only apply shippingDiscount, no discount
+          shippingDiscount = Math.min(shippingFee, discountValue); // Cap at shipping fee
+          discount = 0;
           
-          // Apply max discount limit if exists
-          if (promotion.max_discount_value !== undefined && promotion.max_discount_value !== null) {
-            const maxDiscount = promotion.max_discount_value || 0;
-            discount = Math.min(discount, maxDiscount);
+          console.log(`✅ Applied free ship voucher: ${promotion.code || promotion.promotion_code}, shippingDiscount: ${shippingDiscount}`);
+        } else if (promotionScope === 'order') {
+          // Normal discount voucher: only apply discount, no shippingDiscount
+          if (promoType === 'percent' || promoType === 'percentage') {
+            // Discount is percentage
+            discount = Math.floor((this.orderData.subtotal * discountValue) / 100);
+            
+            // Apply max discount limit if exists
+            if (promotion.max_discount_value !== undefined && promotion.max_discount_value !== null) {
+              const maxDiscount = promotion.max_discount_value || 0;
+              discount = Math.min(discount, maxDiscount);
+            }
+          } else if (promoType === 'fixed') {
+            // Fixed discount amount
+            discount = discountValue;
           }
           
-          this.orderData.discount = discount;
-        } else if (promoType === 'fixed') {
-          // Fixed discount amount
-          this.orderData.discount = discountValue;
+          shippingDiscount = 0;
+          
+          console.log(`✅ Applied normal discount voucher: ${promotion.code || promotion.promotion_code}, discount: ${discount}`);
         } else {
-          this.orderData.discount = 0;
+          // Unknown scope or no scope: default behavior (apply as discount)
+          if (promoType === 'percent' || promoType === 'percentage') {
+            discount = Math.floor((this.orderData.subtotal * discountValue) / 100);
+            if (promotion.max_discount_value !== undefined && promotion.max_discount_value !== null) {
+              const maxDiscount = promotion.max_discount_value || 0;
+              discount = Math.min(discount, maxDiscount);
+            }
+          } else if (promoType === 'fixed') {
+            discount = discountValue;
+          }
+          shippingDiscount = 0;
         }
       } else {
-        this.orderData.discount = 0;
+        discount = 0;
+        shippingDiscount = 0;
       }
     } else if (!this.selectedPromotionId) {
       // No promotion selected
-      this.orderData.discount = 0;
+      this.orderData.promotion = {
+        name: '',
+        code: '',
+        description: '',
+        value: 0,
+        type: ''
+      };
+      discount = 0;
+      shippingDiscount = 0;
     }
     
-    // Calculate total
-    this.orderData.total = this.orderData.subtotal - this.orderData.discount + this.orderData.shipping;
+    // Update orderData
+    this.orderData.discount = discount;
+    this.orderData.shippingFee = shippingFee;
+    this.orderData.shippingDiscount = shippingDiscount;
+    
+    // Calculate final shipping (shippingFee - shippingDiscount)
+    const finalShipping = shippingFee - shippingDiscount;
+    this.orderData.shipping = finalShipping;
+    
+    // Calculate total: Thành tiền = Tổng tiền hàng - Giảm giá + Phí vận chuyển (30000) - Giảm giá phí vận chuyển
+    this.orderData.total = this.orderData.subtotal - discount + shippingFee - shippingDiscount;
   }
 
   /**
@@ -826,15 +1791,85 @@ export class OrderDetail implements OnInit {
   }
 
   /**
+   * Search customer by ID
+   */
+  searchCustomerById(): void {
+    if (!this.customerIDSearch || !this.customerIDSearch.trim()) {
+      return;
+    }
+
+    const searchId = this.customerIDSearch.trim();
+    console.log('🔍 Searching for customer with ID:', searchId);
+
+    // Try to find customer by CustomerID, user_id, or _id
+    const user = this.users.find((u: any) => {
+      // Match by CustomerID
+      if (u.CustomerID && u.CustomerID.toString().toUpperCase() === searchId.toUpperCase()) {
+        return true;
+      }
+      // Match by user_id
+      if (u.user_id && u.user_id.toString() === searchId) {
+        return true;
+      }
+      // Match by _id (MongoDB ObjectId)
+      if (u._id) {
+        const idStr = typeof u._id === 'object' && u._id.$oid 
+          ? u._id.$oid 
+          : u._id.toString();
+        if (idStr === searchId || idStr.includes(searchId)) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    if (user) {
+      console.log('✅ Found customer:', user);
+      this.selectCustomer(user);
+      // Update search field with the found CustomerID
+      const customerID = user.CustomerID || '';
+      if (customerID) {
+        this.customerIDSearch = customerID;
+      }
+      this.displayPopup('Đã tìm thấy khách hàng!', 'success');
+    } else {
+      console.log('❌ Customer not found with ID:', searchId);
+      this.displayPopup('Không tìm thấy khách hàng với ID này!', 'error');
+    }
+  }
+
+  /**
    * Select customer
    */
   selectCustomer(user: any): void {
-    this.orderData.customer = user.full_name || user.name || 'Khách hàng #' + user.user_id;
+    // Get CustomerID
+    let customerID = user.CustomerID;
+    if (!customerID) {
+      // Generate CustomerID from user_id if not available
+      if (user.user_id) {
+        customerID = 'CUS' + String(user.user_id).padStart(6, '0');
+      } else if (user._id) {
+        const idStr = typeof user._id === 'object' && user._id.$oid 
+          ? user._id.$oid 
+          : user._id.toString();
+        customerID = 'CUS' + idStr.substring(0, 6).padStart(6, '0');
+      }
+    }
+
+    this.orderData.customer = user.FullName || user.full_name || user.name || 'Khách hàng #' + (user.user_id || customerID);
+    this.orderData.customerID = customerID || '';
+    // Update customerIDSearch to show the current CustomerID
+    if (customerID) {
+      this.customerIDSearch = customerID;
+    }
     this.orderData.customerInfo = {
-      name: user.full_name || user.name || '',
-      phone: user.phone || '',
-      email: user.email || '',
-      address: user.address || ''
+      name: user.FullName || user.full_name || user.name || '',
+      phone: user.Phone || user.phone || '',
+      email: user.Email || user.email || '',
+      address: user.Address || user.address || '',
+      totalOrders: user.totalOrders || user.TotalSpent ? 1 : 0,
+      totalSpent: user.TotalSpent || user.totalSpent || 0,
+      debt: user.debt || 0
     };
     // Copy to delivery info if empty
     if (!this.orderData.deliveryInfo.name) {
@@ -909,6 +1944,11 @@ export class OrderDetail implements OnInit {
           sum + (p.districts?.reduce((dSum: number, d: any) => dSum + (d.wards?.length || 0), 0) || 0), 0);
         
         console.log(`📊 Built ${provincesWithDistricts}/${this.provinces.length} provinces, ${totalDistricts} districts, ${totalWards} wards`);
+        
+        // If in edit mode and order is already loaded, set selected address values
+        if (this.isEditMode && this.order && this.orderData.id) {
+          this.setSelectedAddressValues();
+        }
       },
       error: (error) => {
         console.error('❌ Error loading tree_complete.json:', error);
@@ -916,6 +1956,65 @@ export class OrderDetail implements OnInit {
         this.loadSampleAddressData();
       }
     });
+  }
+
+  /**
+   * Set selected address values for dropdowns in edit mode
+   */
+  setSelectedAddressValues(): void {
+    if (!this.isEditMode || !this.orderData.deliveryInfo) {
+      return;
+    }
+    
+    const provinceName = this.orderData.deliveryInfo.province || '';
+    const districtName = this.orderData.deliveryInfo.district || '';
+    const wardName = this.orderData.deliveryInfo.ward || '';
+    
+    // Set selected province
+    if (provinceName && this.provinces.length > 0) {
+      const province = this.provinces.find(p => 
+        p.name === provinceName || 
+        p.fullName === provinceName ||
+        p.name.includes(provinceName) ||
+        provinceName.includes(p.name)
+      );
+      
+      if (province) {
+        this.selectedProvince = province.code;
+        this.onProvinceChange();
+        
+        // Set selected district
+        if (districtName && this.districts.length > 0) {
+          setTimeout(() => {
+            const district = this.districts.find(d => 
+              d.name === districtName || 
+              d.fullName?.includes(districtName) ||
+              districtName.includes(d.name)
+            );
+            
+            if (district) {
+              this.selectedDistrict = district.code;
+              this.onDistrictChange();
+              
+              // Set selected ward
+              if (wardName && this.wards.length > 0) {
+                setTimeout(() => {
+                  const ward = this.wards.find(w => 
+                    w.name === wardName || 
+                    (w.code && w.code === wardName) ||
+                    wardName.includes(w.name)
+                  );
+                  
+                  if (ward) {
+                    this.selectedWard = ward.code || ward.name;
+                  }
+                }, 100);
+              }
+            }
+          }, 100);
+        }
+      }
+    }
   }
 
   /**
@@ -1485,36 +2584,505 @@ export class OrderDetail implements OnInit {
     }
   }
 
+  // Flag to determine if we should navigate after popup closes
+  shouldNavigateAfterPopup: boolean = false;
+
+  /**
+   * Display popup notification
+   */
+  displayPopup(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+    this.popupMessage = message;
+    this.popupType = type;
+    this.showPopup = true;
+  }
+
   /**
    * Save new order
    */
   saveNewOrder(): void {
     // Validate required fields
     if (!this.orderData.customerInfo.name) {
-      alert('Vui lòng chọn khách hàng');
+      this.displayPopup('Vui lòng chọn khách hàng', 'error');
       return;
     }
     
     if (this.orderData.items.length === 0) {
-      alert('Vui lòng thêm ít nhất một sản phẩm vào đơn hàng');
+      this.displayPopup('Vui lòng thêm ít nhất một sản phẩm vào đơn hàng', 'error');
       return;
     }
     
-    // TODO: Implement API call to save order
-    console.log('Saving new order:', this.orderData);
-    alert('Đơn hàng đã được lưu thành công!');
+    // Validate delivery info
+    if (!this.orderData.deliveryInfo.name || !this.orderData.deliveryInfo.phone) {
+      this.displayPopup('Vui lòng nhập đầy đủ thông tin người nhận', 'error');
+      return;
+    }
+
+    if (!this.orderData.deliveryInfo.province || !this.orderData.deliveryInfo.district || !this.orderData.deliveryInfo.ward || !this.orderData.deliveryInfo.streetAddress) {
+      this.displayPopup('Vui lòng nhập đầy đủ địa chỉ giao hàng', 'error');
+      return;
+    }
     
-    // Navigate back to orders list
-    this.router.navigate(['/orders']);
+    // Get CustomerID - first try from orderData.customerID (set when selecting customer)
+    let customerID = this.orderData.customerID;
+    
+    if (!customerID) {
+      // Find customer by multiple criteria for better accuracy
+      // Priority: 1. Name + Phone, 2. Name + Email, 3. Name only, 4. Phone only, 5. Email only
+      const customerName = this.orderData.customerInfo.name || '';
+      const customerPhone = this.orderData.customerInfo.phone || '';
+      const customerEmail = this.orderData.customerInfo.email || '';
+      
+      let customer = null;
+      
+      // Try to find by name + phone first (most accurate)
+      if (customerName && customerPhone) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const phone = (u.Phone || u.phone || '').trim();
+          return fullName === customerName && phone === customerPhone;
+        });
+      }
+      
+      // If not found, try name + email
+      if (!customer && customerName && customerEmail) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const email = (u.Email || u.email || '').trim();
+          return fullName === customerName && email === customerEmail;
+        });
+      }
+      
+      // If not found, try phone only
+      if (!customer && customerPhone) {
+        customer = this.users.find(u => {
+          const phone = (u.Phone || u.phone || '').trim();
+          return phone === customerPhone;
+        });
+      }
+      
+      // If not found, try email only
+      if (!customer && customerEmail) {
+        customer = this.users.find(u => {
+          const email = (u.Email || u.email || '').trim();
+          return email === customerEmail;
+        });
+      }
+      
+      // If still not found, try name only (last resort)
+      if (!customer && customerName) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          return fullName === customerName;
+        });
+      }
+
+      if (!customer) {
+        this.displayPopup('Không tìm thấy khách hàng với thông tin đã nhập. Vui lòng chọn lại khách hàng từ danh sách.', 'error');
+        return;
+      }
+
+      // Get CustomerID from customer
+      customerID = customer.CustomerID;
+      if (!customerID) {
+        // Generate CustomerID from user_id if not available
+        if (customer.user_id) {
+          customerID = 'CUS' + String(customer.user_id).padStart(6, '0');
+        } else if (customer._id) {
+          const idStr = customer._id.toString();
+          customerID = 'CUS' + idStr.substring(0, 6).padStart(6, '0');
+        } else {
+          this.displayPopup('Không thể xác định ID khách hàng', 'error');
+          return;
+        }
+      }
+      
+      // Update orderData.customerID for future use
+      this.orderData.customerID = customerID;
+      console.log(`✅ Found customer: ${customerName} -> CustomerID: ${customerID}`);
+    }
+
+    // Transform orderData to MongoDB format
+    // Ensure all address fields are strings (not empty)
+    const city = String(this.orderData.deliveryInfo.province || '').trim();
+    const district = String(this.orderData.deliveryInfo.district || '').trim();
+    const ward = String(this.orderData.deliveryInfo.ward || '').trim();
+    const detail = String(this.orderData.deliveryInfo.streetAddress || '').trim();
+    
+    if (!city || !district || !ward || !detail) {
+      this.displayPopup('Địa chỉ giao hàng không hợp lệ! Vui lòng kiểm tra lại.', 'error');
+      return;
+    }
+    
+    const orderPayload = {
+      CustomerID: customerID,
+      shippingInfo: {
+        fullName: String(this.orderData.deliveryInfo.name || '').trim(),
+        phone: String(this.orderData.deliveryInfo.phone || '').trim(),
+        email: String(this.orderData.deliveryInfo.email || '').trim(),
+        address: {
+          city: city,
+          district: district,
+          ward: ward,
+          detail: detail
+        },
+        deliveryMethod: 'standard',
+        warehouseAddress: '',
+        notes: String(this.orderData.note || '').trim()
+      },
+      items: this.orderData.items.map((item: any) => {
+        // Use category and subcategory from item if available, otherwise try to find from productsMap
+        let category = item.category || '';
+        let subcategory = item.subcategory || '';
+        
+        if ((!category || !subcategory) && item.sku) {
+          // Find product by SKU
+          for (const [key, product] of this.productsMap.entries()) {
+            if (product.sku === item.sku || product.SKU === item.sku) {
+              category = category || product.category || '';
+              subcategory = subcategory || product.subcategory || '';
+              break;
+            }
+          }
+        }
+        
+        // Handle image field - convert array to string if needed
+        let imageValue = '';
+        if (item.image) {
+          if (Array.isArray(item.image)) {
+            // If image is array, take first element
+            imageValue = item.image[0] || '';
+          } else {
+            imageValue = String(item.image);
+          }
+        }
+        
+        return {
+          sku: item.sku || '',
+          productName: item.name || '',
+          quantity: item.quantity || 1,
+          price: item.price || 0,
+          image: imageValue,
+          unit: '',
+          category: category,
+          subcategory: subcategory
+        };
+      }),
+      paymentMethod: this.orderData.paymentMethod === 'COD' ? 'cod' : 
+                     this.orderData.paymentMethod === 'bank' ? 'banking' :
+                     this.orderData.paymentMethod === 'cash' ? 'cod' : 'cod',
+      subtotal: this.orderData.subtotal || 0,
+      shippingFee: this.orderData.shippingFee || 30000,
+      shippingDiscount: this.orderData.shippingDiscount || 0,
+      discount: this.orderData.discount || 0,
+      vatRate: 0,
+      vatAmount: 0,
+      totalAmount: this.orderData.total || 0,
+      code: this.orderData.promotion.code || '',
+      promotionName: this.orderData.promotion.name || '',
+      wantInvoice: false,
+      invoiceInfo: {},
+      consultantCode: ''
+    };
+
+    console.log('💾 Saving new order to MongoDB:', orderPayload);
+
+    // Call API to save order
+    this.apiService.createOrder(orderPayload).subscribe({
+      next: (response) => {
+        console.log('✅ Order saved successfully:', response);
+        this.shouldNavigateAfterPopup = true;
+        this.displayPopup('Đơn hàng đã được lưu thành công!', 'success');
+      },
+      error: (error) => {
+        console.error('❌ Error saving order:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi lưu đơn hàng';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
   }
 
   /**
-   * Cancel new order
+   * Close popup and navigate if needed
    */
-  cancelNewOrder(): void {
-    if (confirm('Bạn có chắc chắn muốn hủy việc tạo đơn hàng mới?')) {
-      this.goBack();
+  closePopup(): void {
+    const needsNavigation = this.shouldNavigateAfterPopup;
+    this.showPopup = false;
+    this.popupMessage = '';
+    this.shouldNavigateAfterPopup = false;
+    
+    if (needsNavigation) {
+      // Small delay to allow popup animation to complete
+      setTimeout(() => {
+    this.router.navigate(['/orders']);
+      }, 200);
     }
   }
+
+  /**
+   * Cancel order (new or edit)
+   */
+  cancelOrder(): void {
+    if (this.isNewOrder || this.isEditMode) {
+      if (this.returnUrl) {
+        this.router.navigateByUrl(this.returnUrl);
+      } else {
+        this.router.navigate(['/orders']);
+      }
+    }
+  }
+
+  cancelNewOrder(): void {
+    this.cancelOrder();
+  }
+
+  /**
+   * Save order (new or update)
+   */
+  saveOrder(): void {
+    if (this.isNewOrder) {
+      this.saveNewOrder();
+    } else if (this.isEditMode) {
+      this.updateOrder();
+    }
+  }
+
+  /**
+   * Update existing order
+   */
+  updateOrder(): void {
+    // Validate required fields
+    if (!this.orderData.customerInfo.name) {
+      this.displayPopup('Vui lòng chọn khách hàng', 'error');
+      return;
+    }
+    
+    if (this.orderData.items.length === 0) {
+      this.displayPopup('Vui lòng thêm ít nhất một sản phẩm vào đơn hàng', 'error');
+      return;
+    }
+    
+    // Validate delivery info
+    if (!this.orderData.deliveryInfo.name || !this.orderData.deliveryInfo.phone) {
+      this.displayPopup('Vui lòng nhập đầy đủ thông tin người nhận', 'error');
+      return;
+    }
+
+    if (!this.orderData.deliveryInfo.province || !this.orderData.deliveryInfo.district || !this.orderData.deliveryInfo.ward || !this.orderData.deliveryInfo.streetAddress) {
+      this.displayPopup('Vui lòng nhập đầy đủ địa chỉ giao hàng', 'error');
+      return;
+    }
+    
+    // Get OrderID
+    const orderID = this.getOrderID();
+    if (!orderID) {
+      this.displayPopup('Không tìm thấy mã đơn hàng!', 'error');
+      return;
+    }
+    
+    // Get CustomerID - first try from orderData.customerID (set when selecting customer)
+    let customerID = this.orderData.customerID;
+    
+    if (!customerID) {
+      // Find customer by multiple criteria for better accuracy
+      // Priority: 1. Name + Phone, 2. Name + Email, 3. Name only, 4. Phone only, 5. Email only
+      const customerName = this.orderData.customerInfo.name || '';
+      const customerPhone = this.orderData.customerInfo.phone || '';
+      const customerEmail = this.orderData.customerInfo.email || '';
+      
+      let customer = null;
+      
+      // Try to find by name + phone first (most accurate)
+      if (customerName && customerPhone) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const phone = (u.Phone || u.phone || '').trim();
+          return fullName === customerName && phone === customerPhone;
+        });
+      }
+      
+      // If not found, try name + email
+      if (!customer && customerName && customerEmail) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          const email = (u.Email || u.email || '').trim();
+          return fullName === customerName && email === customerEmail;
+        });
+      }
+      
+      // If not found, try phone only
+      if (!customer && customerPhone) {
+        customer = this.users.find(u => {
+          const phone = (u.Phone || u.phone || '').trim();
+          return phone === customerPhone;
+        });
+      }
+      
+      // If not found, try email only
+      if (!customer && customerEmail) {
+        customer = this.users.find(u => {
+          const email = (u.Email || u.email || '').trim();
+          return email === customerEmail;
+        });
+      }
+      
+      // If still not found, try name only (last resort)
+      if (!customer && customerName) {
+        customer = this.users.find(u => {
+          const fullName = (u.FullName || u.full_name || u.name || '').trim();
+          return fullName === customerName;
+        });
+      }
+      
+      if (customer) {
+        customerID = customer.CustomerID;
+        if (!customerID) {
+          if (customer.user_id) {
+            customerID = 'CUS' + String(customer.user_id).padStart(6, '0');
+          } else if (customer._id) {
+            const idStr = customer._id.toString();
+            customerID = 'CUS' + idStr.substring(0, 6).padStart(6, '0');
+          }
+        }
+        // Update orderData.customerID for future use
+        this.orderData.customerID = customerID;
+        console.log(`✅ Found customer: ${customerName} -> CustomerID: ${customerID}`);
+      }
+    }
+    
+    if (!customerID) {
+      this.displayPopup('Không tìm thấy ID khách hàng. Vui lòng chọn lại khách hàng từ danh sách.', 'error');
+      return;
+    }
+
+    // Transform orderData to MongoDB format
+    const city = String(this.orderData.deliveryInfo.province || '').trim();
+    const district = String(this.orderData.deliveryInfo.district || '').trim();
+    const ward = String(this.orderData.deliveryInfo.ward || '').trim();
+    const detail = String(this.orderData.deliveryInfo.streetAddress || '').trim();
+    
+    if (!city || !district || !ward || !detail) {
+      this.displayPopup('Địa chỉ giao hàng không hợp lệ! Vui lòng kiểm tra lại.', 'error');
+      return;
+    }
+
+    // Map status to backend status
+    let backendStatus = this.orderData.status;
+    if (backendStatus === 'confirmed' && this.orderData.delivery === 'delivering') {
+      backendStatus = 'shipping';
+    } else if (backendStatus === 'confirmed') {
+      backendStatus = 'confirmed';
+    }
+
+    const orderPayload = {
+      CustomerID: customerID,
+      shippingInfo: {
+        fullName: String(this.orderData.deliveryInfo.name || '').trim(),
+        phone: String(this.orderData.deliveryInfo.phone || '').trim(),
+        email: String(this.orderData.deliveryInfo.email || '').trim(),
+        address: {
+          city: city,
+          district: district,
+          ward: ward,
+          detail: detail
+        },
+        deliveryMethod: 'standard',
+        warehouseAddress: '',
+        notes: String(this.orderData.note || '').trim()
+      },
+      items: this.orderData.items.map((item: any) => {
+        let category = item.category || '';
+        let subcategory = item.subcategory || '';
+        
+        if ((!category || !subcategory) && item.sku) {
+          for (const [key, product] of this.productsMap.entries()) {
+            if (product.sku === item.sku || product.SKU === item.sku) {
+              category = category || product.category || '';
+              subcategory = subcategory || product.subcategory || '';
+              break;
+            }
+          }
+        }
+        
+        let imageValue = '';
+        if (item.image) {
+          if (Array.isArray(item.image)) {
+            imageValue = item.image[0] || '';
+          } else {
+            imageValue = String(item.image);
+          }
+        }
+        
+        return {
+          sku: item.sku || '',
+          productName: item.name || '',
+          quantity: Number(item.quantity) || 1,
+          price: Number(item.price) || 0,
+          image: imageValue,
+          unit: item.unit || '',
+          category: category,
+          subcategory: subcategory
+        };
+      }),
+      paymentMethod: (this.orderData.paymentMethod || 'COD').toLowerCase(),
+      subtotal: Number(this.orderData.subtotal) || 0,
+      shippingFee: Number(this.orderData.shippingFee) || 30000,
+      shippingDiscount: Number(this.orderData.shippingDiscount) || 0,
+      discount: Number(this.orderData.discount) || 0,
+      vatRate: 0,
+      vatAmount: 0,
+      totalAmount: Number(this.orderData.total) || 0,
+      code: this.orderData.promotion.code || '',
+      promotionName: this.orderData.promotion.name || '',
+      wantInvoice: false,
+      invoiceInfo: {},
+      consultantCode: '',
+      status: backendStatus
+    };
+
+    console.log('📦 Updating order:', orderID);
+    console.log('📦 Order payload:', orderPayload);
+
+    // Call API to update order
+    this.apiService.updateOrder(orderID, orderPayload).subscribe({
+      next: (response) => {
+        console.log('✅ Order updated successfully:', response);
+        this.displayPopup('Đơn hàng đã được cập nhật thành công!', 'success');
+        // Exit edit mode and reload order data
+        this.isEditMode = false;
+        // Reload order data to reflect changes
+        this.loadOrderDetail();
+        // Navigate back after a delay
+        setTimeout(() => {
+          if (this.returnUrl) {
+            this.router.navigateByUrl(this.returnUrl);
+          } else {
+            this.router.navigate(['/orders']);
+          }
+        }, 1500);
+      },
+      error: (error) => {
+        console.error('❌ Error updating order:', error);
+        const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi cập nhật đơn hàng';
+        this.displayPopup(errorMessage, 'error');
+      }
+    });
+  }
+
+  /**
+   * Update order CustomerID in MongoDB (background fix)
+   */
+  private updateOrderCustomerID(orderID: string, correctCustomerID: string): void {
+    // Call API to update CustomerID only
+    this.apiService.updateOrder(orderID, { CustomerID: correctCustomerID }).subscribe({
+      next: (response) => {
+        console.log(`✅ Updated order ${orderID} CustomerID to ${correctCustomerID}`);
+      },
+      error: (error) => {
+        console.error(`❌ Error updating order ${orderID} CustomerID:`, error);
+        // Don't show error to user as this is a background fix
+      }
+    });
+  }
 }
+
 

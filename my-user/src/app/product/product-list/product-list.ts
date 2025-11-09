@@ -1530,8 +1530,21 @@ export class ProductListComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('Added to cart:', product.ProductName);
   }
 
-  goToProductDetail(productId: string): void {
-    this.router.navigate(['/product-detail', productId]);
+  goToProductDetail(product: Product | string): void {
+    // Nếu nhận được object Product, ưu tiên dùng SKU, fallback về _id
+    if (typeof product === 'object' && product !== null) {
+      const id = product.sku || product._id || '';
+      if (id) {
+        this.router.navigate(['/product-detail', id]);
+      } else {
+        console.error('Cannot navigate: Product has no SKU or _id', product);
+      }
+    } else if (typeof product === 'string') {
+      // Nếu nhận được string, dùng trực tiếp
+      this.router.navigate(['/product-detail', product]);
+    } else {
+      console.error('Invalid product parameter:', product);
+    }
   }
 
   // -----------------------------

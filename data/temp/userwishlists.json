@@ -1,254 +1,256 @@
-[{
-  "_id": {
-    "$oid": "69033005966225afa60220b7"
-  },
-  "CustomerID": "CUS305416310",
-  "wishlist": [
-    {
-      "product_name": "Tinh nghệ canxi Honimore hộp giấy 288g",
-      "sku": "3414608",
-      "time": {
-        "$date": "2025-10-30T09:29:43.883Z"
-      },
-      "_id": {
-        "$oid": "69033007966225afa60220be"
-      }
-    }
-  ],
-  "__v": 2
-},
-{
-  "_id": {
-    "$oid": "690349bf39bc5a1262c61ec7"
-  },
-  "CustomerID": "CUS881229734",
-  "wishlist": [
-    {
-      "product_name": "Mật ong quất gừng sả 360g – Honeco",
-      "sku": "3507321",
-      "time": {
-        "$date": "2025-10-31T15:28:21.734Z"
-      },
-      "_id": {
-        "$oid": "6904d595b7160dcde00c1f98"
-      }
-    },
-    {
-      "product_name": "Mật ong nguyên chất Bee Honey 600ml",
-      "sku": "3005737",
-      "time": {
-        "$date": "2025-10-31T15:28:27.496Z"
-      },
-      "_id": {
-        "$oid": "6904d59bb7160dcde00c1fa5"
-      }
-    },
-    {
-      "product_name": "Mật ong nghệ Phương Nam 310g",
-      "sku": "3005744",
-      "time": {
-        "$date": "2025-10-31T15:28:29.720Z"
-      },
-      "_id": {
-        "$oid": "6904d59db7160dcde00c1fb6"
-      }
-    },
-    {
-      "product_name": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-      "sku": "3457993",
-      "time": {
-        "$date": "2025-10-31T17:45:15.962Z"
-      },
-      "_id": {
-        "$oid": "6904f5ab4eaf2f183a394f86"
-      }
-    },
-    {
-      "product_name": "Bún tươi Kiều Trang 500g",
-      "sku": "3418307",
-      "time": {
-        "$date": "2025-11-01T07:29:27.401Z"
-      },
-      "_id": {
-        "$oid": "6905b6d744671746faccb1c4"
-      }
-    },
-    {
-      "product_name": "Bún bò Kiều Trang 500g",
-      "sku": "3418309",
-      "time": {
-        "$date": "2025-11-01T07:29:29.361Z"
-      },
-      "_id": {
-        "$oid": "6905b6d944671746faccb1d4"
-      }
-    },
-    {
-      "product_name": "Sả cây 100g – Huy Vũ",
-      "sku": "3412005",
-      "time": {
-        "$date": "2025-11-01T07:57:55.499Z"
-      },
-      "_id": {
-        "$oid": "6905bd8344671746faccb849"
-      }
-    },
-    {
-      "product_name": "Hành tím Ấn Độ kg",
-      "sku": "3426520",
-      "time": {
-        "$date": "2025-11-01T11:03:45.531Z"
-      },
-      "_id": {
-        "$oid": "6905e91130542c10bf489a03"
-      }
-    }
-  ],
-  "__v": 59
-},
-{
-  "_id": {
-    "$oid": "6906238c5a2f8e22456a7b67"
-  },
-  "CustomerID": "CUS646672569",
-  "wishlist": [
-    {
-      "product_name": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-      "sku": "3514277",
-      "time": {
-        "$date": "2025-11-01T15:13:16.767Z"
-      },
-      "_id": {
-        "$oid": "6906238c5a2f8e22456a7b68"
-      }
-    },
-    {
-      "product_name": "Bột 5 loại đậu hạt sen Co.op Select 350g",
-      "sku": "3359027",
-      "time": {
-        "$date": "2025-11-01T15:13:17.612Z"
-      },
-      "_id": {
-        "$oid": "6906238d5a2f8e22456a7b6c"
-      }
-    }
-  ],
-  "__v": 1
-},
-{
-  "_id": {
-    "$oid": "6906cc5c3a3d368ca5b7756e"
-  },
-  "CustomerID": "CUS326736493",
-  "wishlist": [
-    {
-      "product_name": "Bột baking soda Arm & Hammer hộp 453g",
-      "sku": "3387014",
-      "time": {
-        "$date": "2025-11-03T12:34:05.370Z"
-      },
-      "_id": {
-        "$oid": "6908a13de79f402cc77a5e90"
-      }
-    },
-    {
-      "product_name": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-      "sku": "3457993",
-      "time": {
-        "$date": "2025-11-03T13:02:56.421Z"
-      },
-      "_id": {
-        "$oid": "6908a800e79f402cc77a6850"
-      }
-    },
-    {
-      "product_name": "Bột bánh xèo Co.op Select 1kg",
-      "sku": "3263551",
-      "time": {
-        "$date": "2025-11-03T13:02:57.344Z"
-      },
-      "_id": {
-        "$oid": "6908a801e79f402cc77a6855"
-      }
-    },
-    {
-      "product_name": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-      "sku": "3514277",
-      "time": {
-        "$date": "2025-11-03T13:02:58.576Z"
-      },
-      "_id": {
-        "$oid": "6908a802e79f402cc77a685b"
-      }
-    }
-  ],
-  "__v": 24
-},
-{
-  "_id": {
-    "$oid": "6906f26cbf97b61752e21167"
-  },
-  "CustomerID": ":1",
-  "wishlist": [
-    {
-      "product_name": "Ca cao hoà tan 6 trong 1 Napo hộp",
-      "sku": "3457993",
-      "time": {
-        "$date": "2025-11-02T05:55:56.129Z"
-      },
-      "_id": {
-        "$oid": "6906f26cbf97b61752e21168"
-      }
-    }
-  ],
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "69073408ff49b6f0cd507eb4"
-  },
-  "CustomerID": "CUS740201512",
-  "wishlist": [
-    {
-      "product_name": "Nước yến ngân nhĩ Tribeco lon 240ml",
-      "sku": "3004998",
-      "time": {
-        "$date": "2025-11-02T10:36:23.301Z"
-      },
-      "_id": {
-        "$oid": "69073427ff49b6f0cd507ef1"
-      }
-    },
-    {
-      "product_name": "Nước yến Ngân nhĩ bổ dưỡng Wonderfarm lon 240ml",
-      "sku": "3005003",
-      "time": {
-        "$date": "2025-11-02T10:42:39.861Z"
-      },
-      "_id": {
-        "$oid": "6907359fff49b6f0cd5085e2"
-      }
-    },
-    {
-      "product_name": "Cà phê đen Nescafe hộp giấy 10 gói x 10.5g",
-      "sku": "3599391",
-      "time": {
-        "$date": "2025-11-02T10:48:07.790Z"
-      },
-      "_id": {
-        "$oid": "690736e7ff49b6f0cd5086e2"
-      }
-    },
-    {
-      "product_name": "Bún bò Kiều Trang 500g",
-      "sku": "3418309",
-      "time": {
-        "$date": "2025-11-02T11:20:43.173Z"
-      },
-      "_id": {
-        "$oid": "69073e8bff49b6f0cd5089ec"
-      }
-    }
-  ],
-  "__v": 53
-}]
+[
+	{
+		"_id": {
+			"$oid": "69033005966225afa60220b7"
+		},
+		"CustomerID": "CUS000002",
+		"wishlist": [
+			{
+				"product_name": "Tinh nghệ canxi Honimore hộp giấy 288g",
+				"sku": "3414608",
+				"time": {
+					"$date": "2025-10-30T09:29:43.883Z"
+				},
+				"_id": {
+					"$oid": "69033007966225afa60220be"
+				}
+			}
+		],
+		"__v": 2
+	},
+	{
+		"_id": {
+			"$oid": "690349bf39bc5a1262c61ec7"
+		},
+		"CustomerID": "CUS881229734",
+		"wishlist": [
+			{
+				"product_name": "Mật ong quất gừng sả 360g – Honeco",
+				"sku": "3507321",
+				"time": {
+					"$date": "2025-10-31T15:28:21.734Z"
+				},
+				"_id": {
+					"$oid": "6904d595b7160dcde00c1f98"
+				}
+			},
+			{
+				"product_name": "Mật ong nguyên chất Bee Honey 600ml",
+				"sku": "3005737",
+				"time": {
+					"$date": "2025-10-31T15:28:27.496Z"
+				},
+				"_id": {
+					"$oid": "6904d59bb7160dcde00c1fa5"
+				}
+			},
+			{
+				"product_name": "Mật ong nghệ Phương Nam 310g",
+				"sku": "3005744",
+				"time": {
+					"$date": "2025-10-31T15:28:29.720Z"
+				},
+				"_id": {
+					"$oid": "6904d59db7160dcde00c1fb6"
+				}
+			},
+			{
+				"product_name": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+				"sku": "3457993",
+				"time": {
+					"$date": "2025-10-31T17:45:15.962Z"
+				},
+				"_id": {
+					"$oid": "6904f5ab4eaf2f183a394f86"
+				}
+			},
+			{
+				"product_name": "Bún tươi Kiều Trang 500g",
+				"sku": "3418307",
+				"time": {
+					"$date": "2025-11-01T07:29:27.401Z"
+				},
+				"_id": {
+					"$oid": "6905b6d744671746faccb1c4"
+				}
+			},
+			{
+				"product_name": "Bún bò Kiều Trang 500g",
+				"sku": "3418309",
+				"time": {
+					"$date": "2025-11-01T07:29:29.361Z"
+				},
+				"_id": {
+					"$oid": "6905b6d944671746faccb1d4"
+				}
+			},
+			{
+				"product_name": "Sả cây 100g – Huy Vũ",
+				"sku": "3412005",
+				"time": {
+					"$date": "2025-11-01T07:57:55.499Z"
+				},
+				"_id": {
+					"$oid": "6905bd8344671746faccb849"
+				}
+			},
+			{
+				"product_name": "Hành tím Ấn Độ kg",
+				"sku": "3426520",
+				"time": {
+					"$date": "2025-11-01T11:03:45.531Z"
+				},
+				"_id": {
+					"$oid": "6905e91130542c10bf489a03"
+				}
+			}
+		],
+		"__v": 59
+	},
+	{
+		"_id": {
+			"$oid": "6906238c5a2f8e22456a7b67"
+		},
+		"CustomerID": "CUS646672569",
+		"wishlist": [
+			{
+				"product_name": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+				"sku": "3514277",
+				"time": {
+					"$date": "2025-11-01T15:13:16.767Z"
+				},
+				"_id": {
+					"$oid": "6906238c5a2f8e22456a7b68"
+				}
+			},
+			{
+				"product_name": "Bột 5 loại đậu hạt sen Co.op Select 350g",
+				"sku": "3359027",
+				"time": {
+					"$date": "2025-11-01T15:13:17.612Z"
+				},
+				"_id": {
+					"$oid": "6906238d5a2f8e22456a7b6c"
+				}
+			}
+		],
+		"__v": 1
+	},
+	{
+		"_id": {
+			"$oid": "6906cc5c3a3d368ca5b7756e"
+		},
+		"CustomerID": "CUS000001",
+		"wishlist": [
+			{
+				"product_name": "Bột baking soda Arm & Hammer hộp 453g",
+				"sku": "3387014",
+				"time": {
+					"$date": "2025-11-03T12:34:05.370Z"
+				},
+				"_id": {
+					"$oid": "6908a13de79f402cc77a5e90"
+				}
+			},
+			{
+				"product_name": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+				"sku": "3457993",
+				"time": {
+					"$date": "2025-11-03T13:02:56.421Z"
+				},
+				"_id": {
+					"$oid": "6908a800e79f402cc77a6850"
+				}
+			},
+			{
+				"product_name": "Bột bánh xèo Co.op Select 1kg",
+				"sku": "3263551",
+				"time": {
+					"$date": "2025-11-03T13:02:57.344Z"
+				},
+				"_id": {
+					"$oid": "6908a801e79f402cc77a6855"
+				}
+			},
+			{
+				"product_name": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+				"sku": "3514277",
+				"time": {
+					"$date": "2025-11-03T13:02:58.576Z"
+				},
+				"_id": {
+					"$oid": "6908a802e79f402cc77a685b"
+				}
+			}
+		],
+		"__v": 24
+	},
+	{
+		"_id": {
+			"$oid": "6906f26cbf97b61752e21167"
+		},
+		"CustomerID": ":1",
+		"wishlist": [
+			{
+				"product_name": "Ca cao hoà tan 6 trong 1 Napo hộp",
+				"sku": "3457993",
+				"time": {
+					"$date": "2025-11-02T05:55:56.129Z"
+				},
+				"_id": {
+					"$oid": "6906f26cbf97b61752e21168"
+				}
+			}
+		],
+		"__v": 0
+	},
+	{
+		"_id": {
+			"$oid": "69073408ff49b6f0cd507eb4"
+		},
+		"CustomerID": "CUS000002",
+		"wishlist": [
+			{
+				"product_name": "Nước yến ngân nhĩ Tribeco lon 240ml",
+				"sku": "3004998",
+				"time": {
+					"$date": "2025-11-02T10:36:23.301Z"
+				},
+				"_id": {
+					"$oid": "69073427ff49b6f0cd507ef1"
+				}
+			},
+			{
+				"product_name": "Nước yến Ngân nhĩ bổ dưỡng Wonderfarm lon 240ml",
+				"sku": "3005003",
+				"time": {
+					"$date": "2025-11-02T10:42:39.861Z"
+				},
+				"_id": {
+					"$oid": "6907359fff49b6f0cd5085e2"
+				}
+			},
+			{
+				"product_name": "Cà phê đen Nescafe hộp giấy 10 gói x 10.5g",
+				"sku": "3599391",
+				"time": {
+					"$date": "2025-11-02T10:48:07.790Z"
+				},
+				"_id": {
+					"$oid": "690736e7ff49b6f0cd5086e2"
+				}
+			},
+			{
+				"product_name": "Bún bò Kiều Trang 500g",
+				"sku": "3418309",
+				"time": {
+					"$date": "2025-11-02T11:20:43.173Z"
+				},
+				"_id": {
+					"$oid": "69073e8bff49b6f0cd5089ec"
+				}
+			}
+		],
+		"__v": 53
+	}
+]

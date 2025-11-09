@@ -577,7 +577,7 @@
 
 .orders-table thead th {
   padding: 16px;
-  text-align: left;
+  text-align: center;
   font-family: 'SF Pro', sans-serif;
   font-size: 13px;
   font-weight: 700;
@@ -599,33 +599,36 @@
 .col-order-id {
   width: 10%;
   min-width: 100px;
+  text-align: center !important;
 }
 
 .col-date {
   width: 12%;
   min-width: 120px;
+  text-align: center !important;
 }
 
 .col-customer {
-  width: 15%;
-  min-width: 150px;
+  width: 22%;
+  min-width: 200px;
+  text-align: center !important;
 }
 
 .col-status {
-  width: 15%;
-  min-width: 150px;
+  width: 13%;
+  min-width: 130px;
   text-align: center !important;
 }
 
 .col-payment {
-  width: 15%;
-  min-width: 150px;
+  width: 13%;
+  min-width: 130px;
   text-align: center !important;
 }
 
 .col-delivery {
-  width: 15%;
-  min-width: 140px;
+  width: 13%;
+  min-width: 130px;
   text-align: center !important;
 }
 
@@ -653,6 +656,39 @@
   font-size: 14px;
   color: #1A1A1A;
   vertical-align: middle;
+  text-align: center;
+}
+
+.orders-table tbody .col-checkbox {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-order-id {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-date {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-customer {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-status {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-payment {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-delivery {
+  text-align: center !important;
+}
+
+.orders-table tbody .col-total {
+  text-align: right !important;
 }
 
 /* Checkbox */
@@ -1392,6 +1428,445 @@
 
   .btn-action span {
     display: none;
+  }
+}
+
+/* Dark Mode Styles */
+.dark-mode .orders-page {
+  background: linear-gradient(135deg, #1F3D1A 0%, #2A5A25 20%, #357030 40%, #40863B 60%, #4A9C45 80%, #55B250 100%);
+}
+
+.admin-layout.dark-mode .breadcrumb,
+.dark-mode .breadcrumb,
+:host-context(.dark-mode) .breadcrumb {
+  color: #FFFFFF !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .separator,
+.dark-mode .breadcrumb .separator,
+:host-context(.dark-mode) .breadcrumb .separator {
+  color: #D1D5DB !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .current,
+.dark-mode .breadcrumb .current,
+:host-context(.dark-mode) .breadcrumb .current {
+  color: #68CB3C !important;
+  font-weight: 600;
+}
+
+/* Dark Mode - Stat Cards: Giữ nguyên màu light mode */
+.admin-layout.dark-mode .statistics-grid .stat-card,
+.dark-mode .statistics-grid .stat-card,
+:host-context(.dark-mode) .statistics-grid .stat-card {
+  background: white !important;
+  /* Giữ nguyên màu trắng như light mode */
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card .stat-value,
+.dark-mode .statistics-grid .stat-card .stat-value,
+:host-context(.dark-mode) .statistics-grid .stat-card .stat-value {
+  color: #1A1A1A !important;
+  background: none !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+  /* Giữ nguyên màu đen như light mode, không dùng gradient */
+}
+
+/* Không override màu title ở đây - để các selector cụ thể bên dưới xử lý */
+
+/* Giữ nguyên màu cho các stat card active states */
+.admin-layout.dark-mode .stat-card.stat-all.active,
+.dark-mode .stat-card.stat-all.active,
+:host-context(.dark-mode) .stat-card.stat-all.active {
+  background: #F9FAFB !important;
+}
+
+.admin-layout.dark-mode .stat-card.stat-pending.active,
+.dark-mode .stat-card.stat-pending.active,
+:host-context(.dark-mode) .stat-card.stat-pending.active {
+  background: #FEF9C3 !important;
+}
+
+.admin-layout.dark-mode .stat-card.stat-delivering.active,
+.dark-mode .stat-card.stat-delivering.active,
+:host-context(.dark-mode) .stat-card.stat-delivering.active {
+  background: #FEF9C3 !important;
+}
+
+.admin-layout.dark-mode .stat-card.stat-unpaid.active,
+.dark-mode .stat-card.stat-unpaid.active,
+:host-context(.dark-mode) .stat-card.stat-unpaid.active {
+  background: #FEF2F2 !important;
+}
+
+.admin-layout.dark-mode .stat-card.stat-refund-requested.active,
+.dark-mode .stat-card.stat-refund-requested.active,
+:host-context(.dark-mode) .stat-card.stat-refund-requested.active {
+  background: #FEF2F2 !important;
+}
+
+.admin-layout.dark-mode .stat-card.stat-refunded.active,
+.dark-mode .stat-card.stat-refunded.active,
+:host-context(.dark-mode) .stat-card.stat-refunded.active {
+  background: #FEF2F2 !important;
+}
+
+/* Giữ nguyên màu hover như light mode */
+.admin-layout.dark-mode .statistics-grid .stat-card.clickable:hover,
+.dark-mode .statistics-grid .stat-card.clickable:hover,
+:host-context(.dark-mode) .statistics-grid .stat-card.clickable:hover {
+  background: #f9fafb !important;
+}
+
+/* Giữ nguyên các màu title cho các loại stat card - Độ ưu tiên cao nhất */
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-all .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-all .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-all .stat-title,
+.admin-layout.dark-mode .stat-card.stat-all .stat-title,
+.dark-mode .stat-card.stat-all .stat-title,
+:host-context(.dark-mode) .stat-card.stat-all .stat-title {
+  color: #6B7280 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-pending .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-pending .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-pending .stat-title,
+.admin-layout.dark-mode .stat-card.stat-pending .stat-title,
+.dark-mode .stat-card.stat-pending .stat-title,
+:host-context(.dark-mode) .stat-card.stat-pending .stat-title {
+  color: #CA8A04 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-delivering .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-delivering .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-delivering .stat-title,
+.admin-layout.dark-mode .stat-card.stat-delivering .stat-title,
+.dark-mode .stat-card.stat-delivering .stat-title,
+:host-context(.dark-mode) .stat-card.stat-delivering .stat-title {
+  color: #CA8A04 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-unpaid .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-unpaid .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-unpaid .stat-title,
+.admin-layout.dark-mode .stat-card.stat-unpaid .stat-title,
+.dark-mode .stat-card.stat-unpaid .stat-title,
+:host-context(.dark-mode) .stat-card.stat-unpaid .stat-title {
+  color: #DC2626 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-refund-requested .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-refund-requested .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-refund-requested .stat-title,
+.admin-layout.dark-mode .stat-card.stat-refund-requested .stat-title,
+.dark-mode .stat-card.stat-refund-requested .stat-title,
+:host-context(.dark-mode) .stat-card.stat-refund-requested .stat-title {
+  color: #DC2626 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-refunded .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-refunded .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-refunded .stat-title,
+.admin-layout.dark-mode .stat-card.stat-refunded .stat-title,
+.dark-mode .stat-card.stat-refunded .stat-title,
+:host-context(.dark-mode) .stat-card.stat-refunded .stat-title {
+  color: #DC2626 !important;
+}
+
+/* Giữ nguyên màu cho active state titles - Độ ưu tiên cao nhất */
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-all.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-all.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-all.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-all.active .stat-title,
+.dark-mode .stat-card.stat-all.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-all.active .stat-title {
+  color: #6B7280 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-pending.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-pending.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-pending.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-pending.active .stat-title,
+.dark-mode .stat-card.stat-pending.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-pending.active .stat-title {
+  color: #CA8A04 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-delivering.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-delivering.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-delivering.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-delivering.active .stat-title,
+.dark-mode .stat-card.stat-delivering.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-delivering.active .stat-title {
+  color: #CA8A04 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-unpaid.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-unpaid.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-unpaid.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-unpaid.active .stat-title,
+.dark-mode .stat-card.stat-unpaid.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-unpaid.active .stat-title {
+  color: #DC2626 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-refund-requested.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-refund-requested.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-refund-requested.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-refund-requested.active .stat-title,
+.dark-mode .stat-card.stat-refund-requested.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-refund-requested.active .stat-title {
+  color: #DC2626 !important;
+}
+
+.admin-layout.dark-mode .statistics-grid .stat-card.stat-refunded.active .stat-title,
+.dark-mode .statistics-grid .stat-card.stat-refunded.active .stat-title,
+:host-context(.dark-mode) .statistics-grid .stat-card.stat-refunded.active .stat-title,
+.admin-layout.dark-mode .stat-card.stat-refunded.active .stat-title,
+.dark-mode .stat-card.stat-refunded.active .stat-title,
+:host-context(.dark-mode) .stat-card.stat-refunded.active .stat-title {
+  color: #DC2626 !important;
+}
+
+/* Giữ nguyên màu cho active state values */
+.admin-layout.dark-mode .stat-card.active .stat-value,
+.dark-mode .stat-card.active .stat-value,
+:host-context(.dark-mode) .stat-card.active .stat-value {
+  color: #1A1A1A !important;
+}
+
+/* ========================================
+   CUSTOM POPUP NOTIFICATION
+   ======================================== */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.popup-container {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px 24px;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popupSlideIn 0.3s ease-out;
+  text-align: center;
+}
+
+.popup-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+}
+
+.popup-icon.success {
+  background: linear-gradient(135deg, #3CB018 0%, #2D8A1F 100%);
+}
+
+.popup-icon.error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.popup-icon.info {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.icon-check,
+.icon-error,
+.icon-info {
+  display: block;
+  line-height: 1;
+}
+
+.popup-message {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: 'Lexend', sans-serif;
+}
+
+.popup-btn-ok {
+  background: linear-gradient(135deg, #3CB018 0%, #2D8A1F 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 40px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Lexend', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.popup-btn-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 176, 24, 0.4);
+}
+
+.popup-btn-ok:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   CONFIRMATION DIALOG
+   ======================================== */
+
+.confirm-dialog {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px 24px;
+  min-width: 400px;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popupSlideIn 0.3s ease-out;
+  text-align: center;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.icon-question {
+  display: block;
+  line-height: 1;
+}
+
+.confirm-message {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: 'Lexend', sans-serif;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-ok {
+  padding: 12px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Lexend', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.btn-confirm-cancel {
+  background: #F3F4F6;
+  color: #374151;
+  border: 2px solid #E5E7EB;
+}
+
+.btn-confirm-cancel:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-confirm-cancel:active {
+  transform: translateY(0);
+}
+
+.btn-confirm-ok {
+  background: linear-gradient(135deg, #3CB018 0%, #2D8A1F 100%);
+  color: white;
+}
+
+.btn-confirm-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 176, 24, 0.4);
+}
+
+.btn-confirm-ok:active {
+  transform: translateY(0);
+}
+
+/* Popup Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive Popup */
+@media (max-width: 480px) {
+  .popup-container,
+  .confirm-dialog {
+    min-width: 280px;
+    padding: 24px 20px 20px;
+  }
+
+  .popup-icon,
+  .confirm-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+
+  .popup-message,
+  .confirm-message {
+    font-size: 14px;
+  }
+
+  .confirm-buttons {
+    flex-direction: column;
+  }
+
+  .confirm-btn-cancel,
+  .confirm-btn-ok {
+    width: 100%;
   }
 }
 

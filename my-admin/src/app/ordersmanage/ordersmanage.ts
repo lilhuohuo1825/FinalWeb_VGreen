@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { Subscription, filter } from 'rxjs';
 
 @Component({
   selector: 'app-ordersmanage',
@@ -12,10 +13,12 @@ import { ApiService } from '../services/api.service';
   styleUrl: './ordersmanage.css',
   standalone: true
 })
-export class OrdersManage implements OnInit {
+export class OrdersManage implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private router = inject(Router);
   private apiService = inject(ApiService);
+  private routerSubscription?: Subscription;
+  
   // Statistics
   statistics = {
     total: 0,
@@ -29,6 +32,7 @@ export class OrdersManage implements OnInit {
   // Orders data
   orders: any[] = [];
   allOrders: any[] = []; // Keep original data for search/filter
+  loadError: string = '';
   users: any[] = [];
 
   selectedCount = 0;
@@ -43,16 +47,57 @@ export class OrdersManage implements OnInit {
   currentSortOrder: 'asc' | 'desc' = 'desc'; // asc: ascending, desc: descending
   showSortDropdown: boolean = false;
 
+  // Popup state
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  popupType: 'success' | 'error' | 'info' = 'success';
+
+  // Confirmation dialog state
+  showConfirmDialog: boolean = false;
+  confirmMessage: string = '';
+  confirmCallback: (() => void) | null = null;
+
   constructor() {}
+
+  private previousUrl: string = '';
 
   ngOnInit(): void {
     this.loadData();
+    
+    // Track previous URL and reload orders when navigating back from order detail
+    this.previousUrl = this.router.url;
+    
+    // Reload orders when navigating back from order detail page
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const currentUrl = event.url;
+      
+      // Reload orders when navigating to orders page from order detail page
+      if ((currentUrl === '/orders' || currentUrl.startsWith('/orders')) && 
+          (this.previousUrl?.includes('/orders/') && !this.previousUrl.includes('/orders/new'))) {
+        // Reload orders to get updated status
+        console.log('🔄 Reloading orders after navigation from order detail...');
+        setTimeout(() => {
+          this.loadOrders();
+        }, 100);
+      }
+      
+      this.previousUrl = currentUrl;
+    });
     
     // Close dropdown when clicking outside
     document.addEventListener('click', () => {
       this.closeFilterDropdown();
       this.closeSortDropdown();
     });
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -66,45 +111,104 @@ export class OrdersManage implements OnInit {
    * Load orders data from MongoDB via API
    */
   loadOrders(): void {
-    console.log('Loading orders from MongoDB...');
+    console.log('🔄 Loading orders from MongoDB...');
     // Try MongoDB first
     this.apiService.getOrders().subscribe({
       next: (ordersData) => {
+        console.log('📦 [OrdersManage] Raw orders data:', ordersData);
+        
+        // Đảm bảo ordersData là array
+        if (!Array.isArray(ordersData)) {
+          console.error('❌ [OrdersManage] ordersData is not an array:', ordersData);
+          this.allOrders = [];
+          this.orders = [];
+          this.updateStatistics();
+          this.loadError = 'Dữ liệu đơn hàng không hợp lệ';
+          return;
+        }
+        
         console.log(`✅ Loaded ${ordersData.length} orders from MongoDB`);
-        this.allOrders = ordersData.map(order => this.transformOrder(order));
         
-        // Sort by date - newest first (default)
-        this.sortOrdersByDate();
-        
-        this.orders = [...this.allOrders];
-        this.updateStatistics();
+        // Load users to map CustomerID to customer name
+        this.apiService.getUsers().subscribe({
+          next: (usersData) => {
+            console.log(`✅ Loaded ${usersData.length} users from MongoDB`);
+            this.users = Array.isArray(usersData) ? usersData : [];
+            
+            // Transform orders with user mapping - use transformOrderFromTemp for MongoDB format
+            this.allOrders = ordersData.map(order => this.transformOrderFromTemp(order));
+            
+            // Sort by date - newest first (default)
+            this.sortOrdersByDate();
+            
+            this.orders = [...this.allOrders];
+            this.updateStatistics();
+            this.loadError = '';
+          },
+          error: (error) => {
+            console.error('❌ Error loading users from MongoDB:', error);
+            // Still transform orders without user mapping
+            this.allOrders = ordersData.map(order => this.transformOrderFromTemp(order));
+            this.sortOrdersByDate();
+            this.orders = [...this.allOrders];
+            this.updateStatistics();
+            this.loadError = '';
+          }
+        });
       },
       error: (error) => {
         console.error('❌ Error loading orders from MongoDB:', error);
-        console.log('⚠️ Falling back to JSON file...');
-        // Fallback to JSON
-        this.loadOrdersFromJSON();
+        this.loadError = '❌ Không thể tải dữ liệu từ MongoDB';
+        // Don't fallback to JSON - only use MongoDB data
+        this.allOrders = [];
+        this.orders = [];
+        this.updateStatistics();
       }
     });
   }
 
   /**
-   * Fallback: Load orders from JSON file
+   * REMOVED: No longer using JSON fallback - MongoDB only!
+   * Fallback: Load orders from JSON file (deprecated - should not be called)
    */
   private loadOrdersFromJSON(): void {
-    this.http.get<any[]>('data/orders.json').subscribe({
+    // This method is kept for reference but should not be called
+    // All data should come from MongoDB only
+    console.warn('⚠️ loadOrdersFromJSON() is deprecated. Use MongoDB only.');
+    return; // Early return to prevent execution
+    
+    // Load orders from temp folder (deprecated)
+    this.http.get<any[]>('data/temp/orders.json').subscribe({
       next: (ordersData) => {
-        console.log(`✅ Loaded ${ordersData.length} orders from JSON (fallback)`);
-        this.allOrders = ordersData.map(order => this.transformOrder(order));
+        console.log(`✅ Loaded ${ordersData.length} orders from temp folder JSON`);
         
-        // Sort by date - newest first (default)
-        this.sortOrdersByDate();
-        
-        this.orders = [...this.allOrders];
-        this.updateStatistics();
+        // Load users to map CustomerID to customer name (deprecated)
+        this.http.get<any[]>('data/temp/users.json').subscribe({
+          next: (usersData) => {
+            console.log(`✅ Loaded ${usersData.length} users from temp folder`);
+            this.users = usersData;
+            
+            // Transform orders with user mapping
+            this.allOrders = ordersData.map(order => this.transformOrderFromTemp(order));
+            
+            // Sort by date - newest first (default)
+            this.sortOrdersByDate();
+            
+            this.orders = [...this.allOrders];
+            this.updateStatistics();
+          },
+          error: (error) => {
+            console.error('❌ Error loading users from temp JSON:', error);
+            // Still transform orders without user mapping
+            this.allOrders = ordersData.map(order => this.transformOrderFromTemp(order));
+            this.sortOrdersByDate();
+            this.orders = [...this.allOrders];
+            this.updateStatistics();
+          }
+        });
       },
       error: (error) => {
-        console.error('❌ Error loading orders from JSON:', error);
+        console.error('❌ Error loading orders from temp JSON:', error);
       }
     });
   }
@@ -179,6 +283,113 @@ export class OrdersManage implements OnInit {
   }
 
   /**
+   * Transform order data from temp folder JSON format to component format
+   */
+  transformOrderFromTemp(orderData: any): any {
+    // Get customer name from shippingInfo or users
+    let customerName = orderData.shippingInfo?.fullName || '';
+    
+    // Try to find customer name from users array if available
+    if (!customerName && orderData.CustomerID && this.users.length > 0) {
+      const user = this.users.find(u => u.CustomerID === orderData.CustomerID);
+      if (user) {
+        customerName = user.FullName || user.Email || orderData.CustomerID;
+      }
+    }
+    
+    // Fallback to CustomerID if no name found
+    if (!customerName) {
+      customerName = 'Khách hàng #' + (orderData.CustomerID || 'N/A');
+    }
+
+    // Map status from temp JSON format
+    let status = 'pending';
+    let delivery = 'pending';
+    let payment = 'unpaid';
+    let refund = 'none';
+
+    // Map status from temp JSON format (completed, cancelled, delivered, returned, etc.)
+    // Logic này phải giống hệt với transformOrderDataFromMongoDB() trong orderdetail.ts
+    const orderStatus = orderData.status?.toLowerCase() || 'pending';
+    
+    if (orderStatus === 'completed' || orderStatus === 'delivered') {
+      // Both completed and delivered are considered the same final status
+      status = 'confirmed';
+      delivery = 'delivered';
+      payment = orderData.paymentMethod === 'cod' ? 'paid' : (orderData.paymentMethod ? 'paid' : 'unpaid');
+      refund = 'none';
+    } else if (orderStatus === 'pending') {
+      status = 'pending';
+      delivery = 'pending';
+      payment = 'unpaid';
+      refund = 'none';
+    } else if (orderStatus === 'cancelled') {
+      status = 'cancelled';
+      delivery = 'none';
+      payment = 'unpaid';
+      refund = 'none';
+    } else if (orderStatus === 'processing_return' || orderStatus === 'returning') {
+      // Đang xử lý hoàn trả / đang hoàn trả
+      status = 'refund-requested';
+      delivery = 'delivering';
+      payment = orderData.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'requested';
+    } else if (orderStatus === 'returned') {
+      status = 'refunded';
+      delivery = 'none';
+      payment = 'unpaid';
+      refund = 'refunded';
+    } else if (orderStatus === 'processing' || orderStatus === 'shipping') {
+      status = 'confirmed';
+      delivery = 'delivering';
+      payment = orderData.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'none';
+    } else if (orderStatus === 'confirmed') {
+      status = 'confirmed';
+      delivery = 'delivering'; // Khi xác nhận đơn hàng, tự động chuyển sang đang giao
+      payment = orderData.paymentMethod === 'cod' ? 'unpaid' : 'paid';
+      refund = 'none';
+    }
+
+    // Format date from ISO string to DD/MM/YYYY
+    let formattedDate = '';
+    if (orderData.createdAt) {
+      const dateStr = orderData.createdAt.$date || orderData.createdAt;
+      const dateObj = new Date(dateStr);
+      if (!isNaN(dateObj.getTime())) {
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
+        formattedDate = `${day}/${month}/${year}`;
+      }
+    }
+    
+    if (!formattedDate) {
+      formattedDate = 'N/A';
+    }
+
+    // Format amount
+    const totalAmount = orderData.totalAmount || 0;
+    const formattedAmount = this.formatCurrency(totalAmount);
+
+    // Use OrderID as order ID
+    const orderId = orderData.OrderID || orderData._id?.$oid || 'N/A';
+
+    return {
+      id: orderId,
+      date: formattedDate,
+      customer: customerName,
+      status: status,
+      payment: payment,
+      delivery: delivery,
+      refund: refund,
+      total: formattedAmount,
+      selected: false,
+      rawData: orderData // Keep raw data for detail page
+    };
+  }
+
+  /**
    * Format currency
    */
   formatCurrency(amount: number): string {
@@ -203,8 +414,23 @@ export class OrdersManage implements OnInit {
    */
   private sortOrdersByDate(order: 'asc' | 'desc' = 'desc'): void {
     this.allOrders.sort((a, b) => {
-      const dateA = a.rawData?.order_date || '2000-01-01';
-      const dateB = b.rawData?.order_date || '2000-01-01';
+      // Support both old format (order_date) and new temp format (createdAt)
+      let dateA = a.rawData?.order_date || '';
+      let dateB = b.rawData?.order_date || '';
+      
+      // If no order_date, try createdAt from temp format
+      if (!dateA && a.rawData?.createdAt) {
+        const dateStr = a.rawData.createdAt.$date || a.rawData.createdAt;
+        dateA = new Date(dateStr).toISOString();
+      }
+      if (!dateB && b.rawData?.createdAt) {
+        const dateStr = b.rawData.createdAt.$date || b.rawData.createdAt;
+        dateB = new Date(dateStr).toISOString();
+      }
+      
+      // Fallback to default date if still empty
+      dateA = dateA || '2000-01-01';
+      dateB = dateB || '2000-01-01';
       
       if (order === 'desc') {
         // Descending (newest first)
@@ -223,8 +449,9 @@ export class OrdersManage implements OnInit {
    */
   private sortOrdersByPrice(order: 'asc' | 'desc' = 'desc'): void {
     this.allOrders.sort((a, b) => {
-      const priceA = a.rawData?.total_amount || 0;
-      const priceB = b.rawData?.total_amount || 0;
+      // Support both old format (total_amount) and new temp format (totalAmount)
+      const priceA = a.rawData?.totalAmount || a.rawData?.total_amount || 0;
+      const priceB = b.rawData?.totalAmount || b.rawData?.total_amount || 0;
       
       if (order === 'desc') {
         // Descending (highest first)
@@ -355,8 +582,31 @@ export class OrdersManage implements OnInit {
    */
   editOrders(): void {
     const selected = this.orders.filter(o => o.selected);
-    console.log('Edit orders:', selected);
-    // TODO: Implement edit logic
+    
+    if (selected.length === 0) {
+      this.displayPopup('Vui lòng chọn đơn hàng cần chỉnh sửa', 'error');
+      return;
+    }
+    
+    if (selected.length > 1) {
+      this.displayPopup('Chỉ có thể chỉnh sửa một đơn hàng tại một thời điểm', 'error');
+      return;
+    }
+    
+    // Navigate to order detail page with edit mode
+    const order = selected[0];
+    console.log('Edit order:', order);
+    
+    // Extract OrderID from order.id (remove VG prefix if exists)
+    const orderId = order.id.replace('VG', '');
+    
+    // Navigate with state indicating edit mode
+    this.router.navigate(['/orders', orderId], {
+      state: { 
+        editMode: true,
+        returnUrl: '/orders'
+      }
+    });
   }
 
   /**
@@ -365,25 +615,102 @@ export class OrdersManage implements OnInit {
   deleteOrders(): void {
     const selected = this.orders.filter(o => o.selected);
     if (selected.length === 0) {
-      alert('Vui lòng chọn đơn hàng cần xóa');
+      this.displayPopup('Vui lòng chọn đơn hàng cần xóa', 'error');
       return;
     }
     
-    if (confirm(`Bạn có chắc chắn muốn xóa ${selected.length} đơn hàng?`)) {
-      // Get selected IDs
-      const selectedIds = selected.map(o => o.id);
-      
-      // Remove from allOrders
-      this.allOrders = this.allOrders.filter(o => !selectedIds.includes(o.id));
-      
-      // Re-apply current filter
-      this.applyFilter();
-      
-      this.selectedCount = 0;
-      this.selectAll = false;
-      this.updateStatistics();
-      console.log('Deleted orders:', selectedIds);
+    // Show confirmation dialog
+    this.showConfirmation(
+      `Bạn có chắc chắn muốn xóa ${selected.length} đơn hàng?`,
+      () => {
+        // Get selected IDs - use the full OrderID as stored in database
+        // Remove only "VG" prefix if exists (frontend display format), but keep "ORD" prefix
+        const selectedIds = selected.map(o => {
+          let orderId = o.id;
+          // Remove "VG" prefix if it exists (this is just for display)
+          if (orderId.startsWith('VG')) {
+            orderId = orderId.substring(2); // Remove "VG" prefix
+          }
+          // Keep "ORD" prefix as that's the actual OrderID format in MongoDB
+          return orderId;
+        });
+        
+        console.log('🗑️ Deleting orders with IDs:', selectedIds);
+        
+        // Delete orders via API
+        const deletePromises = selectedIds.map(orderId => {
+          if (!orderId) {
+            console.warn('⚠️ Order missing ID');
+            return Promise.resolve(null);
+          }
+          return this.apiService.deleteOrder(orderId).toPromise();
+        });
+
+        Promise.all(deletePromises).then(results => {
+          const successCount = results.filter(r => r !== null).length;
+          console.log(`✅ Deleted ${successCount} orders successfully`);
+          
+          // Reload orders from MongoDB to get updated list
+          this.loadOrders();
+          
+          this.selectedCount = 0;
+          this.selectAll = false;
+          this.displayPopup(`Đã xóa ${successCount} đơn hàng thành công`, 'success');
+        }).catch(error => {
+          console.error('❌ Error deleting orders:', error);
+          this.displayPopup('Lỗi khi xóa đơn hàng: ' + (error.error?.message || error.message), 'error');
+          // Still reload to sync with server
+          this.loadOrders();
+        });
+      }
+    );
+  }
+
+  /**
+   * Display popup notification
+   */
+  displayPopup(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+    this.popupMessage = message;
+    this.popupType = type;
+    this.showPopup = true;
+  }
+
+  /**
+   * Close popup
+   */
+  closePopup(): void {
+    this.showPopup = false;
+    this.popupMessage = '';
+  }
+
+  /**
+   * Show confirmation dialog
+   */
+  showConfirmation(message: string, callback: () => void): void {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.showConfirmDialog = true;
+  }
+
+  /**
+   * Confirm action
+   */
+  confirmAction(): void {
+    if (this.confirmCallback) {
+      this.confirmCallback();
+      this.confirmCallback = null;
     }
+    this.showConfirmDialog = false;
+    this.confirmMessage = '';
+  }
+
+  /**
+   * Cancel confirmation
+   */
+  cancelConfirmation(): void {
+    this.showConfirmDialog = false;
+    this.confirmMessage = '';
+    this.confirmCallback = null;
   }
 
   /**
@@ -566,7 +893,7 @@ export class OrdersManage implements OnInit {
     const labels: any = {
       'pending': 'Chờ giao',
       'delivering': 'Đang giao',
-      'delivered': 'Đã giao',
+      'delivered': 'Hoàn thành',
       'none': ''
     };
     return labels[delivery] || delivery;

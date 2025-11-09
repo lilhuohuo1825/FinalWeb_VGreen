@@ -134,10 +134,10 @@
           
           <!-- Orders List -->
           <div class="orders-list" *ngIf="orders.length > 0">
-            <div class="order-item" *ngFor="let order of orders" (click)="viewOrderDetail(order.order_id)">
+            <div class="order-item" *ngFor="let order of orders" (click)="viewOrderDetail(order.OrderID)">
               <div class="order-header">
                 <div class="order-id">
-                  <strong>Đơn hàng #{{order.order_id}}</strong>
+                  <strong>Đơn hàng #{{order.OrderID}}</strong>
                 </div>
                 <span class="order-status-badge" [ngClass]="getStatusClass(order.status)">
                   {{getStatusLabel(order.status)}}
@@ -146,15 +146,15 @@
               <div class="order-info">
                 <div class="order-date">
                   <span class="label">Ngày đặt:</span>
-                  <span>{{formatOrderDate(order.order_date)}}</span>
+                  <span>{{formatOrderDate(order)}}</span>
                 </div>
                 <div class="order-products">
                   <span class="label">Sản phẩm:</span>
-                  <span>{{order.products?.length || 0}} sản phẩm</span>
+                  <span>{{order.items?.length || 0}} sản phẩm</span>
                 </div>
                 <div class="order-total">
                   <span class="label">Tổng tiền:</span>
-                  <strong>{{formatCurrency(order.order_total || order.total_amount || 0)}}</strong>
+                  <strong>{{formatCurrency(order.totalAmount || 0)}}</strong>
                 </div>
               </div>
             </div>
@@ -171,10 +171,10 @@
         <div class="edit-indicator" *ngIf="isEditMode">Chế độ chỉnh sửa</div>
         <div class="card-content">
           <!-- Email -->
-          <a [href]="'mailto:' + customerData.email" class="email-link" *ngIf="!isEditMode && customerData.email !== '(Chưa cập nhật)'">
+          <a [href]="'mailto:' + customerData.email" class="email-link" *ngIf="!isEditMode && customerData.email !== '---'">
             {{customerData.email}}
           </a>
-          <span *ngIf="!isEditMode && customerData.email === '(Chưa cập nhật)'" class="text-muted">
+          <span *ngIf="!isEditMode && customerData.email === '---'" class="text-muted">
             {{customerData.email}}
           </span>
           <input type="email" class="edit-input-full" [(ngModel)]="editableData.email" placeholder="Nhập địa chỉ email" *ngIf="isEditMode">

@@ -246,23 +246,24 @@
           <div *ngIf="isLoggedIn()">
             <div class="popup-title">Thông báo mới ({{ notificationCount }})</div>
             <div class="popup-content">
-              <div class="notification-item">
-                <img src="/assets/icons/flash_sale.png" class="notification-icon-item" />
-                <div class="notification-content">
-                  <div class="notification-title">Flash Sale hôm nay!</div>
-                  <div class="notification-desc">
-                    Giảm đến 50% cho trái cây hữu cơ - chỉ áp dụng đến 23:59 tối nay.
+              <!-- Hiển thị thông báo từ backend -->
+              <div *ngIf="notifications.length > 0">
+                <div class="notification-item" *ngFor="let notification of notifications">
+                  <img [src]="getNotificationIcon(notification.type)" class="notification-icon-item" />
+                  <div class="notification-content">
+                    <div class="notification-title">{{ notification.title || 'Thông báo' }}</div>
+                    <div class="notification-desc">
+                      {{ notification.message || notification.content || '' }}
+                    </div>
+                    <div class="notification-time" style="font-size: 11px; color: #999; margin-top: 4px;">
+                      {{ formatNotificationTime(notification.createdAt || notification.timestamp) }}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="notification-item">
-                <img src="/assets/icons/info_blue.png" class="notification-icon-item" />
-                <div class="notification-content">
-                  <div class="notification-title">Đơn hàng #A10234</div>
-                  <div class="notification-desc">
-                    Đang được giao! Dự kiến đến trước 17h hôm nay.
-                  </div>
-                </div>
+              <!-- Hiển thị khi không có thông báo -->
+              <div *ngIf="notifications.length === 0" style="padding: 20px; text-align: center; color: #999">
+                Không có thông báo mới
               </div>
             </div>
             <a

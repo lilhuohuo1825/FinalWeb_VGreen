@@ -74,8 +74,14 @@ export class Blog implements OnInit {
         // console.log(' [Blog] Loaded from MongoDB:', response.count);
         // console.log(' [Blog] Sample blog:', response.data[0]);
 
-        // Map và convert pubDate nếu cần
+        // Map và convert pubDate nếu cần, và normalize blog IDs
         this.allBlogs = response.data.map((blog) => {
+          // Normalize ID: trim và loại bỏ dấu phẩy thừa
+          let normalizedId = blog.id;
+          if (normalizedId && typeof normalizedId === 'string') {
+            normalizedId = normalizedId.trim().replace(/,$/, '').trim();
+          }
+
           // Đảm bảo pubDate là string ISO
           let pubDateStr = blog.pubDate;
           if (pubDateStr instanceof Date) {
@@ -90,6 +96,7 @@ export class Blog implements OnInit {
 
           return {
             ...blog,
+            id: normalizedId, // Sử dụng ID đã normalize
             pubDate: pubDateStr,
           };
         });

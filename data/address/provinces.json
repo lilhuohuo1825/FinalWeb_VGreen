@@ -1,274 +1,376 @@
 [
-  {
-    "code": "01",
-    "name": "Hà Nội",
-    "slug": "ha-noi",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Hà Nội"
-  },
-  {
-    "code": "02",
-    "name": "Hưng Yên",
-    "slug": "hung-yen",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Hưng Yên"
-  },
-  {
-    "code": "03",
-    "name": "Quảng Trị",
-    "slug": "quang-tri",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Quảng Trị"
-  },
-  {
-    "code": "04",
-    "name": "Huế",
-    "slug": "hue",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Huế"
-  },
-  {
-    "code": "05",
-    "name": "Hải Phòng",
-    "slug": "hai-phong",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Hải Phòng"
-  },
-  {
-    "code": "06",
-    "name": "Phú Thọ",
-    "slug": "phu-tho",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Phú Thọ"
-  },
-  {
-    "code": "07",
-    "name": "Thanh Hoá",
-    "slug": "thanh-hoa",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Thanh Hoá"
-  },
-  {
-    "code": "08",
-    "name": "Quảng Ninh",
-    "slug": "quang-ninh",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Quảng Ninh"
-  },
-  {
-    "code": "09",
-    "name": "Lào Cai",
-    "slug": "lao-cai",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Lào Cai"
-  },
-  {
-    "code": "10",
-    "name": "Bắc Ninh",
-    "slug": "bac-ninh",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Bắc Ninh"
-  },
-  {
-    "code": "11",
-    "name": "Nghệ An",
-    "slug": "nghe-an",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Nghệ An"
-  },
-  {
-    "code": "12",
-    "name": "Đà Nẵng",
-    "slug": "da-nang",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Đà Nẵng"
-  },
-  {
-    "code": "13",
-    "name": "Ninh Bình",
-    "slug": "ninh-binh",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Ninh Bình"
-  },
-  {
-    "code": "14",
-    "name": "Khánh Hòa",
-    "slug": "khanh-hoa",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Khánh Hòa"
-  },
-  {
-    "code": "15",
-    "name": "Tây Ninh",
-    "slug": "tay-ninh",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Tây Ninh"
-  },
-  {
-    "code": "16",
-    "name": "Đồng Tháp",
-    "slug": "dong-thap",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Đồng Tháp"
-  },
-  {
-    "code": "17",
-    "name": "Hà Tĩnh",
-    "slug": "ha-tinh",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Hà Tĩnh"
-  },
-  {
-    "code": "18",
-    "name": "An Giang",
-    "slug": "an-giang",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh An Giang"
-  },
-  {
-    "code": "19",
-    "name": "Thái Nguyên",
-    "slug": "thai-nguyen",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Thái Nguyên"
-  },
-  {
-    "code": "20",
-    "name": "Lạng Sơn",
-    "slug": "lang-son",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Lạng Sơn"
-  },
-  {
-    "code": "21",
-    "name": "Điện Biên",
-    "slug": "dien-bien",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Điện Biên"
-  },
-  {
-    "code": "22",
-    "name": "Đồng Nai",
-    "slug": "dong-nai",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Đồng Nai"
-  },
-  {
-    "code": "23",
-    "name": "Quảng Ngãi",
-    "slug": "quang-ngai",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Quảng Ngãi"
-  },
-  {
-    "code": "24",
-    "name": "Vĩnh Long",
-    "slug": "vinh-long",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Vĩnh Long"
-  },
-  {
-    "code": "25",
-    "name": "Cao Bằng",
-    "slug": "cao-bang",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Cao Bằng"
-  },
-  {
-    "code": "26",
-    "name": "Lai Châu",
-    "slug": "lai-chau",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Lai Châu"
-  },
-  {
-    "code": "27",
-    "name": "Đắk Lắk",
-    "slug": "dak-lak",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Đắk Lắk"
-  },
-  {
-    "code": "28",
-    "name": "Gia Lai",
-    "slug": "gia-lai",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Gia Lai"
-  },
-  {
-    "code": "29",
-    "name": "Lâm Đồng",
-    "slug": "lam-dong",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Lâm Đồng"
-  },
-  {
-    "code": "30",
-    "name": "Hồ Chí Minh",
-    "slug": "ho-chi-minh",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Hồ Chí Minh"
-  },
-  {
-    "code": "31",
-    "name": "Sơn La",
-    "slug": "son-la",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Sơn La"
-  },
-  {
-    "code": "32",
-    "name": "Cần Thơ",
-    "slug": "can-tho",
-    "type": "city",
-    "isCentral": true,
-    "fullName": "Thành phố Cần Thơ"
-  },
-  {
-    "code": "33",
-    "name": "Cà Mau",
-    "slug": "ca-mau",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Cà Mau"
-  },
-  {
-    "code": "34",
-    "name": "Tuyên Quang",
-    "slug": "tuyen-quang",
-    "type": "province",
-    "isCentral": false,
-    "fullName": "Tỉnh Tuyên Quang"
-  }
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e876"
+		},
+		"code": "01",
+		"name": "Hà Nội",
+		"slug": "ha-noi",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Hà Nội"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e877"
+		},
+		"code": "02",
+		"name": "Hưng Yên",
+		"slug": "hung-yen",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Hưng Yên"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e878"
+		},
+		"code": "03",
+		"name": "Quảng Trị",
+		"slug": "quang-tri",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Quảng Trị"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e879"
+		},
+		"code": "04",
+		"name": "Huế",
+		"slug": "hue",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Huế"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87a"
+		},
+		"code": "05",
+		"name": "Hải Phòng",
+		"slug": "hai-phong",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Hải Phòng"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87b"
+		},
+		"code": "06",
+		"name": "Phú Thọ",
+		"slug": "phu-tho",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Phú Thọ"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87c"
+		},
+		"code": "07",
+		"name": "Thanh Hoá",
+		"slug": "thanh-hoa",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Thanh Hoá"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87d"
+		},
+		"code": "08",
+		"name": "Quảng Ninh",
+		"slug": "quang-ninh",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Quảng Ninh"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87e"
+		},
+		"code": "09",
+		"name": "Lào Cai",
+		"slug": "lao-cai",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Lào Cai"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e87f"
+		},
+		"code": "10",
+		"name": "Bắc Ninh",
+		"slug": "bac-ninh",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Bắc Ninh"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e880"
+		},
+		"code": "11",
+		"name": "Nghệ An",
+		"slug": "nghe-an",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Nghệ An"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e881"
+		},
+		"code": "12",
+		"name": "Đà Nẵng",
+		"slug": "da-nang",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Đà Nẵng"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e882"
+		},
+		"code": "13",
+		"name": "Ninh Bình",
+		"slug": "ninh-binh",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Ninh Bình"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e883"
+		},
+		"code": "14",
+		"name": "Khánh Hòa",
+		"slug": "khanh-hoa",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Khánh Hòa"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e884"
+		},
+		"code": "15",
+		"name": "Tây Ninh",
+		"slug": "tay-ninh",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Tây Ninh"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e885"
+		},
+		"code": "16",
+		"name": "Đồng Tháp",
+		"slug": "dong-thap",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Đồng Tháp"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e886"
+		},
+		"code": "17",
+		"name": "Hà Tĩnh",
+		"slug": "ha-tinh",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Hà Tĩnh"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e887"
+		},
+		"code": "18",
+		"name": "An Giang",
+		"slug": "an-giang",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh An Giang"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e888"
+		},
+		"code": "19",
+		"name": "Thái Nguyên",
+		"slug": "thai-nguyen",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Thái Nguyên"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e889"
+		},
+		"code": "20",
+		"name": "Lạng Sơn",
+		"slug": "lang-son",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Lạng Sơn"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88a"
+		},
+		"code": "21",
+		"name": "Điện Biên",
+		"slug": "dien-bien",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Điện Biên"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88b"
+		},
+		"code": "22",
+		"name": "Đồng Nai",
+		"slug": "dong-nai",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Đồng Nai"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88c"
+		},
+		"code": "23",
+		"name": "Quảng Ngãi",
+		"slug": "quang-ngai",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Quảng Ngãi"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88d"
+		},
+		"code": "24",
+		"name": "Vĩnh Long",
+		"slug": "vinh-long",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Vĩnh Long"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88e"
+		},
+		"code": "25",
+		"name": "Cao Bằng",
+		"slug": "cao-bang",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Cao Bằng"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e88f"
+		},
+		"code": "26",
+		"name": "Lai Châu",
+		"slug": "lai-chau",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Lai Châu"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e890"
+		},
+		"code": "27",
+		"name": "Đắk Lắk",
+		"slug": "dak-lak",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Đắk Lắk"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e891"
+		},
+		"code": "28",
+		"name": "Gia Lai",
+		"slug": "gia-lai",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Gia Lai"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e892"
+		},
+		"code": "29",
+		"name": "Lâm Đồng",
+		"slug": "lam-dong",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Lâm Đồng"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e893"
+		},
+		"code": "30",
+		"name": "Hồ Chí Minh",
+		"slug": "ho-chi-minh",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Hồ Chí Minh"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e894"
+		},
+		"code": "31",
+		"name": "Sơn La",
+		"slug": "son-la",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Sơn La"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e895"
+		},
+		"code": "32",
+		"name": "Cần Thơ",
+		"slug": "can-tho",
+		"type": "city",
+		"isCentral": true,
+		"fullName": "Thành phố Cần Thơ"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e896"
+		},
+		"code": "33",
+		"name": "Cà Mau",
+		"slug": "ca-mau",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Cà Mau"
+	},
+	{
+		"_id": {
+			"$oid": "690b1361ca42a26c89d2e897"
+		},
+		"code": "34",
+		"name": "Tuyên Quang",
+		"slug": "tuyen-quang",
+		"type": "province",
+		"isCentral": false,
+		"fullName": "Tỉnh Tuyên Quang"
+	}
 ]

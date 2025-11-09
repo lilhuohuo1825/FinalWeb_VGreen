@@ -1471,10 +1471,12 @@ function displayPostsList(): void {
   postsContainer.innerHTML = '';
 
   blogData.forEach((post) => {
+    // Normalize post ID: trim và loại bỏ dấu phẩy thừa
+    const normalizedPostId = post.id ? post.id.trim().replace(/,$/, '').trim() : post.id;
     const postItem = document.createElement('div');
     postItem.className = 'post-item';
-    postItem.setAttribute('data-post-id', post.id);
-    postItem.onclick = () => navigateToBlogDetail(post.id);
+    postItem.setAttribute('data-post-id', normalizedPostId);
+    postItem.onclick = () => navigateToBlogDetail(normalizedPostId);
 
     // Thêm inline style để đảm bảo style được áp dụng
     postItem.style.cssText = `
@@ -1580,7 +1582,9 @@ let currentFeaturedPost: BlogPost | null = null;
 
 // Điều hướng đến trang blog detail
 function navigateToBlogDetail(postId: string): void {
-  window.location.href = `/blog/${postId}`;
+  // Normalize postId: trim và loại bỏ dấu phẩy thừa
+  const normalizedPostId = postId.trim().replace(/,$/, '').trim();
+  window.location.href = `/blog/${normalizedPostId}`;
 }
 
 // Cập nhật bài viết nổi bật khi click vào bài viết bên phải

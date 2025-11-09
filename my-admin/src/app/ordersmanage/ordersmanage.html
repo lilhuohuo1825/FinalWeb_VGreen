@@ -287,3 +287,32 @@
   </div>
 </div>
 
+<!-- Custom Popup Notification -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-icon" [class.success]="popupType === 'success'" [class.error]="popupType === 'error'" [class.info]="popupType === 'info'">
+      <span class="icon-check" *ngIf="popupType === 'success'">✓</span>
+      <span class="icon-error" *ngIf="popupType === 'error'">✕</span>
+      <span class="icon-info" *ngIf="popupType === 'info'">i</span>
+    </div>
+    
+    <div class="popup-message">{{ popupMessage }}</div>
+    
+    <button class="popup-btn-ok" (click)="closePopup()">OK</button>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="popup-overlay" *ngIf="showConfirmDialog" (click)="cancelConfirmation()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <span class="icon-question">?</span>
+    </div>
+    <div class="confirm-message">{{ confirmMessage }}</div>
+    <div class="confirm-buttons">
+      <button class="btn-confirm-cancel" (click)="cancelConfirmation()">Hủy</button>
+      <button class="btn-confirm-ok" (click)="confirmAction()">Xác nhận</button>
+    </div>
+  </div>
+</div>
+

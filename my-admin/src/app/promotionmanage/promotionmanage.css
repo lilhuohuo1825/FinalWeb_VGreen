@@ -978,11 +978,13 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 10000 !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000 !important; /* Z-index cao để đảm bảo modal luôn ở trên dropdown */
-  backdrop-filter: blur(4px);
+  overflow-y: auto;
+  padding: 20px;
 }
 
 .modal-content {
@@ -992,13 +994,27 @@
   max-width: 500px;
   width: 90%;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
-  z-index: 10001 !important; /* Z-index cao hơn overlay để đảm bảo content ở trên cùng */
+  z-index: 10001 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
 }
 
 .modal-content.large {
   max-width: 800px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal-header {
@@ -1007,6 +1023,7 @@
   align-items: center;
   padding: 24px 28px;
   border-bottom: 1px solid #E5E7EB;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -1041,6 +1058,10 @@
 
 .modal-body {
   padding: 24px 28px;
+  max-height: calc(90vh - 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
 }
 
 .modal-body label {
@@ -1079,6 +1100,7 @@ textarea.input-field {
   gap: 12px;
   padding: 20px 28px;
   border-top: 1px solid #E5E7EB;
+  flex-shrink: 0;
 }
 
 .btn-primary,
@@ -1109,9 +1131,374 @@ textarea.input-field {
   color: #6B7280;
 }
 
+/* Confirmation Modal Styles */
+/* ========================================
+   CONFIRMATION DIALOG
+   ======================================== */
+
+.popup-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-dialog {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px 24px;
+  min-width: 400px;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popupSlideIn 0.3s ease-out;
+  text-align: center;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.icon-question {
+  display: block;
+  line-height: 1;
+}
+
+.confirm-message {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: 'Lexend', sans-serif;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-ok {
+  padding: 12px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Lexend', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.btn-confirm-cancel {
+  background: #F3F4F6;
+  color: #374151;
+  border: 2px solid #E5E7EB;
+}
+
+.btn-confirm-cancel:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-confirm-cancel:active {
+  transform: translateY(0);
+}
+
+.btn-confirm-ok {
+  background: linear-gradient(135deg, #3CB018 0%, #2D8A1F 100%);
+  color: white;
+}
+
+.btn-confirm-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 176, 24, 0.4);
+}
+
+.btn-confirm-ok:active {
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .btn-secondary:hover {
   background: #E5E7EB;
   color: #374151;
+}
+
+/* Target Selection Styles */
+.target-selection-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 2px solid #E5E7EB;
+}
+
+.target-selection-header {
+  margin-bottom: 16px;
+}
+
+.target-section-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.target-help-text {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.target-type-selector {
+  margin-bottom: 16px;
+}
+
+.target-type-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.target-list-container {
+  border: 1.5px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 16px;
+  background: #F9FAFB;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.target-search {
+  margin-bottom: 12px;
+}
+
+.target-search-input {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.target-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.target-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: white;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.target-item:hover {
+  border-color: #3CB018;
+  background: #F0FDF4;
+}
+
+.target-item.selected {
+  border-color: #3CB018;
+  background: #ECFDF5;
+}
+
+.target-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3CB018;
+}
+
+.target-label {
+  flex: 1;
+  font-size: 14px;
+  color: #1A1A1A;
+  user-select: none;
+}
+
+.target-empty,
+.target-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6B7280;
+  font-size: 14px;
+}
+
+
+.selected-targets-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected-targets-summary {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.summary-header strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.clear-all-btn {
+  background: none;
+  border: none;
+  color: #EF4444;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.clear-all-btn:hover {
+  background: #FEE2E2;
+}
+
+.target-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #3CB018;
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.tag-remove {
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.2s ease;
+}
+
+.tag-remove:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Dark Mode for Target Selection */
+.dark-mode .target-selection-section {
+  border-top-color: #374151;
+}
+
+.dark-mode .target-section-label {
+  color: #E5E7EB;
+}
+
+.dark-mode .target-help-text {
+  color: #9CA3AF;
+}
+
+.dark-mode .target-list-container {
+  background: #1F2937;
+  border-color: #374151;
+}
+
+.dark-mode .target-item {
+  background: #111827;
+  border-color: #374151;
+}
+
+.dark-mode .target-item:hover {
+  background: #1F2937;
+  border-color: #3CB018;
+}
+
+.dark-mode .target-item.selected {
+  background: #1F3D1A;
+  border-color: #3CB018;
+}
+
+.dark-mode .target-label {
+  color: #E5E7EB;
+}
+
+.dark-mode .selected-targets-summary {
+  border-top-color: #374151;
+}
+
+.dark-mode .summary-header strong {
+  color: #E5E7EB;
+}
+
+.dark-mode .clear-all-btn {
+  color: #FCA5A5;
+}
+
+.dark-mode .clear-all-btn:hover {
+  background: #7F1D1D;
 }
 
 /* Form Grid */
@@ -1135,6 +1522,18 @@ textarea.input-field {
   font-weight: 600;
   color: #374151;
   margin-bottom: 8px;
+}
+
+/* Required field asterisk - Red color */
+.form-group label .required-asterisk,
+.form-group label span.required-asterisk,
+.target-section-label .required-asterisk,
+.target-type-selector label .required-asterisk,
+.modal-content label .required-asterisk {
+  color: #EF4444;
+  font-weight: 700;
+  margin-left: 2px;
+  font-size: 14px;
 }
 
 .checkbox-label {
@@ -1222,6 +1621,30 @@ select.input-field {
   }
 }
 
+/* Dark Mode Styles */
+.dark-mode .promotions-page {
+  background: linear-gradient(135deg, #1F3D1A 0%, #2A5A25 20%, #357030 40%, #40863B 60%, #4A9C45 80%, #55B250 100%);
+}
+
+.admin-layout.dark-mode .breadcrumb,
+.dark-mode .breadcrumb,
+:host-context(.dark-mode) .breadcrumb {
+  color: #FFFFFF !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .separator,
+.dark-mode .breadcrumb .separator,
+:host-context(.dark-mode) .breadcrumb .separator {
+  color: #D1D5DB !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .current,
+.dark-mode .breadcrumb .current,
+:host-context(.dark-mode) .breadcrumb .current {
+  color: #68CB3C !important;
+  font-weight: 600;
+}
+
 /* ============================================================================
  * PROMOTION DETAIL MODAL
  * ============================================================================ */
@@ -1230,7 +1653,64 @@ select.input-field {
  * RESPONSIVE STYLES
  * ============================================================================ */
 
-@media screen and (max-width: 768px) {
+/* Responsive Modal - Same as Product Modal */
+@media (max-width: 1024px) {
+  .modal-overlay {
+    left: 250px;
+    width: calc(100vw - 250px);
+    padding: 16px;
+  }
+  
+  .modal-content {
+    max-width: 95%;
+    width: calc(100% - 32px);
+  }
+  
+  .modal-header {
+    padding: 14px 18px;
+  }
+  
+  .modal-body {
+    padding: 18px;
+    max-height: calc(100vh - var(--topbar-height, 90px) - 180px);
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
+  }
+  
+  .form-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-overlay {
+    left: 0;
+    width: 100vw;
+    padding: 12px;
+  }
+  
+  .modal-content {
+    max-width: 98%;
+    width: calc(100% - 24px);
+    max-height: calc(100vh - var(--topbar-height, 90px) - 24px);
+  }
+
+  .modal-header,
+  .modal-body {
+    padding: 14px;
+  }
+  
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
   .dropdown-menu-sort {
     min-width: 280px;
     max-width: 300px;

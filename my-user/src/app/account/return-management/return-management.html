@@ -6,6 +6,15 @@
     <div class="return-header">
       <h1 class="return-title">Quản lý đổi trả</h1>
       <div class="header-actions">
+        <!-- Refresh Button -->
+        <button type="button" class="refresh-btn" (click)="reloadReturns()" title="Làm mới dữ liệu">
+          <img
+            src="assets/icons/exchange.png"
+            alt="Làm mới"
+            class="refresh-icon"
+            style="width: 20px; height: 20px"
+          />
+        </button>
         <!-- Search Box -->
         <div class="search-container">
           <div class="search-box">
@@ -64,8 +73,8 @@
     <!-- Return Content -->
     <div class="return-content">
       <!-- Returns List -->
-      <div *ngIf="getFilteredReturns().length > 0" class="returns-list">
-        <div *ngFor="let returnItem of getFilteredReturns()" class="return-wrapper">
+      <div *ngIf="filteredReturns.length > 0" class="returns-list">
+        <div *ngFor="let returnItem of filteredReturns" class="return-wrapper">
           <!-- Status Card - Outside the main return card -->
           <div class="return-status-card" [class]="'status-' + returnItem.status">
             <div class="status-left">
@@ -173,7 +182,7 @@
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="getFilteredReturns().length === 0" class="empty-state">
+      <div *ngIf="filteredReturns.length === 0" class="empty-state">
         <div class="empty-icon">
           <img src="assets/icons/no_infor_2.png" alt="No returns" class="empty-icon-img" />
         </div>

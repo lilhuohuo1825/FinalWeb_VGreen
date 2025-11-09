@@ -164,11 +164,14 @@ router.get("/:customerID/check/:sku", async (req, res) => {
       },
     });
   } catch (error) {
- console.error("Lỗi kiểm tra wishlist:", error);
-    res.status(500).json({
-      success: false,
-      message: "Lỗi server khi kiểm tra wishlist",
-      error: error.message,
+    console.error("Lỗi kiểm tra wishlist:", error);
+    // Trả về false thay vì lỗi 500 để tránh spam console
+    // Frontend sẽ xử lý như sản phẩm không có trong wishlist
+    res.json({
+      success: true,
+      data: {
+        isInWishlist: false,
+      },
     });
   }
 });

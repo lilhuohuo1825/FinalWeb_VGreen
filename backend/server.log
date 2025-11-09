@@ -1,0 +1,69 @@
+
+🔗 Attempting to connect to MongoDB...
+🔗 Step 1: Connecting Mongoose...
+🔗 [Mongoose] Đang kết nối đến MongoDB...
+🔗 [Mongoose] MongoDB URI: mongodb://localhost:27017/vgreen
+(node:58733) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58733) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+Backend API server running on http://localhost:3000
+Database: vgreen
+✅ [Mongoose] Đã kết nối thành công đến MongoDB
+✅ [Mongoose] Database: vgreen
+✅ Mongoose connected successfully!
+🔗 Step 2: Connecting MongoDB Native Client...
+   URI: mongodb://localhost:27017
+   Database: vgreen
+
+✅ Connected to MongoDB successfully!
+✅ Database "vgreen" accessed
+✅ Collections initialized:
+   - users
+   - admins
+   - orders
+   - products
+   - promotions
+   - orderdetails
+   - provinces
+   - wards
+   - tree
+   - blogs
+   - promotion_targets
+
+✅ MongoDB ready for API requests!
+
+
+📊 Collection document counts:
+   - users: 4 documents
+   - admins: 6 documents
+   - orders: 26 documents
+
+🔄 Đang đồng bộ users từ MongoDB về JSON...
+🔄 Đang đồng bộ tất cả collections từ MongoDB về JSON...
+📦 [Orders] Updating order ORD47560961233 status to: confirmed
+✅ [Orders] Updated order ORD47560961233 status to: confirmed
+📦 [Orders] Updating order ORD47608680482 status to: confirmed
+✅ [Orders] Updated order ORD47608680482 status to: confirmed
+ [Products API] PATCH - Updating field "stock" for product ID: 68e355c815c5eefd78586e9b
+ [Products API] Found product: Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g (68e355c815c5eefd78586e9b)
+ [Products API] Field "stock" updated successfully
+ [Products API] Đang đồng bộ products với JSON file...
+
+🔄 [Sync Products] ============================================
+[Sync Products] Bắt đầu đồng bộ products từ MongoDB về JSON...
+[Sync Products] Đã lấy 559 products từ MongoDB
+[Sync Products] Đường dẫn file JSON: /Users/lilhuohuo/Downloads/FinalWeb_VGreen/data/products.json
+[Sync Products] File JSON tồn tại
+[Sync Products] Đang chuyển đổi dữ liệu...
+[Sync Products] Sample product 1: Ca cao hoà tan 6 trong 1 Napo hộp 10x22g (stock: 52, price: 60000)
+[Sync Products] Sample product 2: Bột cacao Good Night hộp giấy 150g (stock: 55, price: 82500)
+[Sync Products] Sample product 3: Bột Ca Cao Caravelle Gói 300g (stock: 74, price: 102500)
+[Sync Products] Đang ghi vào file JSON...
+[Sync Products] ✅ File đã được ghi: 695.07 KB
+[Sync Products] ✅ Xác minh: File chứa 559 products
+[Sync Products] Sample product trong file: Ca cao hoà tan 6 trong 1 Napo hộp 10x22g (stock: 52, price: 60000)
+[Sync Products] 🔍 Kiểm tra sản phẩm "Bột sắn dây": stock = 20, _id = 68e355c815c5eefd78586e9b
+[Sync Products] ✅ Đã đồng bộ 559 products từ MongoDB về JSON
+[Sync Products] ============================================
+
+ [Products API] ✅ Đã đồng bộ 559 products với JSON file

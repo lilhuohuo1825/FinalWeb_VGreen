@@ -286,8 +286,79 @@
                         <div class="review-meta">
                           <span class="review-time">{{ formatTime(review.time) }}</span>
                           <div class="review-actions">
-                            <a href="#" class="action-link">Thích</a>
-                            <a href="#" class="action-link">Trả lời</a>
+                            <a
+                              href="#"
+                              class="action-link"
+                              [class.liked]="isReviewLiked(review)"
+                              (click)="likeReview(review); $event.preventDefault()"
+                            >
+                              Thích
+                              <span *ngIf="getLikeCount(review) > 0" class="like-count"
+                                >({{ getLikeCount(review) }})</span
+                              >
+                            </a>
+                            <a
+                              href="#"
+                              class="action-link"
+                              (click)="toggleReplyForm(review); $event.preventDefault()"
+                            >
+                              Trả lời
+                              <span *ngIf="review.replies && review.replies.length > 0" class="reply-count"
+                                >({{ review.replies.length }})</span
+                              >
+                            </a>
+                          </div>
+                        </div>
+
+                        <!-- Reply Form -->
+                        <div class="reply-form-container" *ngIf="showReplyForm[review.id]">
+                          <textarea
+                            [(ngModel)]="replyTexts[review.id]"
+                            class="reply-textarea"
+                            placeholder="Nhập trả lời của bạn..."
+                            rows="3"
+                            maxlength="500"
+                          ></textarea>
+                          <div class="reply-form-actions">
+                            <button
+                              class="reply-submit-btn"
+                              (click)="submitReply(review)"
+                              [disabled]="replyingReviews.has(review.id) || !replyTexts[review.id]?.trim()"
+                            >
+                              {{ replyingReviews.has(review.id) ? 'Đang gửi...' : 'Gửi trả lời' }}
+                            </button>
+                            <button class="reply-cancel-btn" (click)="toggleReplyForm(review)">
+                              Hủy
+                            </button>
+                          </div>
+                        </div>
+
+                        <!-- Replies List -->
+                        <div class="replies-list" *ngIf="review.replies && review.replies.length > 0">
+                          <div class="reply-item" *ngFor="let reply of review.replies; let replyIndex = index">
+                            <div class="reply-avatar">
+                              <div class="avatar-placeholder"></div>
+                            </div>
+                            <div class="reply-content">
+                              <div class="reply-header">
+                                <span class="reply-author">{{ reply.fullname }}</span>
+                                <span class="reply-time">{{ formatReplyTime(reply.time) }}</span>
+                              </div>
+                              <div class="reply-text">{{ reply.content }}</div>
+                              <div class="reply-actions">
+                                <a
+                                  href="#"
+                                  class="action-link reply-like-link"
+                                  [class.liked]="isReplyLiked(reply)"
+                                  (click)="likeReply(review, replyIndex); $event.preventDefault()"
+                                >
+                                  Thích
+                                  <span *ngIf="getReplyLikeCount(reply) > 0" class="like-count"
+                                    >({{ getReplyLikeCount(reply) }})</span
+                                  >
+                                </a>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

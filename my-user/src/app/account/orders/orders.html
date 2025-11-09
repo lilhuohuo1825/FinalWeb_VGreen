@@ -146,9 +146,27 @@
           </div>
 
           <!-- Order Summary - Bar 2: Action Buttons -->
+          <!-- View Details, Received Order and Return Button (Shipping Status) -->
+          <div class="order-summary" *ngIf="isOrderShipping(order)">
+            <div class="summary-right">
+              <button class="action-btn view-details-btn" (click)="viewOrderDetails(order)">
+                Xem chi tiết
+              </button>
+              <button class="action-btn return-btn" (click)="onReturnRefund(order)">
+                Trả hàng
+              </button>
+              <button class="action-btn received-btn" (click)="confirmReceivedOrder(order)">
+                Đã nhận hàng
+              </button>
+            </div>
+          </div>
+
           <!-- Cancel Order Button (Pending Status) -->
           <div class="order-summary" *ngIf="order.status === 'pending'">
             <div class="summary-right">
+              <button class="action-btn view-details-btn" (click)="viewOrderDetails(order)">
+                Xem chi tiết
+              </button>
               <button class="action-btn cancel-btn" (click)="onCancelOrder(order)">
                 Hủy đặt hàng
               </button>
@@ -160,21 +178,29 @@
             class="order-summary"
             *ngIf="order.status === 'completed' || order.status === 'delivered'"
           >
-            <div class="summary-right" *ngIf="!hasOrderBeenReviewed(order)">
-              <button
-                class="action-btn return-btn"
-                (click)="onReturnRefund(order)"
-                *ngIf="order.status === 'delivered' && !hasOrderBeenReturned(order)"
-              >
-                Trả hàng/ hoàn tiền
+            <div class="summary-right">
+              <button class="action-btn view-details-btn" (click)="viewOrderDetails(order)">
+                Xem chi tiết
               </button>
-              <button class="action-btn rate-btn" (click)="onRate(order)">Đánh giá</button>
+              <div *ngIf="!hasOrderBeenReviewed(order)">
+                <button
+                  class="action-btn return-btn"
+                  (click)="onReturnRefund(order)"
+                  *ngIf="order.status === 'delivered' && !hasOrderBeenReturned(order)"
+                >
+                  Trả hàng/ hoàn tiền
+                </button>
+                <button class="action-btn rate-btn" (click)="onRate(order)">Đánh giá</button>
+              </div>
             </div>
           </div>
 
           <!-- Cancelled Order Button -->
           <div class="order-summary" *ngIf="order.status === 'cancelled'">
             <div class="summary-right">
+              <button class="action-btn view-details-btn" (click)="viewOrderDetails(order)">
+                Xem chi tiết
+              </button>
               <button class="action-btn repurchase-btn" (click)="onRepurchaseOrder(order)">
                 Mua lại
               </button>
@@ -363,8 +389,20 @@
     <div class="cancel-message">
       <h3 class="cancel-title">Xác nhận hủy đơn hàng</h3>
       <p class="cancel-text">
-        Bạn có chắc chắn muốn hủy đơn hàng này? Đơn hàng sẽ không thể khôi phục sau khi hủy.
+        Bạn có chắc chắn muốn hủy đơn hàng này? Yêu cầu hủy đơn hàng sẽ được gửi đến admin để xác nhận.
       </p>
+      
+      <!-- Cancel Reason Input -->
+      <div class="cancel-reason-section" style="margin-top: 20px;">
+        <label class="cancel-reason-label">Lý do hủy đơn hàng (tùy chọn):</label>
+        <textarea
+          [(ngModel)]="cancelReason"
+          class="cancel-reason-textarea"
+          placeholder="Vui lòng nhập lý do hủy đơn hàng..."
+          rows="3"
+          style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-top: 8px; font-family: inherit;"
+        ></textarea>
+      </div>
     </div>
 
     <!-- Action Buttons -->
@@ -385,3 +423,161 @@
   (submit)="submitReview($event)"
 >
 </app-review-form>
+
+<!-- Confirm Received Order Modal -->
+<div class="modal-overlay" *ngIf="showConfirmReceivedModal" (click)="closeConfirmReceivedModal()">
+  <div class="cancel-modal-content" (click)="$event.stopPropagation()">
+    <!-- Warning Icon -->
+    <div class="warning-icon">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="12" cy="12" r="10" fill="#256e05" />
+        <path
+          d="M9 12l2 2 4-4"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+
+    <!-- Confirmation Message -->
+    <div class="cancel-message">
+      <h3 class="cancel-title">Xác nhận đã nhận hàng</h3>
+      <p class="cancel-text">
+        Bạn có chắc chắn đã nhận được hàng? Sau khi xác nhận, đơn hàng sẽ chuyển sang trạng thái "Đã giao hàng" và bạn có thể đánh giá sản phẩm.
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="cancel-footer">
+      <button class="cancel-modal-btn cancel-no-btn" (click)="closeConfirmReceivedModal()">Hủy</button>
+      <button class="cancel-modal-btn cancel-yes-btn" (click)="executeConfirmReceivedOrder()">
+        Xác nhận
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="modal-overlay" *ngIf="showOrderDetailModal" (click)="closeOrderDetailModal()">
+  <div class="modal-content order-detail-modal" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2 class="modal-title">Chi tiết đơn hàng</h2>
+      <button class="close-btn" (click)="closeOrderDetailModal()">&times;</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body" *ngIf="selectedOrderForDetail">
+      <!-- Order Info -->
+      <div class="order-detail-section">
+        <h3 class="section-title">Thông tin đơn hàng</h3>
+        <div class="order-info-grid">
+          <div class="info-item">
+            <span class="info-label">Mã đơn hàng:</span>
+            <span class="info-value">{{ selectedOrderForDetail.orderNumber }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Ngày đặt:</span>
+            <span class="info-value">{{ formatDate(selectedOrderForDetail.orderDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Trạng thái:</span>
+            <span class="info-value" [class]="getDisplayStatusClass(selectedOrderForDetail)">
+              {{ getDisplayStatusLabel(selectedOrderForDetail) }}
+            </span>
+          </div>
+          <div class="info-item" *ngIf="selectedOrderForDetail.deliveryDate">
+            <span class="info-label">Ngày giao:</span>
+            <span class="info-value">{{ formatDate(selectedOrderForDetail.deliveryDate) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping Info -->
+      <div class="order-detail-section" *ngIf="selectedOrderForDetail.shippingInfo">
+        <h3 class="section-title">Thông tin giao hàng</h3>
+        <div class="shipping-info">
+          <div class="info-item">
+            <span class="info-label">Người nhận:</span>
+            <span class="info-value">{{ getShippingFullName() || 'N/A' }}</span>
+          </div>
+          <div class="info-item" *ngIf="getShippingPhone()">
+            <span class="info-label">Số điện thoại:</span>
+            <span class="info-value">{{ getShippingPhone() }}</span>
+          </div>
+          <div class="info-item" *ngIf="getShippingEmail()">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ getShippingEmail() }}</span>
+          </div>
+          <div class="info-item" *ngIf="getShippingAddress()">
+            <span class="info-label">Địa chỉ:</span>
+            <span class="info-value">{{ getShippingAddress() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products List -->
+      <div class="order-detail-section">
+        <h3 class="section-title">Sản phẩm</h3>
+        <div class="detail-products-list">
+          <div *ngFor="let product of selectedOrderForDetail.products" class="detail-product-item">
+            <div class="detail-product-left">
+              <img [src]="product.image" [alt]="product.name" class="detail-product-img" />
+              <div class="detail-product-info">
+                <h4 class="detail-product-name">{{ product.name }}</h4>
+                <p class="detail-product-category" *ngIf="product.category">{{ product.category }}</p>
+                <p class="detail-product-price">
+                  {{ formatCurrency(product.price) }}/{{ product.unit }}
+                </p>
+              </div>
+            </div>
+            <div class="detail-product-right">
+              <div class="detail-product-quantity">x{{ product.quantity }}</div>
+              <div class="detail-product-total">{{ formatCurrency(product.totalPrice) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-detail-section">
+        <h3 class="section-title">Tổng kết đơn hàng</h3>
+        <div class="order-summary-detail">
+          <div class="summary-row">
+            <span class="summary-label">Tạm tính:</span>
+            <span class="summary-value">{{ formatCurrency(selectedOrderForDetail.totalAmount) }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Phí vận chuyển:</span>
+            <span class="summary-value">Miễn phí</span>
+          </div>
+          <div class="summary-row total-row">
+            <span class="summary-label">Tổng cộng:</span>
+            <span class="summary-value total-amount">{{ formatCurrency(selectedOrderForDetail.totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="modal-btn cancel-btn" (click)="closeOrderDetailModal()">Đóng</button>
+      <div class="modal-footer-buttons" *ngIf="selectedOrderForDetail && isOrderShipping(selectedOrderForDetail)">
+        <button class="modal-btn return-btn" (click)="onReturnRefund(selectedOrderForDetail)">
+          Trả hàng
+        </button>
+        <button class="modal-btn submit-btn" (click)="confirmReceivedOrder(selectedOrderForDetail)">
+          Đã nhận hàng
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

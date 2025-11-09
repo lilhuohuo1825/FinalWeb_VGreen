@@ -199,8 +199,51 @@ router.get("/:id", async (req, res) => {
 // POST /api/promotions - Tạo promotion mới (cho admin)
 router.post("/", async (req, res) => {
   try {
-    const newPromotion = new Promotion(req.body);
+    const promotionData = req.body;
+
+    // Validate required fields
+    if (!promotionData.code || !promotionData.name || !promotionData.discount_value) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu thông tin bắt buộc: code, name, discount_value",
+      });
+    }
+
+    // Check if code already exists
+    const existingPromotion = await Promotion.findOne({ code: promotionData.code });
+    if (existingPromotion) {
+      return res.status(400).json({
+        success: false,
+        message: `Mã khuyến mãi "${promotionData.code}" đã tồn tại`,
+      });
+    }
+
+    // Generate promotion_id if not provided
+    if (!promotionData.promotion_id) {
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      promotionData.promotion_id = `PRO${timestamp}${random}`;
+    }
+
+    // Ensure dates are Date objects
+    if (promotionData.start_date && typeof promotionData.start_date === 'string') {
+      promotionData.start_date = new Date(promotionData.start_date);
+    }
+    if (promotionData.end_date && typeof promotionData.end_date === 'string') {
+      promotionData.end_date = new Date(promotionData.end_date);
+    }
+
+    // Set default values
+    promotionData.created_at = promotionData.created_at || new Date();
+    promotionData.updated_at = promotionData.updated_at || new Date();
+    promotionData.status = promotionData.status || 'Active';
+
+    console.log('📝 Creating new promotion:', promotionData.code);
+
+    const newPromotion = new Promotion(promotionData);
     await newPromotion.save();
+
+    console.log('✅ Promotion created successfully:', newPromotion.promotion_id);
 
     res.status(201).json({
       success: true,
@@ -209,6 +252,16 @@ router.post("/", async (req, res) => {
     });
   } catch (error) {
     console.error(" [Promotions] Error creating promotion:", error);
+    
+    // Handle duplicate key error
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Mã khuyến mãi hoặc promotion_id đã tồn tại",
+        error: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Lỗi khi tạo khuyến mãi",
@@ -217,15 +270,26 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/promotions/:id - Cập nhật promotion
+// PUT /api/promotions/:id - Cập nhật promotion (có thể tìm bằng promotion_id hoặc code)
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedPromotion = await Promotion.findOneAndUpdate(
+    
+    // Try to find by promotion_id first, then by code
+    let updatedPromotion = await Promotion.findOneAndUpdate(
       { promotion_id: id },
-      { ...req.body, updated_at: Date.now() },
+      { ...req.body, updated_at: new Date() },
       { new: true }
     );
+
+    // If not found by promotion_id, try to find by code
+    if (!updatedPromotion) {
+      updatedPromotion = await Promotion.findOneAndUpdate(
+        { code: id },
+        { ...req.body, updated_at: new Date() },
+        { new: true }
+      );
+    }
 
     if (!updatedPromotion) {
       return res.status(404).json({

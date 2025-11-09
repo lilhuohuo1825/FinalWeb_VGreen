@@ -22,15 +22,27 @@ import { ProductService } from '../../services/product.service';
 import { ToastService } from '../../services/toast.service';
 import { CartService } from '../../services/cart.service';
 
+interface ShippingAddress {
+  detail?: string;
+  ward?: string;
+  district?: string;
+  city?: string;
+}
+
+interface ShippingInfo {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  address?: ShippingAddress;
+  [key: string]: any;
+}
+
 interface Order {
   id: string;
   orderNumber: string;
   OrderID?: string; // OrderID từ backend (để reviews component sử dụng)
   CustomerID?: string; // CustomerID từ backend (để reviews component sử dụng)
-  shippingInfo?: {
-    fullName?: string; // fullName để reviews component sử dụng
-    [key: string]: any;
-  };
+  shippingInfo?: ShippingInfo;
   status: string;
   totalAmount: number;
   orderDate: string;
@@ -89,10 +101,19 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   cancelReturnItem: any = null;
   showCancelOrderModal: boolean = false;
   orderToCancel: Order | null = null;
+  cancelReason: string = ''; // Lý do hủy đơn hàng
 
- // Review modal properties
+  // Review modal properties
   showReviewModal: boolean = false;
   reviewProducts: ReviewProduct[] = [];
+
+  // Order detail modal properties
+  showOrderDetailModal: boolean = false;
+  selectedOrderForDetail: Order | null = null;
+
+  // Confirm received order modal properties
+  showConfirmReceivedModal: boolean = false;
+  orderToConfirmReceived: Order | null = null;
 
   tabs = [
     { id: 'all', label: 'Tất cả', count: 0 },
@@ -213,35 +234,50 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   loadOrders(): void {
  // First, try to load from backend
     const customerID = this.orderService.getCustomerID();
- console.log('Loading orders for CustomerID:', customerID);
+    console.log('📦 [Orders] Loading orders for CustomerID:', customerID);
 
     if (customerID && customerID !== 'guest') {
+      console.log('📦 [Orders] Calling API to fetch orders...');
       this.orderService.getOrdersByCustomer(customerID).subscribe({
         next: (response) => {
-          if (response.success && response.data) {
- console.log(' Loaded orders from backend:', response.data.length);
- // Map backend orders to frontend format
+          console.log('📦 [Orders] API Response:', response);
+          if (response.success && response.data && Array.isArray(response.data)) {
+            console.log('✅ [Orders] Loaded orders from backend:', response.data.length);
+            console.log('📦 [Orders] Sample order:', response.data[0]);
+            
+            // Map backend orders to frontend format
             this.orders = response.data.map((order) => this.mapBackendOrderToFrontendOrder(order));
+            console.log('✅ [Orders] Mapped orders:', this.orders.length);
+            console.log('📦 [Orders] Sample mapped order:', this.orders[0]);
 
- // Save to localStorage
+            // Save to localStorage
             localStorage.setItem('ordersData', JSON.stringify(this.orders));
 
             this.updateTabCounts();
             this.updateReviewBadge();
             this.loadReviewedOrders();
             this.reviewSyncService.notifyOrdersChanged();
+            
+            // Force change detection
+            this.cdr.detectChanges();
           } else {
- console.log('No orders found in backend, checking localStorage...');
+            console.log('⚠️ [Orders] No orders found in backend response:', response);
             this.loadFromLocalStorage();
           }
         },
         error: (error) => {
- console.error('Error loading orders from backend:', error);
+          console.error('❌ [Orders] Error loading orders from backend:', error);
+          console.error('❌ [Orders] Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            message: error.message,
+            error: error.error
+          });
           this.loadFromLocalStorage();
         },
       });
     } else {
- console.log('No customer ID or guest user, loading from localStorage...');
+      console.log('⚠️ [Orders] No customer ID or guest user, loading from localStorage...');
       this.loadFromLocalStorage();
     }
   }
@@ -345,9 +381,14 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
       if (tab.id === 'all') {
         tab.count = this.orders.length;
       } else if (tab.id === 'completed') {
- // For completed tab, count both delivered and completed orders
+        // For completed tab, count both delivered and completed orders
         tab.count = this.orders.filter(
           (order) => order.status === 'completed' || order.status === 'delivered'
+        ).length;
+      } else if (tab.id === 'shipping') {
+        // For shipping tab, count both confirmed and shipping orders (both show as "Đang giao")
+        tab.count = this.orders.filter(
+          (order) => order.status === 'confirmed' || order.status === 'shipping'
         ).length;
       } else {
         tab.count = this.orders.filter((order) => order.status === tab.id).length;
@@ -384,12 +425,17 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
           order.status !== 'returned'
       );
     } else if (this.activeTab === 'completed') {
- // For "Đã giao hàng" tab, show both delivered and completed orders
+      // For "Đã giao hàng" tab, show both delivered and completed orders
       filteredOrders = this.orders.filter(
         (order) => order.status === 'completed' || order.status === 'delivered'
       );
+    } else if (this.activeTab === 'shipping') {
+      // For "Chờ giao hàng" tab, show both confirmed and shipping orders (both show as "Đang giao")
+      filteredOrders = this.orders.filter(
+        (order) => order.status === 'confirmed' || order.status === 'shipping'
+      );
     } else {
- // For other tabs, show orders with matching status
+      // For other tabs, show orders with matching status
       filteredOrders = this.orders.filter((order) => order.status === this.activeTab);
     }
 
@@ -436,9 +482,9 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   getStatusLabel(status: string): string {
     const statusMap: { [key: string]: string } = {
       pending: 'Chờ xác nhận',
-      confirmed: 'Đã xác nhận',
+      confirmed: 'Đang giao', // Changed from 'Đã xác nhận' to 'Đang giao'
       processing: 'Đang xử lý',
-      shipping: 'Chờ giao hàng',
+      shipping: 'Đang giao',
       delivered: 'Đã giao hàng',
       completed: 'Đã giao hàng',
       cancelled: 'Đã hủy',
@@ -448,9 +494,14 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getDisplayStatusLabel(order: Order): string {
- // If order status is 'pending', show "Đang chờ xử lý"
+    // If order status is 'pending', show "Đang chờ xử lý"
     if (order.status === 'pending') {
       return 'Đang chờ xử lý';
+    }
+    
+    // If order status is 'confirmed' or 'shipping', show "Đang giao"
+    if (order.status === 'confirmed' || order.status === 'shipping') {
+      return 'Đang giao';
     }
 
  // For other cases, use the existing logic
@@ -462,12 +513,17 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getDisplayStatusClass(order: Order): string {
- // If order status is 'pending', use pending class
+    // If order status is 'pending', use pending class
     if (order.status === 'pending') {
       return 'status-pending';
     }
+    
+    // If order status is 'confirmed' or 'shipping', use shipping class (Đang giao)
+    if (order.status === 'confirmed' || order.status === 'shipping') {
+      return 'status-shipping';
+    }
 
- // Map backend status 'delivered' to frontend 'completed' class
+    // Map backend status 'delivered' to frontend 'completed' class
     if (order.status === 'delivered' || order.status === 'completed') {
       return 'status-completed';
     }
@@ -535,6 +591,10 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onReturnRefund(order: Order): void {
     this.selectedOrder = order;
+    // Close order detail modal if open
+    if (this.showOrderDetailModal) {
+      this.closeOrderDetailModal();
+    }
     this.showReturnModal = true;
     this.resetModalForm();
   }
@@ -606,10 +666,20 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
  // Show success toast notification
       this.toastService.show('Yêu cầu trả hàng đã được gửi thành công!', 'success');
 
- // Navigate to return management page after a short delay
+ // Trigger event to notify return management page to reload
+      window.dispatchEvent(new Event('returnManagementDataChanged'));
+      localStorage.setItem('returnManagementDataChanged', Date.now().toString());
+      localStorage.removeItem('returnManagementDataChanged');
+
+ // Navigate to return management page after a short delay to allow backend to update
       setTimeout(() => {
-        this.router.navigate(['/account/return-management']);
-      }, 100);
+        this.router.navigate(['/account/return-management']).then(() => {
+          // Force reload after navigation to ensure data is fresh
+          setTimeout(() => {
+            window.dispatchEvent(new Event('returnManagementDataChanged'));
+          }, 500);
+        });
+      }, 300);
     }
   }
 
@@ -750,13 +820,29 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
  // Update order status via API
-  updateOrderStatusViaAPI(orderId: string, backendStatus: string, frontendStatus: string): void {
+  updateOrderStatusViaAPI(orderId: string, backendStatus: string, frontendStatus: string, reason?: string): void {
  // console.log(' [Orders] Calling API to update order status:', orderId, '->', backendStatus);
 
+ // Prepare request body
+    const requestBody: any = { status: backendStatus };
+    if (reason) {
+      requestBody.reason = reason;
+    }
+
  // Call backend API to update order status (no auth header needed based on backend code)
-    this.http.put(`/api/orders/${orderId}/status`, { status: backendStatus }).subscribe({
+    this.http.put(`/api/orders/${orderId}/status`, requestBody).subscribe({
       next: (response: any) => {
  // console.log(' [Orders] Order status updated successfully:', response);
+
+        // Check if approval is required (for cancellation requests)
+        if (response.requiresApproval) {
+          this.toastService.show('Yêu cầu hủy đơn hàng đã được gửi. Đang chờ xác nhận từ admin.', 'success');
+          // Don't update local status yet - wait for admin approval
+          setTimeout(() => {
+            this.loadOrders();
+          }, 500);
+          return;
+        }
 
  // Update local order status (use frontend status for display)
         this.updateOrderStatus(orderId, frontendStatus);
@@ -764,6 +850,8 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
  // Show toast notification for cancelled orders
         if (backendStatus === 'cancelled') {
           this.toastService.show('Đã hủy đơn hàng thành công!', 'success');
+          // Switch to cancelled tab
+          this.activeTab = 'cancelled';
         }
 
  // If order is delivered, refresh user data to get updated TotalSpent and CustomerTiering
@@ -851,6 +939,7 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   closeCancelOrderModal(): void {
     this.showCancelOrderModal = false;
     this.orderToCancel = null;
+    this.cancelReason = '';
   }
 
  // Confirm cancel order
@@ -861,14 +950,13 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
 
  // console.log(' [Orders] Confirming cancel order:', this.orderToCancel.id);
 
- // Update order status to cancelled via API
-    this.updateOrderStatusViaAPI(this.orderToCancel.id, 'cancelled', 'cancelled');
+ // Update order status to cancelled via API with reason
+    this.updateOrderStatusViaAPI(this.orderToCancel.id, 'cancelled', 'cancelled', this.cancelReason);
 
  // Close modal
     this.closeCancelOrderModal();
 
- // Switch to cancelled tab
-    this.activeTab = 'cancelled';
+ // Don't switch tab yet - wait for admin approval
   }
 
   onRate(order: Order): void {
@@ -984,9 +1072,9 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
 
  // console.log(` [Orders] Submitting review for SKU: ${sku}`);
 
- // Gọi API để lưu review
+      // Gọi API để lưu review
       return this.http
-        .post(`/api/reviews/${sku}`, reviewData)
+        .post(`http://localhost:3000/api/reviews/${sku}`, reviewData)
         .toPromise()
         .then((response: any) => {
  // console.log(` Review submitted successfully for SKU: ${sku}`, response);
@@ -1648,7 +1736,7 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadReviewedOrders(): void {
  // Load tất cả reviews từ backend để check order nào đã được review đầy đủ
-    this.http.get<any>('/api/reviews/').subscribe({
+    this.http.get<any>('http://localhost:3000/api/reviews/').subscribe({
       next: (response) => {
         if (response.success && response.data && Array.isArray(response.data)) {
           this.reviewedOrderIds.clear();
@@ -1693,5 +1781,88 @@ export class OrdersComponent implements OnInit, OnDestroy, AfterViewInit {
   hasOrderBeenReviewed(order: Order): boolean {
     const orderId = order.OrderID || order.orderNumber || order.id;
     return orderId ? this.reviewedOrderIds.has(orderId) : false;
+  }
+
+  // View order details
+  viewOrderDetails(order: Order): void {
+    this.selectedOrderForDetail = order;
+    this.showOrderDetailModal = true;
+  }
+
+  closeOrderDetailModal(): void {
+    this.showOrderDetailModal = false;
+    this.selectedOrderForDetail = null;
+  }
+
+  // Confirm received order
+  confirmReceivedOrder(order: Order): void {
+    this.orderToConfirmReceived = order;
+    this.showConfirmReceivedModal = true;
+  }
+
+  // Close confirm received modal
+  closeConfirmReceivedModal(): void {
+    this.showConfirmReceivedModal = false;
+    this.orderToConfirmReceived = null;
+  }
+
+  // Execute confirm received order
+  executeConfirmReceivedOrder(): void {
+    if (!this.orderToConfirmReceived) {
+      return;
+    }
+
+    const order = this.orderToConfirmReceived;
+    // Update status to delivered
+    this.updateOrderStatusViaAPI(order.id, 'delivered', 'completed');
+    
+    // Close modals
+    this.closeConfirmReceivedModal();
+    if (this.showOrderDetailModal) {
+      this.closeOrderDetailModal();
+    }
+    
+    // Show success message
+    this.toastService.show('Đã xác nhận nhận hàng thành công!', 'success');
+  }
+
+  // Check if order is in shipping status (can confirm received)
+  isOrderShipping(order: Order): boolean {
+    return order.status === 'shipping' || order.status === 'confirmed';
+  }
+
+  // Helper methods for shipping info display
+  getShippingFullName(): string {
+    if (!this.selectedOrderForDetail || !this.selectedOrderForDetail.shippingInfo) {
+      return '';
+    }
+    return this.selectedOrderForDetail.shippingInfo.fullName || '';
+  }
+
+  getShippingPhone(): string {
+    if (!this.selectedOrderForDetail || !this.selectedOrderForDetail.shippingInfo) {
+      return '';
+    }
+    return this.selectedOrderForDetail.shippingInfo.phone || '';
+  }
+
+  getShippingEmail(): string {
+    if (!this.selectedOrderForDetail || !this.selectedOrderForDetail.shippingInfo) {
+      return '';
+    }
+    return this.selectedOrderForDetail.shippingInfo.email || '';
+  }
+
+  getShippingAddress(): string {
+    if (!this.selectedOrderForDetail || !this.selectedOrderForDetail.shippingInfo || !this.selectedOrderForDetail.shippingInfo.address) {
+      return '';
+    }
+    const address = this.selectedOrderForDetail.shippingInfo.address;
+    const parts: string[] = [];
+    if (address.detail) parts.push(address.detail);
+    if (address.ward) parts.push(address.ward);
+    if (address.district) parts.push(address.district);
+    if (address.city) parts.push(address.city);
+    return parts.join(', ');
   }
 }

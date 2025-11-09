@@ -11,8 +11,8 @@
 
   <!-- Page Header -->
   <div class="page-header">
-    <h1 class="page-title">{{isNewOrder ? 'TẠO ĐƠN HÀNG MỚI' : 'CHI TIẾT ĐƠN HÀNG'}}</h1>
-    <button class="btn-print" (click)="printOrder()" *ngIf="!isNewOrder">
+    <h1 class="page-title">{{isNewOrder ? 'TẠO ĐƠN HÀNG MỚI' : (isEditMode ? 'CHỈNH SỬA ĐƠN HÀNG' : 'CHI TIẾT ĐƠN HÀNG')}}</h1>
+    <button class="btn-print" (click)="printOrder()" *ngIf="!isNewOrder && !isEditMode">
       <img src="asset/icons/print.png" alt="Print">
       <span>In đơn hàng</span>
     </button>
@@ -36,7 +36,7 @@
             <h2 class="order-id" *ngIf="isNewOrder">Đơn hàng mới</h2>
             <p class="order-date">{{orderData.date}}</p>
           </div>
-          <div class="order-statuses" *ngIf="!isNewOrder">
+          <div class="order-statuses" *ngIf="!isNewOrder && !isEditMode">
             <div class="status-item">
               <p class="status-label">Trạng thái đơn hàng</p>
               <span class="status-badge" 
@@ -62,7 +62,7 @@
               </span>
             </div>
           </div>
-          <div class="order-statuses" *ngIf="isNewOrder">
+          <div class="order-statuses" *ngIf="isNewOrder || isEditMode">
             <div class="status-item">
               <p class="status-label">Trạng thái đơn hàng</p>
               <select class="form-select" [(ngModel)]="orderData.status">
@@ -92,7 +92,7 @@
         <div class="products-section">
           <div class="section-header">
             <h3 class="section-title">Danh sách sản phẩm</h3>
-            <button class="btn-add-item" *ngIf="isNewOrder" (click)="addProductToOrder()">
+            <button class="btn-add-item" *ngIf="isNewOrder || isEditMode" (click)="addProductToOrder()">
               <img src="asset/icons/plus.png" alt="Add">
               <span>Thêm sản phẩm</span>
             </button>
@@ -105,7 +105,7 @@
                 <th class="col-quantity">Số lượng</th>
                 <th class="col-price">Giá</th>
                 <th class="col-total">Thành tiền</th>
-                <th class="col-actions" *ngIf="isNewOrder"></th>
+                <th class="col-actions" *ngIf="isNewOrder || isEditMode"></th>
               </tr>
             </thead>
             <tbody>
@@ -116,23 +116,23 @@
                   </div>
                 </td>
                 <td class="col-name">
-                  <input *ngIf="isNewOrder" type="text" class="form-input-inline" [(ngModel)]="item.name" placeholder="Tên sản phẩm">
-                  <div *ngIf="!isNewOrder" class="product-name">{{item.name}}</div>
-                  <input *ngIf="isNewOrder" type="text" class="form-input-inline form-input-sku" [(ngModel)]="item.sku" placeholder="SKU">
-                  <div *ngIf="!isNewOrder" class="product-sku">{{item.sku}}</div>
+                  <input *ngIf="isNewOrder || isEditMode" type="text" class="form-input-inline" [(ngModel)]="item.name" placeholder="Tên sản phẩm">
+                  <div *ngIf="!isNewOrder && !isEditMode" class="product-name">{{item.name}}</div>
+                  <input *ngIf="isNewOrder || isEditMode" type="text" class="form-input-inline form-input-sku" [(ngModel)]="item.sku" placeholder="SKU">
+                  <div *ngIf="!isNewOrder && !isEditMode" class="product-sku">{{item.sku}}</div>
                 </td>
                 <td class="col-quantity">
-                  <input *ngIf="isNewOrder" type="number" class="form-input-inline" [(ngModel)]="item.quantity" 
+                  <input *ngIf="isNewOrder || isEditMode" type="number" class="form-input-inline" [(ngModel)]="item.quantity" 
                          (change)="updateProductQuantity(i, item.quantity)" min="1">
-                  <span *ngIf="!isNewOrder">{{item.quantity}}</span>
+                  <span *ngIf="!isNewOrder && !isEditMode">{{item.quantity}}</span>
                 </td>
                 <td class="col-price">
-                  <input *ngIf="isNewOrder" type="number" class="form-input-inline" [(ngModel)]="item.price" 
+                  <input *ngIf="isNewOrder || isEditMode" type="number" class="form-input-inline" [(ngModel)]="item.price" 
                          (change)="updateProductPrice(i, item.price)" min="0" step="1000">
-                  <span *ngIf="!isNewOrder">{{formatCurrency(item.price)}}</span>
+                  <span *ngIf="!isNewOrder && !isEditMode">{{formatCurrency(item.price)}}</span>
                 </td>
                 <td class="col-total">{{formatCurrency(item.total || item.price * item.quantity)}}</td>
-                <td class="col-actions" *ngIf="isNewOrder">
+                <td class="col-actions" *ngIf="isNewOrder || isEditMode">
                   <button class="btn-remove-item" (click)="removeProductFromOrder(i)">
                     <img src="asset/icons/trash_red.png" alt="Remove">
                   </button>
@@ -169,32 +169,60 @@
       <div class="info-card">
         <h3 class="card-title">Thông tin người mua</h3>
         <div class="card-content">
-          <div class="info-row" *ngIf="!isNewOrder">
+          <div class="info-row" *ngIf="!isNewOrder && !isEditMode">
             <strong>{{orderData.customerInfo.name}}</strong>
           </div>
-          <div class="info-row" *ngIf="isNewOrder">
+          <!-- Customer ID - Always display -->
+          <div class="info-row">
+            <label class="info-label">ID Khách hàng:</label>
+            <div class="customer-id-search-container" *ngIf="isNewOrder || isEditMode">
+              <input 
+                type="text" 
+                class="form-input-inline" 
+                [(ngModel)]="customerIDSearch" 
+                placeholder="Nhập Customer ID để tìm kiếm"
+                (keyup.enter)="searchCustomerById()"
+                (blur)="searchCustomerById()">
+              <button class="btn-search-customer" (click)="searchCustomerById()" type="button">
+                <img src="asset/icons/search.png" alt="Search" style="width: 16px; height: 16px;">
+              </button>
+            </div>
+            <div class="info-value" *ngIf="!isNewOrder && !isEditMode">
+              <strong>{{customerIDSearch || orderData.customerID || 'N/A'}}</strong>
+            </div>
+          </div>
+          <div class="info-row" *ngIf="isNewOrder || isEditMode">
+            <label class="info-label">Chọn khách hàng:</label>
+            <select class="form-select" [(ngModel)]="orderData.customerInfo.name" (change)="onCustomerChange($event)">
+              <option value="">-- Chọn khách hàng --</option>
+              <option *ngFor="let user of users" [value]="user.FullName || user.full_name || user.name || ''">
+                {{user.FullName || user.full_name || user.name || user.Email || user.CustomerID}}
+              </option>
+            </select>
+          </div>
+          <div class="info-row" *ngIf="isNewOrder || isEditMode">
             <label class="info-label required">Tên:</label>
             <input type="text" class="form-input-inline" [(ngModel)]="orderData.customerInfo.name" placeholder="Tên khách hàng">
           </div>
-          <div class="info-row" *ngIf="isNewOrder">
+          <div class="info-row" *ngIf="isNewOrder || isEditMode">
             <label class="info-label required">SĐT:</label>
             <input type="text" class="form-input-inline" [(ngModel)]="orderData.customerInfo.phone" placeholder="Số điện thoại">
           </div>
-          <div class="info-row" *ngIf="isNewOrder">
+          <div class="info-row" *ngIf="isNewOrder || isEditMode">
             <label class="info-label required">Email:</label>
             <input type="email" class="form-input-inline" [(ngModel)]="orderData.customerInfo.email" placeholder="Email">
           </div>
-          <div class="info-row" *ngIf="!isNewOrder">
+          <div class="info-row" *ngIf="!isNewOrder && !isEditMode && orderData.customerInfo.totalOrders > 0">
             <span class="info-label">Đã đặt</span>
-            <span class="info-value">4 đơn hàng</span>
+            <span class="info-value">{{orderData.customerInfo.totalOrders}} đơn hàng</span>
           </div>
-          <div class="info-row" *ngIf="!isNewOrder">
+          <div class="info-row" *ngIf="!isNewOrder && orderData.customerInfo.totalSpent > 0">
             <span class="info-label">Doanh thu tích lũy</span>
-            <span class="info-value">700.000 đ</span>
+            <span class="info-value">{{formatCurrency(orderData.customerInfo.totalSpent)}}</span>
           </div>
           <div class="info-row" *ngIf="!isNewOrder">
             <span class="info-label">Khách nợ</span>
-            <span class="info-value">95.000 đ</span>
+            <span class="info-value">{{formatCurrency(orderData.customerInfo.debt || 0)}}</span>
           </div>
         </div>
       </div>
@@ -203,8 +231,8 @@
       <div class="info-card">
         <h3 class="card-title">Thông tin giao hàng</h3>
         <div class="card-content">
-          <!-- Display mode (not new order) -->
-          <div class="info-section" *ngIf="!isNewOrder">
+          <!-- Display mode (not new order and not edit mode) -->
+          <div class="info-section" *ngIf="!isNewOrder && !isEditMode">
             <h4 class="section-subtitle">Thông tin nhận hàng</h4>
             <div class="info-row">
               <strong>{{orderData.deliveryInfo.name}}</strong>
@@ -217,16 +245,16 @@
             </div>
           </div>
 
-          <div class="info-section" *ngIf="!isNewOrder">
+          <div class="info-section" *ngIf="!isNewOrder && !isEditMode">
             <h4 class="section-subtitle">Địa chỉ giao hàng</h4>
             <div class="info-row">
               <span>{{orderData.deliveryInfo.address}}</span>
             </div>
           </div>
 
-          <!-- Edit mode (new order) -->
+          <!-- Edit mode (new order or edit mode) -->
           <!-- Thông tin nhận hàng -->
-          <div class="info-section" *ngIf="isNewOrder">
+          <div class="info-section" *ngIf="isNewOrder || isEditMode">
             <h4 class="section-subtitle">Thông tin nhận hàng</h4>
             <div class="info-row">
               <label class="info-label required">Tên:</label>
@@ -243,7 +271,7 @@
           </div>
 
           <!-- Địa chỉ giao hàng -->
-          <div class="info-section" *ngIf="isNewOrder">
+          <div class="info-section" *ngIf="isNewOrder || isEditMode">
             <h4 class="section-subtitle">Địa chỉ nhận hàng</h4>
             <div class="address-grid">
               <div class="info-row">
@@ -295,31 +323,42 @@
             <span class="summary-value" *ngIf="!isNewOrder">{{formatCurrency(orderData.subtotal)}}</span>
             <span *ngIf="isNewOrder" class="summary-value">{{formatCurrency(orderData.subtotal)}}</span>
           </div>
-          <div class="summary-row">
-            <span class="summary-label">Giảm giá</span>
-            <span class="summary-value" *ngIf="!isNewOrder">{{formatCurrency(orderData.discount)}}</span>
-            <div *ngIf="isNewOrder" style="display: flex; align-items: center; flex: 1; gap: 12px;">
-              <select class="form-select-inline" [(ngModel)]="selectedPromotionId" (ngModelChange)="onPromotionChange()">
+          <div class="summary-row" [class.summary-row-discount]="isNewOrder || isEditMode">
+            <div *ngIf="isNewOrder || isEditMode" class="summary-label-wrapper">
+              <span class="summary-label">Giảm giá</span>
+              <select class="form-select-discount" [(ngModel)]="selectedPromotionId" (ngModelChange)="onPromotionChange()">
                 <option [value]="null">-- Chọn khuyến mãi --</option>
                 <option *ngFor="let promo of activePromotions" [value]="promo.promotion_id">
                   {{promo.promotion_name || promo.name}} ({{getPromotionDisplayValue(promo)}})
                 </option>
               </select>
-              <span *ngIf="orderData.discount > 0" class="summary-value" style="color: #EF4444; flex: 0 0 auto; min-width: 100px;">-{{formatCurrency(orderData.discount)}}</span>
             </div>
+            <div *ngIf="!isNewOrder && !isEditMode" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <span class="summary-label">Giảm giá</span>
+              <span class="summary-value">{{formatCurrency(orderData.discount || 0)}}</span>
+            </div>
+            <span *ngIf="isNewOrder || isEditMode" class="summary-value-discount" [style.color]="orderData.discount > 0 ? '#EF4444' : ''">
+              <span *ngIf="orderData.discount > 0">-</span>{{formatCurrency(orderData.discount || 0)}}
+            </span>
           </div>
           <div class="summary-row">
             <span class="summary-label">Tổng phí vận chuyển</span>
-            <span class="summary-value">{{formatCurrency(orderData.shipping)}}</span>
+            <span class="summary-value" *ngIf="!isNewOrder && !isEditMode">{{formatCurrency(orderData.shippingFee || 30000)}}</span>
+            <input *ngIf="isNewOrder || isEditMode" type="number" class="form-input-inline" [(ngModel)]="orderData.shippingFee" 
+                   (change)="updateOrderSummary()" min="0" step="1000" style="width: 150px;">
           </div>
-          <div class="summary-row" *ngIf="!isNewOrder">
+          <div class="summary-row">
             <span class="summary-label">Giảm giá phí vận chuyển</span>
-            <span class="summary-value">{{formatCurrency(orderData.shipping)}}</span>
+            <span class="summary-value" *ngIf="!isNewOrder && !isEditMode" [style.color]="orderData.shippingDiscount > 0 ? '#EF4444' : ''">
+              <span *ngIf="orderData.shippingDiscount > 0">-</span>{{formatCurrency(orderData.shippingDiscount || 0)}}
+            </span>
+            <input *ngIf="isNewOrder || isEditMode" type="number" class="form-input-inline" [(ngModel)]="orderData.shippingDiscount" 
+                   (change)="updateOrderSummary()" min="0" step="1000" style="width: 150px;">
           </div>
           <div class="summary-row">
             <span class="summary-label">Phương thức thanh toán</span>
-            <span class="summary-value" *ngIf="!isNewOrder">COD</span>
-            <select *ngIf="isNewOrder" class="form-select-inline" [(ngModel)]="orderData.paymentMethod">
+            <span class="summary-value" *ngIf="!isNewOrder && !isEditMode">{{orderData.paymentMethod || 'COD'}}</span>
+            <select *ngIf="isNewOrder || isEditMode" class="form-select-inline" [(ngModel)]="orderData.paymentMethod">
               <option value="COD">COD</option>
               <option value="bank">Chuyển khoản</option>
               <option value="cash">Tiền mặt</option>
@@ -353,14 +392,19 @@
         Xác nhận đơn hàng
       </button>
 
-      <!-- Confirm Refund Button - Only show for refund requests -->
-      <button class="btn-confirm-refund" (click)="confirmRefund()" *ngIf="!isNewOrder && orderData.refund === 'requested'">
-        Xác nhận huỷ/hoàn tiền
+      <!-- Confirm Refund Button - Show for processing_return status (first step) -->
+      <button class="btn-confirm-refund" (click)="confirmRefund()" *ngIf="!isNewOrder && order?.status === 'processing_return'">
+        Chấp nhận yêu cầu trả hàng
       </button>
 
-      <!-- Reject Refund Button - Only show for refund requests -->
-      <button class="btn-reject-refund" (click)="rejectRefund()" *ngIf="!isNewOrder && orderData.refund === 'requested'">
-        Từ chối huỷ/hoàn tiền
+      <!-- Complete Return Button - Show for returning status (second step) -->
+      <button class="btn-complete-return" (click)="completeReturn()" *ngIf="!isNewOrder && order?.status === 'returning'">
+        Hoàn tất trả hàng/hoàn tiền
+      </button>
+
+      <!-- Reject Refund Button - Only show for processing_return status -->
+      <button class="btn-reject-refund" (click)="rejectRefund()" *ngIf="!isNewOrder && order?.status === 'processing_return'">
+        Từ chối yêu cầu trả hàng
       </button>
 
       <!-- Print Footer (Only visible in print) -->
@@ -370,6 +414,81 @@
         <div class="print-contact">
           <p>Mọi thắc mắc xin vui lòng liên hệ:</p>
           <p><strong>Hotline:</strong> 1900-xxxx | <strong>Email:</strong> support@vgreen.vn</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Popup -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-icon" [class.success]="popupType === 'success'" [class.error]="popupType === 'error'" [class.info]="popupType === 'info'">
+      <span class="icon-check" *ngIf="popupType === 'success'">✓</span>
+      <span class="icon-error" *ngIf="popupType === 'error'">✕</span>
+      <span class="icon-info" *ngIf="popupType === 'info'">i</span>
+    </div>
+    
+    <div class="popup-message">{{ popupMessage }}</div>
+    
+    <button class="popup-btn-ok" (click)="closePopup()">OK</button>
+  </div>
+</div>
+
+<!-- Product Selection Modal -->
+<div class="product-modal-overlay" *ngIf="showProductModal" (click)="closeProductModal()">
+  <div class="product-modal-content" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="product-modal-header">
+      <h2 class="product-modal-title">Chọn sản phẩm</h2>
+      <button class="product-modal-close" (click)="closeProductModal()">×</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="product-modal-body">
+      <!-- Search and Filter Section -->
+      <div class="product-modal-filters">
+        <div class="filter-group">
+          <label class="filter-label">Tìm kiếm:</label>
+          <input 
+            type="text" 
+            class="filter-input" 
+            placeholder="Tìm theo tên hoặc SKU..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchQueryChange()">
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Danh mục:</label>
+          <select 
+            class="filter-select" 
+            [(ngModel)]="selectedCategory"
+            (change)="onCategoryFilterChange()">
+            <option value="">Tất cả danh mục</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products List -->
+      <div class="product-modal-list">
+        <div *ngIf="filteredProducts.length === 0" class="product-modal-empty">
+          <p>Không tìm thấy sản phẩm nào.</p>
+        </div>
+        <div *ngFor="let product of filteredProducts" class="product-modal-item" (click)="selectProduct(product)">
+          <div class="product-modal-item-image">
+            <img [src]="product.Image?.[0] || product.image || 'asset/icons/shop.png'" alt="Product" onerror="this.src='asset/icons/shop.png'">
+          </div>
+          <div class="product-modal-item-info">
+            <div class="product-modal-item-name">{{product.product_name || product.productName || 'Sản phẩm'}}</div>
+            <div class="product-modal-item-sku">SKU: {{product.sku || 'N/A'}}</div>
+            <div class="product-modal-item-category">{{product.category || ''}}</div>
+          </div>
+          <div class="product-modal-item-price">
+            {{formatCurrency(product.price || product.ProductPrice || 0)}}
+          </div>
+          <div class="product-modal-item-action">
+            <img src="asset/icons/plus.png" alt="Add" class="add-icon">
+          </div>
         </div>
       </div>
     </div>

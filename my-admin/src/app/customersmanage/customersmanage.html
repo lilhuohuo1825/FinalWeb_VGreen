@@ -35,7 +35,12 @@
         <img src="asset/icons/customer_dark.png" alt="Group">
         <span>Nhóm</span>
       </button>
-      <button class="btn-action btn-delete" (click)="deleteCustomers()" [disabled]="selectedCount === 0">
+      <button 
+        class="btn-action btn-delete" 
+        [class.disabled]="selectedCount === 0"
+        [disabled]="selectedCount === 0"
+        (click)="deleteCustomers(); $event.stopPropagation(); $event.preventDefault()" 
+        type="button">
         <img src="asset/icons/trash_red.png" alt="Delete">
         <span>Xoá</span>
       </button>
@@ -331,6 +336,35 @@
       <button class="btn-create-group" (click)="createGroup()">
         <span>✓</span> Tạo nhóm
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup Notification -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-content" [ngClass]="'popup-' + popupType">
+      <div class="popup-icon">
+        <span *ngIf="popupType === 'success'">✓</span>
+        <span *ngIf="popupType === 'error'">✗</span>
+        <span *ngIf="popupType === 'info'">ℹ</span>
+      </div>
+      <div class="popup-message">{{popupMessage}}</div>
+      <button class="popup-close" (click)="closePopup()">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="popup-overlay" *ngIf="showConfirmDialog" (click)="cancelDelete()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <span class="icon-question">?</span>
+    </div>
+    <div class="confirm-message">{{ confirmMessage }}</div>
+    <div class="confirm-buttons">
+      <button class="btn-confirm-cancel" (click)="cancelDelete()">Hủy</button>
+      <button class="btn-confirm-ok" (click)="confirmDelete()">OK</button>
     </div>
   </div>
 </div>

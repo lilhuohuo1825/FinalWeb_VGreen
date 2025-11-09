@@ -232,11 +232,11 @@
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-group">
-          <label>Mã khuyến mãi *</label>
+          <label>Mã khuyến mãi <span class="required-asterisk">*</span></label>
           <input type="text" [(ngModel)]="currentPromotion.code" placeholder="VD: VGKM2024" class="input-field">
         </div>
         <div class="form-group">
-          <label>Tên khuyến mãi *</label>
+          <label>Tên khuyến mãi <span class="required-asterisk">*</span></label>
           <input type="text" [(ngModel)]="currentPromotion.name" placeholder="VD: Giảm giá mùa hè" class="input-field">
         </div>
         <div class="form-group full-width">
@@ -244,24 +244,22 @@
           <textarea [(ngModel)]="currentPromotion.description" placeholder="Mô tả chi tiết..." class="input-field" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label>Loại khuyến mãi *</label>
+          <label>Loại khuyến mãi <span class="required-asterisk">*</span></label>
           <select [(ngModel)]="currentPromotion.type" class="input-field">
             <option value="User">Người dùng (User)</option>
             <option value="Admin">Quản trị (Admin)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Phạm vi áp dụng *</label>
-          <select [(ngModel)]="currentPromotion.scope" class="input-field">
-            <option value="Order">Đơn hàng (Order)</option>
-            <option value="Shipping">Vận chuyển (Shipping)</option>
-            <option value="Category">Danh mục (Category)</option>
-            <option value="Brand">Thương hiệu (Brand)</option>
-            <option value="Product">Sản phẩm (Product)</option>
+          <label>Trạng thái <span class="required-asterisk">*</span></label>
+          <select [(ngModel)]="currentPromotion.status" class="input-field">
+            <option value="active">Đang hoạt động (Active)</option>
+            <option value="upcoming">Sắp diễn ra (Upcoming)</option>
+            <option value="expired">Đã hết hạn (Expired)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Loại giảm giá *</label>
+          <label>Loại giảm giá <span class="required-asterisk">*</span></label>
           <select [(ngModel)]="currentPromotion.discountType" class="input-field">
             <option value="percentage">Phần trăm (%)</option>
             <option value="fixed">Số tiền cố định (₫)</option>
@@ -269,7 +267,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Giá trị giảm *</label>
+          <label>Giá trị giảm <span class="required-asterisk">*</span></label>
           <input type="number" [(ngModel)]="currentPromotion.discountValue" placeholder="0" class="input-field">
         </div>
         <div class="form-group">
@@ -281,11 +279,11 @@
           <input type="number" [(ngModel)]="currentPromotion.maxDiscount" placeholder="VD: 50000" class="input-field">
         </div>
         <div class="form-group">
-          <label>Ngày bắt đầu *</label>
+          <label>Ngày bắt đầu <span class="required-asterisk">*</span></label>
           <input type="date" [(ngModel)]="currentPromotion.startDate" class="input-field">
         </div>
         <div class="form-group">
-          <label>Ngày kết thúc *</label>
+          <label>Ngày kết thúc <span class="required-asterisk">*</span></label>
           <input type="date" [(ngModel)]="currentPromotion.endDate" class="input-field">
         </div>
         <div class="form-group">
@@ -302,11 +300,106 @@
             <span>Chỉ áp dụng cho đơn hàng đầu tiên</span>
           </label>
         </div>
+
+        <!-- Phạm vi áp dụng - Moved to bottom before Target Selection -->
+        <div class="form-group full-width">
+          <label>Phạm vi áp dụng <span class="required-asterisk">*</span></label>
+          <select [(ngModel)]="currentPromotion.scope" (change)="onScopeChange()" class="input-field">
+            <option value="Order">Đơn hàng (Order)</option>
+            <option value="Shipping">Vận chuyển (Shipping)</option>
+            <option value="Category">Danh mục (Category)</option>
+            <option value="Brand">Thương hiệu (Brand)</option>
+            <option value="Product">Sản phẩm (Product)</option>
+          </select>
+          <span class="target-help-text">Chọn phạm vi áp dụng của khuyến mãi. Nếu chọn Danh mục, Thương hiệu hoặc Sản phẩm, bạn cần chọn các mục cụ thể ở phần bên dưới.</span>
+        </div>
+
+        <!-- Target Selection Section - Only show when scope is Category, Product, or Brand -->
+        <div class="form-group full-width target-selection-section" *ngIf="currentPromotion.scope === 'Category' || currentPromotion.scope === 'Product' || currentPromotion.scope === 'Brand'">
+          <div class="target-selection-header">
+            <label class="target-section-label">Phạm vi áp dụng cụ thể <span class="required-asterisk">*</span></label>
+            <span class="target-help-text">Chọn các {{currentPromotion.scope === 'Category' ? 'danh mục' : currentPromotion.scope === 'Brand' ? 'thương hiệu' : 'sản phẩm'}} để áp dụng khuyến mãi</span>
+          </div>
+          
+          <!-- Target Type Selection (only for Category scope) -->
+          <div class="target-type-selector" *ngIf="currentPromotion.scope === 'Category'">
+            <label>Loại danh mục <span class="required-asterisk">*</span></label>
+            <select [(ngModel)]="targetType" (change)="onTargetTypeChange()" class="input-field">
+              <option value="Category">Danh mục chính (Category)</option>
+              <option value="Subcategory">Danh mục phụ (Subcategory)</option>
+            </select>
+            <span class="target-help-text">Chọn loại danh mục bạn muốn áp dụng khuyến mãi</span>
+          </div>
+
+          <!-- Target Selection List -->
+          <div class="target-list-container">
+            <!-- Search Box for all target types -->
+            <div class="target-search">
+              <input 
+                type="text" 
+                [placeholder]="getSearchPlaceholder()" 
+                class="input-field target-search-input"
+                [(ngModel)]="targetSearchTerm"
+                (input)="onTargetSearchChange()">
+            </div>
+            
+            <div class="target-list" *ngIf="!isLoadingTargets">
+              <div 
+                class="target-item" 
+                *ngFor="let option of getFilteredTargetOptions()" 
+                [class.selected]="isTargetSelected(getTargetValue(option))"
+                (click)="toggleTarget(getTargetValue(option))">
+                <input 
+                  type="checkbox" 
+                  [checked]="isTargetSelected(getTargetValue(option))"
+                  (change)="toggleTarget(getTargetValue(option))"
+                  class="target-checkbox"
+                  (click)="$event.stopPropagation()">
+                <span class="target-label">{{getTargetLabel(option)}}</span>
+              </div>
+              <div class="target-empty" *ngIf="getFilteredTargetOptions().length === 0 && !isLoadingTargets">
+                <span *ngIf="targetSearchTerm">Không tìm thấy kết quả cho "{{targetSearchTerm}}"</span>
+                <span *ngIf="!targetSearchTerm">Không có dữ liệu</span>
+              </div>
+            </div>
+            <div class="target-loading" *ngIf="isLoadingTargets">
+              <span>Đang tải danh sách...</span>
+            </div>
+            
+            <!-- Selected Targets Summary -->
+            <div class="selected-targets-summary" *ngIf="selectedTargets.length > 0">
+              <div class="summary-header">
+                <strong>Đã chọn ({{selectedTargets.length}}):</strong>
+                <button type="button" class="clear-all-btn" (click)="clearAllTargets()">Xóa tất cả</button>
+              </div>
+              <div class="selected-targets-tags">
+                <span class="target-tag" *ngFor="let targetValue of selectedTargets">
+                  {{getTargetDisplayName(targetValue)}}
+                  <button type="button" class="tag-remove" (click)="removeTarget(targetValue)">×</button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" (click)="closeAddEditModal()">Hủy</button>
       <button class="btn-primary" (click)="savePromotion()">{{editMode ? 'Cập nhật' : 'Thêm mới'}}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="popup-overlay" *ngIf="showConfirmModal" (click)="closeConfirmModal()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <span class="icon-question">?</span>
+    </div>
+    <div class="confirm-message">{{ confirmMessage }}</div>
+    <div class="confirm-buttons">
+      <button class="btn-confirm-cancel" (click)="closeConfirmModal()">Hủy</button>
+      <button class="btn-confirm-ok" (click)="onConfirm()">Xác nhận</button>
     </div>
   </div>
 </div>
@@ -321,11 +414,11 @@
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-group">
-          <label>Mã khuyến mãi *</label>
+          <label>Mã khuyến mãi <span class="required-asterisk">*</span></label>
           <input type="text" [(ngModel)]="selectedPromotion.code" placeholder="VD: VGKM2024" class="input-field">
         </div>
         <div class="form-group">
-          <label>Tên khuyến mãi *</label>
+          <label>Tên khuyến mãi <span class="required-asterisk">*</span></label>
           <input type="text" [(ngModel)]="selectedPromotion.name" placeholder="VD: Giảm giá mùa hè" class="input-field">
         </div>
         <div class="form-group full-width">
@@ -333,24 +426,22 @@
           <textarea [(ngModel)]="selectedPromotion.description" placeholder="Mô tả chi tiết..." class="input-field" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label>Loại khuyến mãi *</label>
+          <label>Loại khuyến mãi <span class="required-asterisk">*</span></label>
           <select [(ngModel)]="selectedPromotion.type" class="input-field">
             <option value="User">Người dùng (User)</option>
             <option value="Admin">Quản trị viên (Admin)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Phạm vi áp dụng *</label>
-          <select [(ngModel)]="selectedPromotion.scope" class="input-field">
-            <option value="Order">Đơn hàng (Order)</option>
-            <option value="Shipping">Vận chuyển (Shipping)</option>
-            <option value="Category">Danh mục (Category)</option>
-            <option value="Brand">Thương hiệu (Brand)</option>
-            <option value="Product">Sản phẩm (Product)</option>
+          <label>Trạng thái <span class="required-asterisk">*</span></label>
+          <select [(ngModel)]="selectedPromotion.status" class="input-field">
+            <option value="active">Đang hoạt động (Active)</option>
+            <option value="upcoming">Sắp diễn ra (Upcoming)</option>
+            <option value="expired">Đã hết hạn (Expired)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Loại giảm giá *</label>
+          <label>Loại giảm giá <span class="required-asterisk">*</span></label>
           <select [(ngModel)]="selectedPromotion.discountType" class="input-field">
             <option value="percentage">Phần trăm (%)</option>
             <option value="fixed">Cố định</option>
@@ -358,7 +449,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label>Giá trị giảm *</label>
+          <label>Giá trị giảm <span class="required-asterisk">*</span></label>
           <input type="number" [(ngModel)]="selectedPromotion.discountValue" placeholder="0" class="input-field">
         </div>
         <div class="form-group">
@@ -370,11 +461,11 @@
           <input type="number" [(ngModel)]="selectedPromotion.maxDiscount" placeholder="0" class="input-field">
         </div>
         <div class="form-group">
-          <label>Ngày bắt đầu *</label>
+          <label>Ngày bắt đầu <span class="required-asterisk">*</span></label>
           <input type="date" [(ngModel)]="selectedPromotion.startDate" class="input-field">
         </div>
         <div class="form-group">
-          <label>Ngày kết thúc *</label>
+          <label>Ngày kết thúc <span class="required-asterisk">*</span></label>
           <input type="date" [(ngModel)]="selectedPromotion.endDate" class="input-field">
         </div>
         <div class="form-group">
@@ -390,6 +481,87 @@
             <input type="checkbox" [(ngModel)]="selectedPromotion.isFirstOrderOnly" class="checkbox-input">
             <span>Chỉ áp dụng cho đơn hàng đầu tiên</span>
           </label>
+        </div>
+
+        <!-- Phạm vi áp dụng - Moved to bottom before Target Selection -->
+        <div class="form-group full-width">
+          <label>Phạm vi áp dụng <span class="required-asterisk">*</span></label>
+          <select [(ngModel)]="selectedPromotion.scope" (change)="onDetailScopeChange()" class="input-field">
+            <option value="Order">Đơn hàng (Order)</option>
+            <option value="Shipping">Vận chuyển (Shipping)</option>
+            <option value="Category">Danh mục (Category)</option>
+            <option value="Brand">Thương hiệu (Brand)</option>
+            <option value="Product">Sản phẩm (Product)</option>
+          </select>
+          <span class="target-help-text">Chọn phạm vi áp dụng của khuyến mãi. Nếu chọn Danh mục, Thương hiệu hoặc Sản phẩm, bạn cần chọn các mục cụ thể ở phần bên dưới.</span>
+        </div>
+
+        <!-- Target Selection Section - Only show when scope is Category, Product, or Brand -->
+        <div class="form-group full-width target-selection-section" *ngIf="selectedPromotion.scope === 'Category' || selectedPromotion.scope === 'Product' || selectedPromotion.scope === 'Brand'">
+          <div class="target-selection-header">
+            <label class="target-section-label">Phạm vi áp dụng cụ thể <span class="required-asterisk">*</span></label>
+            <span class="target-help-text">Chọn các {{selectedPromotion.scope === 'Category' ? 'danh mục' : selectedPromotion.scope === 'Brand' ? 'thương hiệu' : 'sản phẩm'}} để áp dụng khuyến mãi</span>
+          </div>
+          
+          <!-- Target Type Selection (only for Category scope) -->
+          <div class="target-type-selector" *ngIf="selectedPromotion.scope === 'Category'">
+            <label>Loại danh mục <span class="required-asterisk">*</span></label>
+            <select [(ngModel)]="detailTargetType" (change)="onDetailTargetTypeChange()" class="input-field">
+              <option value="Category">Danh mục chính (Category)</option>
+              <option value="Subcategory">Danh mục phụ (Subcategory)</option>
+            </select>
+            <span class="target-help-text">Chọn loại danh mục bạn muốn áp dụng khuyến mãi</span>
+          </div>
+
+          <!-- Target Selection List -->
+          <div class="target-list-container">
+            <!-- Search Box for all target types -->
+            <div class="target-search">
+              <input 
+                type="text" 
+                [placeholder]="getDetailSearchPlaceholder()" 
+                class="input-field target-search-input"
+                [(ngModel)]="detailTargetSearchTerm"
+                (input)="onDetailTargetSearchChange()">
+            </div>
+            
+            <div class="target-list" *ngIf="!isLoadingTargets">
+              <div 
+                class="target-item" 
+                *ngFor="let option of getDetailFilteredTargetOptions()" 
+                [class.selected]="isDetailTargetSelected(getDetailTargetValue(option))"
+                (click)="toggleDetailTarget(getDetailTargetValue(option))">
+                <input 
+                  type="checkbox" 
+                  [checked]="isDetailTargetSelected(getDetailTargetValue(option))"
+                  (change)="toggleDetailTarget(getDetailTargetValue(option))"
+                  class="target-checkbox"
+                  (click)="$event.stopPropagation()">
+                <span class="target-label">{{getDetailTargetLabel(option)}}</span>
+              </div>
+              <div class="target-empty" *ngIf="getDetailFilteredTargetOptions().length === 0 && !isLoadingTargets">
+                <span *ngIf="detailTargetSearchTerm">Không tìm thấy kết quả cho "{{detailTargetSearchTerm}}"</span>
+                <span *ngIf="!detailTargetSearchTerm">Không có dữ liệu</span>
+              </div>
+            </div>
+            <div class="target-loading" *ngIf="isLoadingTargets">
+              <span>Đang tải danh sách...</span>
+            </div>
+            
+            <!-- Selected Targets Summary -->
+            <div class="selected-targets-summary" *ngIf="detailSelectedTargets.length > 0">
+              <div class="summary-header">
+                <strong>Đã chọn ({{detailSelectedTargets.length}}):</strong>
+                <button type="button" class="clear-all-btn" (click)="clearAllDetailTargets()">Xóa tất cả</button>
+              </div>
+              <div class="selected-targets-tags">
+                <span class="target-tag" *ngFor="let targetValue of detailSelectedTargets">
+                  {{getDetailTargetDisplayName(targetValue)}}
+                  <button type="button" class="tag-remove" (click)="removeDetailTarget(targetValue)">×</button>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

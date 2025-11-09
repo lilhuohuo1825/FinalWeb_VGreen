@@ -54,13 +54,26 @@ interface Product {
   promotionType?: 'normal' | 'buy1get1' | ('normal' | 'buy1get1')[];
 }
 
+interface Reply {
+  fullname: string;
+  customer_id: string;
+  content: string;
+  time: Date | string;
+  likes: string[]; // Array of customer_id who liked this reply
+  _id?: string;
+}
+
 interface Review {
   id: string;
   name: string;
   rating: number;
   text: string;
-  time: string;
+  time: string | Date;
   images?: string[]; // Hình ảnh từ review
+  likes?: string[]; // Array of customer_id who liked this review
+  replies?: Reply[]; // Array of replies to this review
+  customer_id?: string; // Customer ID của người viết review
+  reviewIndex?: number; // Index trong mảng reviews từ backend (để dùng cho API)
 }
 
 interface RatingBreakdown {
@@ -155,6 +168,12 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
   ];
 
   ratingBreakdown: RatingBreakdown[] = [];
+
+  // Review interactions
+  showReplyForm: { [key: string]: boolean } = {}; // Track which review has reply form open
+  replyTexts: { [key: string]: string } = {}; // Store reply text for each review
+  likingReviews: Set<string> = new Set(); // Track reviews being liked (to prevent double-click)
+  replyingReviews: Set<string> = new Set(); // Track reviews being replied to
 
   private apiUrl = '/api';
   private activePromotions: any[] = [];
@@ -1734,20 +1753,31 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
 
     console.log(` Loading reviews for SKU: ${this.product.sku}`);
 
-    this.http.get<any>(`${this.apiUrl}/reviews/${this.product.sku}`).subscribe({
+    this.http.get<any>(`http://localhost:3000/api/reviews/${this.product.sku}`).subscribe({
       next: (response) => {
         if (response.success && response.data && response.data.reviews) {
-          // Map backend reviews to frontend format
-          this.product!.Reviews = response.data.reviews.map((review: any) => ({
-            id: review._id || `${Date.now()}-${Math.random()}`,
+          // Map backend reviews to frontend format với likes và replies
+          this.product!.Reviews = response.data.reviews.map((review: any, index: number) => ({
+            id: review._id || `${Date.now()}-${Math.random()}-${index}`,
             name: review.fullname,
             rating: review.rating,
-            text: review.content,
+            text: review.content || '',
             time: review.time,
             images:
               review.images && Array.isArray(review.images) && review.images.length > 0
                 ? review.images
-                : undefined, // Chỉ set images nếu có và là array không rỗng
+                : undefined,
+            likes: review.likes || [], // Array of customer_id who liked
+            replies: (review.replies || []).map((reply: any) => ({
+              fullname: reply.fullname,
+              customer_id: reply.customer_id,
+              content: reply.content,
+              time: reply.time,
+              likes: reply.likes || [],
+              _id: reply._id,
+            })), // Array of replies
+            customer_id: review.customer_id,
+            reviewIndex: index, // Store index for API calls
           }));
 
           // Update product ReviewCount
@@ -1773,8 +1803,7 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
           // Calculate rating breakdown and initialize displayed reviews
           this.calculateRatingBreakdown();
           this.selectedSortOption = 'Mới nhất';
-          this.sortedReviews = this.product!.Reviews ? [...this.product!.Reviews] : [];
-          this.initializeDisplayedReviews();
+          this.sortReviews('Mới nhất'); // Sort với time đúng cách
         } else {
           console.log('No reviews found for this product');
           // Initialize empty reviews
@@ -1908,13 +1937,21 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
 
     switch (sortOption) {
       case 'Mới nhất':
-        // Sắp xếp theo thời gian gần nhất (giả sử có trường time, nếu không có thì giữ nguyên thứ tự)
-        this.sortedReviews = reviews;
+        // Sắp xếp theo thời gian gần nhất (mới nhất trước)
+        this.sortedReviews = reviews.sort((a, b) => {
+          const timeA = new Date(a.time).getTime();
+          const timeB = new Date(b.time).getTime();
+          return timeB - timeA; // Mới nhất trước
+        });
         break;
 
       case 'Cũ nhất':
-        // Sắp xếp theo thời gian xa nhất (đảo ngược thứ tự)
-        this.sortedReviews = [...reviews].reverse();
+        // Sắp xếp theo thời gian xa nhất (cũ nhất trước)
+        this.sortedReviews = reviews.sort((a, b) => {
+          const timeA = new Date(a.time).getTime();
+          const timeB = new Date(b.time).getTime();
+          return timeA - timeB; // Cũ nhất trước
+        });
         break;
 
       case 'Đánh giá cao nhất':
@@ -1928,7 +1965,12 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
         break;
 
       default:
-        this.sortedReviews = reviews;
+        // Default: mới nhất
+        this.sortedReviews = reviews.sort((a, b) => {
+          const timeA = new Date(a.time).getTime();
+          const timeB = new Date(b.time).getTime();
+          return timeB - timeA;
+        });
     }
 
     // Recalculate rating breakdown after sorting
@@ -2003,6 +2045,229 @@ export class ProductDetailComponent implements OnInit, AfterViewInit, AfterViewC
     const totalDisplayed = this.displayedReviews.length;
     const totalAvailable = this.sortedReviews.length;
     this.hasMoreReviews = totalDisplayed < totalAvailable;
+  }
+
+  // Helper method to get CustomerID from localStorage
+  private getCustomerID(): string | null {
+    const userJson = localStorage.getItem('user');
+    if (!userJson) {
+      return null;
+    }
+
+    try {
+      const user = JSON.parse(userJson);
+      return user?.CustomerID || user?.customerID || null;
+    } catch (error) {
+      console.error('Error parsing user from localStorage:', error);
+      return null;
+    }
+  }
+
+  // Helper method to get user fullName from localStorage
+  private getUserFullName(): string {
+    const userJson = localStorage.getItem('user');
+    if (!userJson) {
+      return 'Người dùng';
+    }
+
+    try {
+      const user = JSON.parse(userJson);
+      return user?.fullName || user?.FullName || 'Người dùng';
+    } catch (error) {
+      console.error('Error parsing user from localStorage:', error);
+      return 'Người dùng';
+    }
+  }
+
+  // Like/Unlike a review
+  likeReview(review: Review): void {
+    const customerId = this.getCustomerID();
+    if (!customerId) {
+      this.toastService.show('Vui lòng đăng nhập để thích bình luận', 'error');
+      return;
+    }
+
+    if (!this.product || review.reviewIndex === undefined) {
+      return;
+    }
+
+    const reviewId = review.id;
+    if (this.likingReviews.has(reviewId)) {
+      return; // Prevent double-click
+    }
+
+    this.likingReviews.add(reviewId);
+
+    const isLiked = review.likes?.includes(customerId) || false;
+    const action = isLiked ? 'unlike' : 'like';
+
+    this.http
+      .put<any>(`http://localhost:3000/api/reviews/${this.product.sku}/like/${review.reviewIndex}`, {
+        customer_id: customerId,
+        action: action,
+      })
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            // Reload reviews từ backend để đảm bảo data được sync
+            this.loadReviews();
+            this.toastService.show(
+              action === 'like' ? 'Đã thích bình luận' : 'Đã bỏ thích bình luận',
+              'success'
+            );
+          }
+          this.likingReviews.delete(reviewId);
+        },
+        error: (error) => {
+          console.error('Error liking review:', error);
+          const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi thích bình luận';
+          this.toastService.show(errorMessage, 'error');
+          this.likingReviews.delete(reviewId);
+        },
+      });
+  }
+
+  // Check if current user liked a review
+  isReviewLiked(review: Review): boolean {
+    const customerId = this.getCustomerID();
+    if (!customerId || !review.likes) {
+      return false;
+    }
+    return review.likes.includes(customerId);
+  }
+
+  // Get like count for a review
+  getLikeCount(review: Review): number {
+    return review.likes?.length || 0;
+  }
+
+  // Toggle reply form for a review
+  toggleReplyForm(review: Review): void {
+    const reviewId = review.id;
+    this.showReplyForm[reviewId] = !this.showReplyForm[reviewId];
+    if (!this.showReplyForm[reviewId]) {
+      // Clear reply text when closing
+      this.replyTexts[reviewId] = '';
+    }
+  }
+
+  // Submit reply to a review
+  submitReply(review: Review): void {
+    const customerId = this.getCustomerID();
+    if (!customerId) {
+      this.toastService.show('Vui lòng đăng nhập để trả lời bình luận', 'error');
+      return;
+    }
+
+    if (!this.product || review.reviewIndex === undefined) {
+      return;
+    }
+
+    const reviewId = review.id;
+    const replyText = (this.replyTexts[reviewId] || '').trim();
+
+    if (!replyText) {
+      this.toastService.show('Vui lòng nhập nội dung trả lời', 'error');
+      return;
+    }
+
+    if (this.replyingReviews.has(reviewId)) {
+      return; // Prevent double-submit
+    }
+
+    this.replyingReviews.add(reviewId);
+
+    const fullname = this.getUserFullName();
+
+    this.http
+      .post<any>(`http://localhost:3000/api/reviews/${this.product.sku}/reply/${review.reviewIndex}`, {
+        fullname: fullname,
+        customer_id: customerId,
+        content: replyText,
+      })
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            // Reload reviews to get updated data including the new reply
+            this.loadReviews();
+            this.toastService.show('Đã thêm trả lời thành công', 'success');
+            this.replyTexts[reviewId] = '';
+            this.showReplyForm[reviewId] = false;
+          }
+          this.replyingReviews.delete(reviewId);
+        },
+        error: (error) => {
+          console.error('Error submitting reply:', error);
+          this.toastService.show('Có lỗi xảy ra khi trả lời bình luận', 'error');
+          this.replyingReviews.delete(reviewId);
+        },
+      });
+  }
+
+  // Like/Unlike a reply
+  likeReply(review: Review, replyIndex: number): void {
+    const customerId = this.getCustomerID();
+    if (!customerId) {
+      this.toastService.show('Vui lòng đăng nhập để thích trả lời', 'error');
+      return;
+    }
+
+    if (!this.product || review.reviewIndex === undefined || !review.replies) {
+      return;
+    }
+
+    const reply = review.replies[replyIndex];
+    if (!reply) {
+      return;
+    }
+
+    const isLiked = reply.likes?.includes(customerId) || false;
+    const action = isLiked ? 'unlike' : 'like';
+
+    this.http
+      .put<any>(
+        `http://localhost:3000/api/reviews/${this.product.sku}/reply/${review.reviewIndex}/${replyIndex}/like`,
+        {
+          customer_id: customerId,
+          action: action,
+        }
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            // Reload reviews từ backend để đảm bảo data được sync
+            this.loadReviews();
+            this.toastService.show(
+              action === 'like' ? 'Đã thích trả lời' : 'Đã bỏ thích trả lời',
+              'success'
+            );
+          }
+        },
+        error: (error) => {
+          console.error('Error liking reply:', error);
+          const errorMessage = error.error?.message || error.message || 'Có lỗi xảy ra khi thích trả lời';
+          this.toastService.show(errorMessage, 'error');
+        },
+      });
+  }
+
+  // Check if current user liked a reply
+  isReplyLiked(reply: Reply): boolean {
+    const customerId = this.getCustomerID();
+    if (!customerId || !reply.likes) {
+      return false;
+    }
+    return reply.likes.includes(customerId);
+  }
+
+  // Get like count for a reply
+  getReplyLikeCount(reply: Reply): number {
+    return reply.likes?.length || 0;
+  }
+
+  // Format time for reply
+  formatReplyTime(time: Date | string): string {
+    return this.formatTime(time as string);
   }
 
   // -----------------------------

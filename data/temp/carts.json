@@ -1,196 +1,198 @@
-[{
-  "_id": {
-    "$oid": "6903947f6a7b2bb35f736ac5"
-  },
-  "CustomerID": "CUS881229734",
-  "items": [],
-  "itemCount": 0,
-  "totalQuantity": 0,
-  "createdAt": {
-    "$date": "2025-10-30T16:38:23.149Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-01T14:51:30.719Z"
-  },
-  "__v": 60
-},
-{
-  "_id": {
-    "$oid": "6906222f5a2f8e22456a75cf"
-  },
-  "CustomerID": "CUS646672569",
-  "items": [
-    {
-      "sku": "3591682",
-      "productName": "Rong biển dầu hạt nho Blue Sky 3 x 4g",
-      "quantity": 1,
-      "price": 32500,
-      "image": "https://lh3.googleusercontent.com/ND5jFuyPZ_H_q_EIcoh0xGff2zI1BQN6Yv3hDH6b9YDXOGOJyP03PAQxhFsJPoKDrjUc1FuYHVW8e3l9lTLb4m0tYTd1M_avLg=rw",
-      "unit": "Lốc",
-      "category": "Rong biển",
-      "subcategory": "Rong, tảo biển",
-      "addedAt": {
-        "$date": "2025-11-01T15:46:42.937Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-01T15:46:42.937Z"
-      },
-      "_id": {
-        "$oid": "69062b625a2f8e22456a8162"
-      }
-    },
-    {
-      "sku": "3523166",
-      "productName": "Rong nho tươi Co.op Select 100g",
-      "quantity": 1,
-      "price": 26350,
-      "image": "https://lh3.googleusercontent.com/1DzedCAP_iWHhQQMnaFKqPFyGCa0vzvUyPyfmRG-SbYvLGOht13G78qswOXskjr2nQoUbwGmqIMztq5bksinTuefMv_v5xtqfg=rw",
-      "unit": "Hộp",
-      "category": "Rong biển",
-      "subcategory": "Rong, tảo biển",
-      "addedAt": {
-        "$date": "2025-11-01T15:46:43.538Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-01T15:46:43.538Z"
-      },
-      "_id": {
-        "$oid": "69062b635a2f8e22456a816f"
-      }
-    }
-  ],
-  "itemCount": 2,
-  "totalQuantity": 2,
-  "createdAt": {
-    "$date": "2025-11-01T15:07:27.142Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-02T02:03:10.036Z"
-  },
-  "__v": 22
-},
-{
-  "_id": {
-    "$oid": "6906bec83a3d368ca5b7718a"
-  },
-  "CustomerID": "CUS735790727",
-  "items": [
-    {
-      "sku": "3438863",
-      "productName": "Nấm tiểu yến Co.op Select 150g",
-      "quantity": 1,
-      "price": 22525,
-      "image": "https://lh3.googleusercontent.com/nXQpv0nKpT_wqAkz5bOYTkG7louEUjq4s3CY8a5fvFAd0L-CQJjIq1GNHf9vAa_KK0fUpxTAyAdQwlivHs88eaydhIzatNEZ=rw",
-      "unit": "Hộp",
-      "category": "Rau củ",
-      "subcategory": "Nấm",
-      "addedAt": {
-        "$date": "2025-11-02T02:15:51.713Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-02T02:15:51.713Z"
-      },
-      "_id": {
-        "$oid": "6906bed73a3d368ca5b771d3"
-      }
-    },
-    {
-      "sku": "3263551",
-      "productName": "Bột bánh xèo Co.op Select 1kg",
-      "quantity": 1,
-      "price": 28500,
-      "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-      "unit": "Gói",
-      "category": "Lương thực - ngũ cốc",
-      "subcategory": "Bột",
-      "addedAt": {
-        "$date": "2025-11-02T02:15:56.700Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-02T02:15:56.700Z"
-      },
-      "_id": {
-        "$oid": "6906bedc3a3d368ca5b77216"
-      }
-    },
-    {
-      "sku": "3514277",
-      "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-      "quantity": 1,
-      "price": 56500,
-      "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-      "unit": "Bịch",
-      "category": "Lương thực - ngũ cốc",
-      "subcategory": "Bột",
-      "addedAt": {
-        "$date": "2025-11-02T02:15:57.969Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-02T02:15:57.969Z"
-      },
-      "_id": {
-        "$oid": "6906bedd3a3d368ca5b7721b"
-      }
-    },
-    {
-      "sku": "3359027",
-      "productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
-      "quantity": 1,
-      "price": 23300,
-      "image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
-      "unit": "Hộp",
-      "category": "Lương thực - ngũ cốc",
-      "subcategory": "Bột",
-      "addedAt": {
-        "$date": "2025-11-02T02:15:59.419Z"
-      },
-      "updatedAt": {
-        "$date": "2025-11-02T02:15:59.419Z"
-      },
-      "_id": {
-        "$oid": "6906bedf3a3d368ca5b77221"
-      }
-    }
-  ],
-  "itemCount": 4,
-  "totalQuantity": 4,
-  "createdAt": {
-    "$date": "2025-11-02T02:15:36.293Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-02T02:15:59.419Z"
-  },
-  "__v": 4
-},
-{
-  "_id": {
-    "$oid": "690733fdff49b6f0cd507e3e"
-  },
-  "CustomerID": "CUS740201512",
-  "items": [],
-  "itemCount": 0,
-  "totalQuantity": 0,
-  "createdAt": {
-    "$date": "2025-11-02T10:35:41.546Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-02T10:48:47.372Z"
-  },
-  "__v": 2
-},
-{
-  "_id": {
-    "$oid": "6908d3d51f29b33e8669b366"
-  },
-  "CustomerID": "CUS326736493",
-  "items": [],
-  "itemCount": 0,
-  "totalQuantity": 0,
-  "createdAt": {
-    "$date": "2025-11-03T16:09:57.034Z"
-  },
-  "updatedAt": {
-    "$date": "2025-11-03T16:09:57.034Z"
-  },
-  "__v": 0
-}]
+[
+	{
+		"_id": {
+			"$oid": "6903947f6a7b2bb35f736ac5"
+		},
+		"CustomerID": "CUS881229734",
+		"items": [],
+		"itemCount": 0,
+		"totalQuantity": 0,
+		"createdAt": {
+			"$date": "2025-10-30T16:38:23.149Z"
+		},
+		"updatedAt": {
+			"$date": "2025-11-01T14:51:30.719Z"
+		},
+		"__v": 60
+	},
+	{
+		"_id": {
+			"$oid": "6906222f5a2f8e22456a75cf"
+		},
+		"CustomerID": "CUS646672569",
+		"items": [
+			{
+				"sku": "3591682",
+				"productName": "Rong biển dầu hạt nho Blue Sky 3 x 4g",
+				"quantity": 1,
+				"price": 32500,
+				"image": "https://lh3.googleusercontent.com/ND5jFuyPZ_H_q_EIcoh0xGff2zI1BQN6Yv3hDH6b9YDXOGOJyP03PAQxhFsJPoKDrjUc1FuYHVW8e3l9lTLb4m0tYTd1M_avLg=rw",
+				"unit": "Lốc",
+				"category": "Rong biển",
+				"subcategory": "Rong, tảo biển",
+				"addedAt": {
+					"$date": "2025-11-01T15:46:42.937Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-01T15:46:42.937Z"
+				},
+				"_id": {
+					"$oid": "69062b625a2f8e22456a8162"
+				}
+			},
+			{
+				"sku": "3523166",
+				"productName": "Rong nho tươi Co.op Select 100g",
+				"quantity": 1,
+				"price": 26350,
+				"image": "https://lh3.googleusercontent.com/1DzedCAP_iWHhQQMnaFKqPFyGCa0vzvUyPyfmRG-SbYvLGOht13G78qswOXskjr2nQoUbwGmqIMztq5bksinTuefMv_v5xtqfg=rw",
+				"unit": "Hộp",
+				"category": "Rong biển",
+				"subcategory": "Rong, tảo biển",
+				"addedAt": {
+					"$date": "2025-11-01T15:46:43.538Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-01T15:46:43.538Z"
+				},
+				"_id": {
+					"$oid": "69062b635a2f8e22456a816f"
+				}
+			}
+		],
+		"itemCount": 2,
+		"totalQuantity": 2,
+		"createdAt": {
+			"$date": "2025-11-01T15:07:27.142Z"
+		},
+		"updatedAt": {
+			"$date": "2025-11-02T02:03:10.036Z"
+		},
+		"__v": 22
+	},
+	{
+		"_id": {
+			"$oid": "6906bec83a3d368ca5b7718a"
+		},
+		"CustomerID": "CUS735790727",
+		"items": [
+			{
+				"sku": "3438863",
+				"productName": "Nấm tiểu yến Co.op Select 150g",
+				"quantity": 1,
+				"price": 22525,
+				"image": "https://lh3.googleusercontent.com/nXQpv0nKpT_wqAkz5bOYTkG7louEUjq4s3CY8a5fvFAd0L-CQJjIq1GNHf9vAa_KK0fUpxTAyAdQwlivHs88eaydhIzatNEZ=rw",
+				"unit": "Hộp",
+				"category": "Rau củ",
+				"subcategory": "Nấm",
+				"addedAt": {
+					"$date": "2025-11-02T02:15:51.713Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-02T02:15:51.713Z"
+				},
+				"_id": {
+					"$oid": "6906bed73a3d368ca5b771d3"
+				}
+			},
+			{
+				"sku": "3263551",
+				"productName": "Bột bánh xèo Co.op Select 1kg",
+				"quantity": 1,
+				"price": 28500,
+				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+				"unit": "Gói",
+				"category": "Lương thực - ngũ cốc",
+				"subcategory": "Bột",
+				"addedAt": {
+					"$date": "2025-11-02T02:15:56.700Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-02T02:15:56.700Z"
+				},
+				"_id": {
+					"$oid": "6906bedc3a3d368ca5b77216"
+				}
+			},
+			{
+				"sku": "3514277",
+				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+				"quantity": 1,
+				"price": 56500,
+				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+				"unit": "Bịch",
+				"category": "Lương thực - ngũ cốc",
+				"subcategory": "Bột",
+				"addedAt": {
+					"$date": "2025-11-02T02:15:57.969Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-02T02:15:57.969Z"
+				},
+				"_id": {
+					"$oid": "6906bedd3a3d368ca5b7721b"
+				}
+			},
+			{
+				"sku": "3359027",
+				"productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
+				"quantity": 1,
+				"price": 23300,
+				"image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
+				"unit": "Hộp",
+				"category": "Lương thực - ngũ cốc",
+				"subcategory": "Bột",
+				"addedAt": {
+					"$date": "2025-11-02T02:15:59.419Z"
+				},
+				"updatedAt": {
+					"$date": "2025-11-02T02:15:59.419Z"
+				},
+				"_id": {
+					"$oid": "6906bedf3a3d368ca5b77221"
+				}
+			}
+		],
+		"itemCount": 4,
+		"totalQuantity": 4,
+		"createdAt": {
+			"$date": "2025-11-02T02:15:36.293Z"
+		},
+		"updatedAt": {
+			"$date": "2025-11-02T02:15:59.419Z"
+		},
+		"__v": 4
+	},
+	{
+		"_id": {
+			"$oid": "690733fdff49b6f0cd507e3e"
+		},
+		"CustomerID": "CUS000002",
+		"items": [],
+		"itemCount": 0,
+		"totalQuantity": 0,
+		"createdAt": {
+			"$date": "2025-11-02T10:35:41.546Z"
+		},
+		"updatedAt": {
+			"$date": "2025-11-02T10:48:47.372Z"
+		},
+		"__v": 2
+	},
+	{
+		"_id": {
+			"$oid": "6908d3d51f29b33e8669b366"
+		},
+		"CustomerID": "CUS000001",
+		"items": [],
+		"itemCount": 0,
+		"totalQuantity": 0,
+		"createdAt": {
+			"$date": "2025-11-03T16:09:57.034Z"
+		},
+		"updatedAt": {
+			"$date": "2025-11-03T16:09:57.034Z"
+		},
+		"__v": 0
+	}
+]

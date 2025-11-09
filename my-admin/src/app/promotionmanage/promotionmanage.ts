@@ -2,6 +2,8 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ApiService } from '../services/api.service';
+import { NotificationService } from '../services/notification.service';
 
 /**
  * ============================================================================
@@ -13,25 +15,37 @@ import { HttpClient } from '@angular/common/http';
  * Promotion JSON structure from data file
  */
 interface PromotionJSON {
-  promotion_id: string;
+  promotion_id?: string;
   code: string;
   name: string;
   description?: string;
   type?: string;
   scope?: string;
-  discount_type: string;
-  discount_value: number | string;
+  discount_type?: string;
+  discountType?: string;
+  discount_value?: number | string;
+  discountValue?: number;
   max_discount_value?: number;
+  maxDiscount?: number;
   min_order_value?: number;
+  minPurchase?: number;
   usage_limit?: number | string;
+  usageLimit?: number;
   user_limit?: number | string;
+  userLimit?: number;
+  usage_count?: number;
+  usageCount?: number;
   is_first_order_only?: boolean;
-  start_date: string;
-  end_date: string;
-  status: string;
+  isFirstOrderOnly?: boolean;
+  start_date?: string | { $date: string };
+  startDate?: string | { $date: string };
+  end_date?: string | { $date: string };
+  endDate?: string | { $date: string };
+  status?: string;
   created_by?: string;
-  created_at?: string;
-  updated_at?: string;
+  created_at?: string | { $date: string };
+  updated_at?: string | { $date: string };
+  updatedAt?: string | { $date: string };
 }
 
 /**
@@ -90,7 +104,9 @@ export interface FilterCriteria {
 })
 export class PromotionManage implements OnInit {
   private http = inject(HttpClient);
+  private apiService = inject(ApiService);
   private cdr = inject(ChangeDetectorRef);
+  private notificationService = inject(NotificationService);
 
   // Data
   promotions: Promotion[] = [];
@@ -103,6 +119,9 @@ export class PromotionManage implements OnInit {
   showGroupModal: boolean = false;
   showAddEditModal: boolean = false;
   showDetailModal: boolean = false;
+  showConfirmModal: boolean = false;
+  confirmMessage: string = '';
+  confirmCallback: (() => void) | null = null;
   editMode: boolean = false;
   currentPromotion: Promotion | null = null;
   selectedPromotion: Promotion | null = null;
@@ -123,6 +142,21 @@ export class PromotionManage implements OnInit {
   // Available filters
   availableGroups: string[] = [];
 
+  // Target selection data (for add/edit modal)
+  targetType: 'Category' | 'Subcategory' | 'Brand' | 'Product' = 'Category';
+  selectedTargets: string[] = [];
+  availableCategories: string[] = [];
+  availableSubcategories: string[] = [];
+  availableBrands: string[] = [];
+  availableProducts: any[] = [];
+  isLoadingTargets: boolean = false;
+  targetSearchTerm: string = '';
+
+  // Target selection data (for detail modal)
+  detailTargetType: 'Category' | 'Subcategory' | 'Brand' | 'Product' = 'Category';
+  detailSelectedTargets: string[] = [];
+  detailTargetSearchTerm: string = '';
+
   /**
    * ============================================================================
    * LIFECYCLE HOOKS
@@ -131,6 +165,7 @@ export class PromotionManage implements OnInit {
 
   ngOnInit(): void {
     this.loadPromotions();
+    this.loadTargetOptions();
     
     // Global click listener to close dropdowns
     document.addEventListener('click', () => {
@@ -145,12 +180,495 @@ export class PromotionManage implements OnInit {
    * ============================================================================
    */
 
+  /**
+   * Load target options (categories, subcategories, brands, products)
+   */
+  loadTargetOptions(): void {
+    this.isLoadingTargets = true;
+    
+    // Load categories
+    this.http.get<any>('http://localhost:3000/api/products/metadata/categories').subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.availableCategories = response.data || [];
+        }
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+      }
+    });
+    
+    // Load subcategories
+    this.http.get<any>('http://localhost:3000/api/products/metadata/subcategories').subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.availableSubcategories = response.data || [];
+        }
+      },
+      error: (error) => {
+        console.error('Error loading subcategories:', error);
+      }
+    });
+    
+    // Load brands
+    this.http.get<any>('http://localhost:3000/api/products/metadata/brands').subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.availableBrands = response.data || [];
+        }
+      },
+      error: (error) => {
+        console.error('Error loading brands:', error);
+      }
+    });
+    
+    // Load products
+    this.http.get<any>('http://localhost:3000/api/products/metadata/products').subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.availableProducts = response.data || [];
+        }
+        this.isLoadingTargets = false;
+      },
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.isLoadingTargets = false;
+      }
+    });
+  }
+
+  /**
+   * Get available target options based on target type
+   */
+  getAvailableTargetOptions(): string[] | any[] {
+    if (!this.currentPromotion) return [];
+    
+    // If scope is Brand or Product, use scope directly
+    if (this.currentPromotion.scope === 'Brand') {
+      return this.availableBrands;
+    } else if (this.currentPromotion.scope === 'Product') {
+      return this.availableProducts;
+    } else if (this.currentPromotion.scope === 'Category') {
+      // Use targetType to determine Category or Subcategory
+      return this.targetType === 'Subcategory' ? this.availableSubcategories : this.availableCategories;
+    }
+    
+    return [];
+  }
+
+  /**
+   * Get target value from option (for Product it's SKU, others it's the string itself)
+   */
+  getTargetValue(option: string | any): string {
+    if (this.currentPromotion?.scope === 'Product' && typeof option === 'object') {
+      return option.sku || option;
+    }
+    return option;
+  }
+
+  /**
+   * Get target label for display
+   */
+  getTargetLabel(option: string | any): string {
+    if (this.currentPromotion?.scope === 'Product' && typeof option === 'object') {
+      return `${option.name} (${option.sku})`;
+    }
+    return option;
+  }
+
+  /**
+   * Handle target search change
+   */
+  onTargetSearchChange(): void {
+    // Filtering is done in getFilteredTargetOptions()
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Get search placeholder based on scope
+   */
+  getSearchPlaceholder(): string {
+    if (!this.currentPromotion) return 'Tìm kiếm...';
+    
+    const scope = this.currentPromotion.scope;
+    if (scope === 'Product') {
+      return 'Tìm kiếm sản phẩm (tên hoặc SKU)...';
+    } else if (scope === 'Brand') {
+      return 'Tìm kiếm thương hiệu...';
+    } else if (scope === 'Category') {
+      return this.targetType === 'Subcategory' 
+        ? 'Tìm kiếm danh mục phụ...' 
+        : 'Tìm kiếm danh mục chính...';
+    }
+    return 'Tìm kiếm...';
+  }
+
+  /**
+   * Get filtered target options based on search term
+   */
+  getFilteredTargetOptions(): string[] | any[] {
+    const options = this.getAvailableTargetOptions();
+    
+    if (!this.targetSearchTerm || this.targetSearchTerm.trim() === '') {
+      return options;
+    }
+    
+    const searchTerm = this.targetSearchTerm.toLowerCase().trim();
+    
+    if (this.currentPromotion?.scope === 'Product') {
+      return (options as any[]).filter(option => {
+        const name = (option.name || '').toLowerCase();
+        const sku = (option.sku || '').toLowerCase();
+        return name.includes(searchTerm) || sku.includes(searchTerm);
+      });
+    } else {
+      // For Category, Subcategory, Brand (string arrays)
+      return (options as string[]).filter(option => 
+        option.toLowerCase().includes(searchTerm)
+      );
+    }
+  }
+
+  /**
+   * Get display name for a target value (for selected tags)
+   */
+  getTargetDisplayName(targetValue: string): string {
+    if (this.currentPromotion?.scope === 'Product') {
+      // Find the product by SKU
+      const product = this.availableProducts.find(p => p.sku === targetValue);
+      return product ? `${product.name} (${product.sku})` : targetValue;
+    }
+    // For Category, Subcategory, Brand - just return the value
+    return targetValue;
+  }
+
+  /**
+   * Remove a target from selected list
+   */
+  removeTarget(targetValue: string): void {
+    const index = this.selectedTargets.indexOf(targetValue);
+    if (index > -1) {
+      this.selectedTargets.splice(index, 1);
+    }
+  }
+
+  /**
+   * Clear all selected targets
+   */
+  clearAllTargets(): void {
+    this.selectedTargets = [];
+  }
+
+  /**
+   * Handle target type change (Category/Subcategory)
+   */
+  onTargetTypeChange(): void {
+    // Reset selected targets when switching between Category and Subcategory
+    this.selectedTargets = [];
+    this.targetSearchTerm = '';
+  }
+
+  /**
+   * Toggle target selection
+   */
+  toggleTarget(target: string): void {
+    const index = this.selectedTargets.indexOf(target);
+    if (index > -1) {
+      this.selectedTargets.splice(index, 1);
+    } else {
+      this.selectedTargets.push(target);
+    }
+  }
+
+  /**
+   * Check if target is selected
+   */
+  isTargetSelected(target: string): boolean {
+    return this.selectedTargets.includes(target);
+  }
+
+  /**
+   * Load promotion target for editing
+   */
+  loadPromotionTarget(promotionId: string): void {
+    this.http.get<any>(`http://localhost:3000/api/promotion-targets/${promotionId}`).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const targetData = response.data;
+          // Set target type (Category, Subcategory, Brand, or Product)
+          if (targetData.target_type) {
+            // For Category scope, target_type can be 'Category' or 'Subcategory'
+            if (this.currentPromotion?.scope === 'Category') {
+              this.targetType = targetData.target_type as any;
+            } else {
+              // For Brand and Product, target_type matches scope
+              this.targetType = targetData.target_type as any;
+            }
+          }
+          // Set selected targets
+          this.selectedTargets = targetData.target_ref || [];
+          console.log('✅ Loaded promotion target:', {
+            targetType: this.targetType,
+            selectedTargets: this.selectedTargets
+          });
+        } else {
+          console.log('No target found for promotion:', promotionId);
+          this.selectedTargets = [];
+        }
+      },
+      error: (error) => {
+        // Target doesn't exist, that's okay (promotion might not have target)
+        console.log('No target found for promotion (error):', promotionId, error);
+        this.selectedTargets = [];
+      }
+    });
+  }
+
+  /**
+   * Handle scope change - reset target selection if needed
+   */
+  onScopeChange(): void {
+    if (!this.currentPromotion) return;
+    
+    const scope = this.currentPromotion.scope;
+    
+    // Reset target selection when scope changes
+    this.selectedTargets = [];
+    this.targetSearchTerm = '';
+    
+    if (scope === 'Order' || scope === 'Shipping') {
+      this.targetType = 'Category'; // Default
+    } else if (scope === 'Category') {
+      this.targetType = 'Category'; // Default to main category
+    } else if (scope === 'Brand') {
+      this.targetType = 'Brand';
+    } else if (scope === 'Product') {
+      this.targetType = 'Product';
+    }
+  }
+
+  /**
+   * Handle scope change for detail modal - reset target selection if needed
+   */
+  onDetailScopeChange(): void {
+    if (!this.selectedPromotion) return;
+    
+    const scope = this.selectedPromotion.scope;
+    
+    // Reset target selection when scope changes
+    this.detailSelectedTargets = [];
+    this.detailTargetSearchTerm = '';
+    
+    if (scope === 'Order' || scope === 'Shipping') {
+      this.detailTargetType = 'Category'; // Default
+    } else if (scope === 'Category') {
+      this.detailTargetType = 'Category'; // Default to main category
+    } else if (scope === 'Brand') {
+      this.detailTargetType = 'Brand';
+    } else if (scope === 'Product') {
+      this.detailTargetType = 'Product';
+    }
+  }
+
+  /**
+   * Load promotion target for detail modal
+   */
+  loadDetailPromotionTarget(promotionId: string): void {
+    this.http.get<any>(`http://localhost:3000/api/promotion-targets/${promotionId}`).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const targetData = response.data;
+          // Set target type (Category, Subcategory, Brand, or Product)
+          if (targetData.target_type) {
+            // For Category scope, target_type can be 'Category' or 'Subcategory'
+            if (this.selectedPromotion?.scope === 'Category') {
+              this.detailTargetType = targetData.target_type as any;
+            } else {
+              // For Brand and Product, target_type matches scope
+              this.detailTargetType = targetData.target_type as any;
+            }
+          }
+          // Set selected targets
+          this.detailSelectedTargets = targetData.target_ref || [];
+          console.log('✅ Loaded detail promotion target:', {
+            targetType: this.detailTargetType,
+            selectedTargets: this.detailSelectedTargets
+          });
+        } else {
+          console.log('No target found for promotion:', promotionId);
+          this.detailSelectedTargets = [];
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        // Target doesn't exist, that's okay (promotion might not have target)
+        console.log('No target found for promotion (error):', promotionId, error);
+        this.detailSelectedTargets = [];
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  /**
+   * Handle target type change for detail modal (Category/Subcategory)
+   */
+  onDetailTargetTypeChange(): void {
+    // Reset selected targets when switching between Category and Subcategory
+    this.detailSelectedTargets = [];
+    this.detailTargetSearchTerm = '';
+  }
+
+  /**
+   * Get search placeholder for detail modal
+   */
+  getDetailSearchPlaceholder(): string {
+    if (!this.selectedPromotion) return 'Tìm kiếm...';
+    
+    const scope = this.selectedPromotion.scope;
+    if (scope === 'Product') {
+      return 'Tìm kiếm sản phẩm (tên hoặc SKU)...';
+    } else if (scope === 'Brand') {
+      return 'Tìm kiếm thương hiệu...';
+    } else if (scope === 'Category') {
+      return this.detailTargetType === 'Subcategory' 
+        ? 'Tìm kiếm danh mục phụ...' 
+        : 'Tìm kiếm danh mục chính...';
+    }
+    return 'Tìm kiếm...';
+  }
+
+  /**
+   * Get available target options for detail modal
+   */
+  getDetailAvailableTargetOptions(): string[] | any[] {
+    if (!this.selectedPromotion) return [];
+    
+    const scope = this.selectedPromotion.scope;
+    
+    if (scope === 'Category') {
+      return this.detailTargetType === 'Subcategory' 
+        ? this.availableSubcategories 
+        : this.availableCategories;
+    } else if (scope === 'Brand') {
+      return this.availableBrands;
+    } else if (scope === 'Product') {
+      return this.availableProducts;
+    }
+    
+    return [];
+  }
+
+  /**
+   * Get filtered target options for detail modal
+   */
+  getDetailFilteredTargetOptions(): string[] | any[] {
+    const options = this.getDetailAvailableTargetOptions();
+    
+    if (!this.detailTargetSearchTerm || this.detailTargetSearchTerm.trim() === '') {
+      return options;
+    }
+    
+    const searchTerm = this.detailTargetSearchTerm.toLowerCase().trim();
+    
+    if (this.selectedPromotion?.scope === 'Product') {
+      return (options as any[]).filter(option => {
+        const name = (option.name || '').toLowerCase();
+        const sku = (option.sku || '').toLowerCase();
+        return name.includes(searchTerm) || sku.includes(searchTerm);
+      });
+    } else {
+      // For Category, Subcategory, Brand (string arrays)
+      return (options as string[]).filter(option => 
+        option.toLowerCase().includes(searchTerm)
+      );
+    }
+  }
+
+  /**
+   * Get target value for detail modal
+   */
+  getDetailTargetValue(option: string | any): string {
+    if (this.selectedPromotion?.scope === 'Product') {
+      return option.sku || option;
+    }
+    return option;
+  }
+
+  /**
+   * Get target label for detail modal
+   */
+  getDetailTargetLabel(option: string | any): string {
+    if (this.selectedPromotion?.scope === 'Product') {
+      return `${option.name} (${option.sku})`;
+    }
+    return option;
+  }
+
+  /**
+   * Get display name for a target value in detail modal
+   */
+  getDetailTargetDisplayName(targetValue: string): string {
+    if (this.selectedPromotion?.scope === 'Product') {
+      // Find the product by SKU
+      const product = this.availableProducts.find(p => p.sku === targetValue);
+      return product ? `${product.name} (${product.sku})` : targetValue;
+    }
+    // For Category, Subcategory, Brand - just return the value
+    return targetValue;
+  }
+
+  /**
+   * Check if target is selected in detail modal
+   */
+  isDetailTargetSelected(target: string): boolean {
+    return this.detailSelectedTargets.includes(target);
+  }
+
+  /**
+   * Toggle target selection in detail modal
+   */
+  toggleDetailTarget(target: string): void {
+    const index = this.detailSelectedTargets.indexOf(target);
+    if (index > -1) {
+      this.detailSelectedTargets.splice(index, 1);
+    } else {
+      this.detailSelectedTargets.push(target);
+    }
+  }
+
+  /**
+   * Remove a target from selected list in detail modal
+   */
+  removeDetailTarget(targetValue: string): void {
+    const index = this.detailSelectedTargets.indexOf(targetValue);
+    if (index > -1) {
+      this.detailSelectedTargets.splice(index, 1);
+    }
+  }
+
+  /**
+   * Clear all selected targets in detail modal
+   */
+  clearAllDetailTargets(): void {
+    this.detailSelectedTargets = [];
+  }
+
+  /**
+   * Handle target search change for detail modal
+   */
+  onDetailTargetSearchChange(): void {
+    // Filtering is done in getDetailFilteredTargetOptions()
+    this.cdr.detectChanges();
+  }
+
   loadPromotions(): void {
     this.isLoading = true;
     
-    // Load from data/promotion/promotions.json
-    this.http.get<PromotionJSON[]>('data/promotion/promotions.json').subscribe({
+    console.log('🔄 Loading promotions from MongoDB API...');
+    // Load from MongoDB only - no JSON fallback
+    this.apiService.getPromotions().subscribe({
       next: (data) => {
+        console.log(`✅ Loaded ${data.length} promotions from MongoDB`);
         this.allPromotions = this.transformPromotionsData(data);
         this.promotions = [...this.allPromotions];
         this.sortByUpdated('desc'); // Default sort
@@ -160,7 +678,46 @@ export class PromotionManage implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error loading promotions:', error);
+        console.error('❌ Error loading promotions from MongoDB:', error);
+        this.isLoading = false;
+        // Don't fallback to JSON - only use MongoDB data
+        this.allPromotions = [];
+        this.promotions = [];
+        this.calculateStats();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  /**
+   * REMOVED: No longer using JSON fallback - MongoDB only!
+   * Fallback: Load promotions from JSON file (deprecated - should not be called)
+   */
+  private loadPromotionsFromJSON(): void {
+    // This method is kept for reference but should not be called
+    // All data should come from MongoDB only
+    console.warn('⚠️ loadPromotionsFromJSON() is deprecated. Use MongoDB only.');
+    return; // Early return to prevent execution
+    
+    this.isLoading = true;
+    
+    console.log('🔄 Loading promotions from JSON file... (deprecated)');
+    // Load from data/promotion/promotions.json (deprecated)
+    this.http.get<PromotionJSON[]>('data/promotion/promotions.json').subscribe({
+      next: (data) => {
+        console.log(`✅ Loaded ${data.length} promotions from JSON`);
+        console.log('🗄️ Data source: JSON file from /data/');
+        this.allPromotions = this.transformPromotionsData(data);
+        this.promotions = [...this.allPromotions];
+        this.sortByUpdated('desc'); // Default sort
+        this.calculateStats();
+        this.extractAvailableGroups();
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('❌ Error loading promotions:', error);
+        console.error('   Check if data/promotion/promotions.json exists in the unified data folder');
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -169,19 +726,59 @@ export class PromotionManage implements OnInit {
 
   transformPromotionsData(data: PromotionJSON[]): Promotion[] {
     return data.map((item, index) => {
-      const status = this.getPromotionStatus(item.start_date, item.end_date, item.status);
+      // Support both old format (start_date, end_date) and MongoDB format (startDate, endDate)
+      const startDate = this.extractDate(item.startDate || item.start_date);
+      const endDate = this.extractDate(item.endDate || item.end_date);
       
-      // Convert discount_type
+      const status = this.getPromotionStatus(startDate, endDate, item.status);
+      
+      // Convert discount_type - support both formats
       let discountType: 'percentage' | 'fixed' | 'buy1get1' = 'percentage';
-      if (item.discount_type === 'percent') {
+      const discountTypeValue = item.discountType || item.discount_type || '';
+      
+      if (discountTypeValue === 'percent' || discountTypeValue === 'percentage') {
         discountType = 'percentage';
-      } else if (item.discount_type === 'fixed') {
+      } else if (discountTypeValue === 'fixed') {
         discountType = 'fixed';
-      } else if (item.discount_type === 'buy1get1') {
+      } else if (discountTypeValue === 'buy1get1') {
         discountType = 'buy1get1';
       }
       
-      return {
+      // Support both formats for discount value
+      const discountValue = item.discountValue || item.discount_value || 0;
+      const finalDiscountValue = typeof discountValue === 'number' ? discountValue : parseFloat(discountValue.toString()) || 0;
+      
+      // Support both formats for usage limit
+      const usageLimit = item.usageLimit || item.usage_limit || 0;
+      const finalUsageLimit = typeof usageLimit === 'number' ? usageLimit : parseInt(usageLimit.toString()) || 0;
+      
+      // Support both formats for user limit
+      const userLimit = item.userLimit || item.user_limit || 0;
+      const finalUserLimit = typeof userLimit === 'number' ? userLimit : parseInt(userLimit.toString()) || 0;
+      
+      // Support both formats for usage count
+      const usageCount = item.usageCount || item.usage_count || 0;
+      
+      // Support both formats for updated date
+      const updatedAt = this.extractDate(item.updatedAt || item.updated_at || '');
+      
+      // Format dates for HTML date input (YYYY-MM-DD)
+      let startDateFormatted = '';
+      let endDateFormatted = '';
+      if (startDate) {
+        const start = new Date(startDate);
+        if (!isNaN(start.getTime())) {
+          startDateFormatted = start.toISOString().split('T')[0];
+        }
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        if (!isNaN(end.getTime())) {
+          endDateFormatted = end.toISOString().split('T')[0];
+        }
+      }
+
+      const promotion: any = {
         id: index + 1,
         code: item.code,
         name: item.name,
@@ -189,32 +786,67 @@ export class PromotionManage implements OnInit {
         type: (item.type as 'User' | 'Admin') || 'User',
         scope: (item.scope as any) || 'Order',
         discountType: discountType,
-        discountValue: typeof item.discount_value === 'number' ? item.discount_value : 0,
-        minPurchase: item.min_order_value,
-        maxDiscount: item.max_discount_value,
-        startDate: item.start_date,
-        endDate: item.end_date,
-        usageLimit: typeof item.usage_limit === 'number' ? item.usage_limit : 0,
-        userLimit: typeof item.user_limit === 'number' ? item.user_limit : 0,
-        usageCount: 0, // We don't have usage_count in the JSON, default to 0
-        isFirstOrderOnly: item.is_first_order_only || false,
+        discountValue: finalDiscountValue,
+        minPurchase: item.minPurchase || item.min_order_value,
+        maxDiscount: item.maxDiscount || item.max_discount_value,
+        startDate: startDateFormatted || startDate, // Use formatted date for input
+        endDate: endDateFormatted || endDate, // Use formatted date for input
+        usageLimit: finalUsageLimit,
+        userLimit: finalUserLimit,
+        usageCount: usageCount,
+        isFirstOrderOnly: item.isFirstOrderOnly || item.is_first_order_only || false,
         status: status,
-        updatedAt: item.updated_at,
+        updatedAt: updatedAt,
         selected: false,
         groups: []
       };
+
+      // Store promotion_id from MongoDB for update operations
+      if ((item as any).promotion_id || (item as any)._id) {
+        promotion.promotion_id = (item as any).promotion_id || (item as any)._id.toString();
+      }
+
+      return promotion;
     });
+  }
+
+  /**
+   * Extract date string from various formats (string, { $date: string }, etc.)
+   */
+  private extractDate(dateValue: string | { $date: string } | undefined): string {
+    if (!dateValue) {
+      return '';
+    }
+    
+    if (typeof dateValue === 'string') {
+      return dateValue;
+    }
+    
+    if (dateValue.$date) {
+      return dateValue.$date;
+    }
+    
+    return '';
   }
 
   getPromotionStatus(startDate: string, endDate: string, jsonStatus?: string): 'active' | 'upcoming' | 'expired' {
     // If status is Draft, treat as upcoming regardless of dates
-    if (jsonStatus === 'Draft') {
+    if (jsonStatus === 'Draft' || jsonStatus === 'draft') {
       return 'upcoming';
+    }
+    
+    if (!startDate || !endDate) {
+      return 'active'; // Default if dates are missing
     }
     
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
+    
+    // Check if dates are valid
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return 'active'; // Default if dates are invalid
+    }
 
     if (now < start) {
       return 'upcoming';
@@ -376,6 +1008,13 @@ export class PromotionManage implements OnInit {
 
   addPromotion(): void {
     this.editMode = false;
+    // Get today's date in YYYY-MM-DD format for date inputs
+    const today = new Date().toISOString().split('T')[0];
+    // Set end date to 30 days from now
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 30);
+    const endDate = futureDate.toISOString().split('T')[0];
+    
     this.currentPromotion = {
       code: '',
       name: '',
@@ -386,14 +1025,20 @@ export class PromotionManage implements OnInit {
       discountValue: 0,
       minPurchase: 0,
       maxDiscount: 0,
-      startDate: '',
-      endDate: '',
+      startDate: today,
+      endDate: endDate,
       usageLimit: 0,
-      userLimit: 0,
+      userLimit: 1,
       usageCount: 0,
       isFirstOrderOnly: false,
       status: 'upcoming'
     };
+    
+    // Reset target selection
+    this.selectedTargets = [];
+    this.targetType = 'Category';
+    this.targetSearchTerm = '';
+    
     this.showAddEditModal = true;
   }
 
@@ -402,9 +1047,24 @@ export class PromotionManage implements OnInit {
     if (selected.length === 1) {
       this.editMode = true;
       this.currentPromotion = { ...selected[0] };
+      
+      // Reset target selection before loading
+      this.selectedTargets = [];
+      this.targetSearchTerm = '';
+      this.targetType = 'Category'; // Default, will be updated by loadPromotionTarget
+      
+      // Load promotion target if exists
+      const promotionId = (selected[0] as any).promotion_id;
+      if (promotionId) {
+        // Wait a bit to ensure currentPromotion is set
+        setTimeout(() => {
+          this.loadPromotionTarget(promotionId);
+        }, 100);
+      }
+      
       this.showAddEditModal = true;
     } else if (selected.length > 1) {
-      alert('Vui lòng chỉ chọn 1 khuyến mãi để chỉnh sửa');
+      this.notificationService.showWarning('Vui lòng chỉ chọn 1 khuyến mãi để chỉnh sửa');
     }
   }
 
@@ -412,45 +1072,329 @@ export class PromotionManage implements OnInit {
     const selected = this.filteredPromotions.filter(p => p.selected);
     if (selected.length === 0) return;
 
-    const confirmed = confirm(`Bạn có chắc muốn xóa ${selected.length} khuyến mãi đã chọn?`);
-    if (confirmed) {
-      selected.forEach(promotion => {
-        const index = this.promotions.findIndex(p => p.id === promotion.id);
-        if (index > -1) {
-          this.promotions.splice(index, 1);
+    // Show confirmation modal
+    this.confirmMessage = `Bạn có chắc muốn xóa ${selected.length} khuyến mãi đã chọn?`;
+    this.confirmCallback = () => {
+      // Delete promotions via API
+      const deletePromises = selected.map(promotion => {
+        const promotionId = (promotion as any).promotion_id || promotion.id?.toString() || promotion.code;
+        if (!promotionId) {
+          console.warn('⚠️ Promotion missing ID:', promotion);
+          return Promise.resolve(null);
         }
+        return this.http.delete(`http://localhost:3000/api/promotions/${promotionId}`).toPromise();
       });
-      this.applySearch();
-      this.calculateStats();
-      alert('Đã xóa khuyến mãi thành công!');
+
+      Promise.all(deletePromises).then(results => {
+        console.log('📊 Delete results:', results);
+        
+        // Filter out null results and check for errors
+        const validResults = results.filter(r => r !== null && r !== undefined);
+        const successResults = validResults.filter(r => {
+          // Check if result has success property
+          if (r && typeof r === 'object') {
+            const result = r as any;
+            return result.success !== false;
+          }
+          return true;
+        });
+        
+        const successCount = successResults.length;
+        const failedCount = validResults.length - successCount;
+        
+        console.log(`✅ Deleted ${successCount} promotions successfully`);
+        if (failedCount > 0) {
+          console.warn(`⚠️ Failed to delete ${failedCount} promotions`);
+        }
+        
+        // Reload promotions from MongoDB to get updated list
+        this.loadPromotions();
+        
+        this.applySearch();
+        this.calculateStats();
+        
+        if (failedCount > 0) {
+          this.notificationService.showError(`Đã xóa ${successCount} khuyến mãi, ${failedCount} khuyến mãi lỗi`);
+        } else {
+          this.notificationService.showSuccess(`Đã xóa ${successCount} khuyến mãi thành công!`);
+        }
+        this.closeConfirmModal();
+      }).catch(error => {
+        console.error('❌ Error deleting promotions:', error);
+        console.error('❌ Error details:', {
+          status: error.status,
+          statusText: error.statusText,
+          message: error.message,
+          error: error.error,
+          url: error.url
+        });
+        
+        const errorMessage = error.error?.message || error.error?.error || error.message || 'Lỗi không xác định';
+        this.notificationService.showError('Lỗi khi xóa khuyến mãi: ' + errorMessage);
+        
+        // Still reload to sync with server
+        this.loadPromotions();
+        this.closeConfirmModal();
+      });
+    };
+    this.showConfirmModal = true;
+  }
+
+  /**
+   * Show confirmation modal
+   */
+  showConfirmation(message: string, callback: () => void): void {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.showConfirmModal = true;
+  }
+
+  /**
+   * Close confirmation modal
+   */
+  closeConfirmModal(): void {
+    this.showConfirmModal = false;
+    this.confirmMessage = '';
+    this.confirmCallback = null;
+  }
+
+  /**
+   * Confirm action
+   */
+  onConfirm(): void {
+    if (this.confirmCallback) {
+      this.confirmCallback();
     }
   }
 
   savePromotion(): void {
     if (!this.currentPromotion) return;
+    
+    // Validate required fields
+    if (!this.currentPromotion.code || !this.currentPromotion.name || 
+        !this.currentPromotion.discountValue || !this.currentPromotion.startDate || 
+        !this.currentPromotion.endDate) {
+      this.notificationService.showWarning('Vui lòng điền đầy đủ các trường bắt buộc (*)');
+      return;
+    }
+
+    // Validate target selection for Category/Product/Brand scope
+    if ((this.currentPromotion.scope === 'Category' || 
+         this.currentPromotion.scope === 'Product' || 
+         this.currentPromotion.scope === 'Brand') && 
+        (!this.selectedTargets || this.selectedTargets.length === 0)) {
+      this.notificationService.showWarning('Vui lòng chọn ít nhất một ' + 
+        (this.currentPromotion.scope === 'Category' ? 'danh mục' : 
+         this.currentPromotion.scope === 'Brand' ? 'thương hiệu' : 'sản phẩm'));
+      return;
+    }
+
+    // Map frontend format to backend format
+    const promotionData: any = {
+      code: this.currentPromotion.code.trim(),
+      name: this.currentPromotion.name.trim(),
+      description: this.currentPromotion.description || '',
+      type: this.currentPromotion.type || 'User',
+      scope: this.currentPromotion.scope || 'Order',
+      discount_type: this.currentPromotion.discountType === 'percentage' ? 'percent' : 
+                     this.currentPromotion.discountType || 'fixed',
+      discount_value: Number(this.currentPromotion.discountValue) || 0,
+      max_discount_value: Number(this.currentPromotion.maxDiscount) || 0,
+      min_order_value: Number(this.currentPromotion.minPurchase) || 0,
+      usage_limit: Number(this.currentPromotion.usageLimit) || 0,
+      user_limit: Number(this.currentPromotion.userLimit) || 1,
+      is_first_order_only: this.currentPromotion.isFirstOrderOnly || false,
+      start_date: new Date(this.currentPromotion.startDate),
+      end_date: new Date(this.currentPromotion.endDate),
+      status: this.mapStatusToBackend(this.currentPromotion.status || 'active'),
+      created_by: 'admin',
+      created_at: new Date(),
+      updated_at: new Date()
+    };
+
+    // Generate promotion_id if not in edit mode
+    if (!this.editMode) {
+      // Generate promotion_id: PRO + timestamp + random
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      promotionData.promotion_id = `PRO${timestamp}${random}`;
+    }
 
     if (this.editMode) {
       // Update existing promotion
-      const index = this.promotions.findIndex(p => p.id === this.currentPromotion!.id);
-      if (index > -1) {
-        this.promotions[index] = { ...this.currentPromotion };
-      }
+      this.updatePromotionInMongoDB(promotionData);
     } else {
-      // Add new promotion
-      const newPromotion = {
-        ...this.currentPromotion,
-        id: this.promotions.length + 1,
-        usageCount: 0,
-        selected: false,
-        groups: []
-      };
-      this.promotions.push(newPromotion);
+      // Add new promotion to MongoDB
+      this.createPromotionInMongoDB(promotionData);
+    }
+  }
+
+  /**
+   * Map frontend status to backend status format
+   */
+  mapStatusToBackend(status: string): string {
+    if (status === 'active') return 'Active';
+    if (status === 'upcoming') return 'Active'; // Upcoming promotions are still Active in backend
+    if (status === 'expired') return 'Expired';
+    if (status === 'Active' || status === 'Expired' || status === 'Inactive') return status;
+    return 'Active'; // Default
+  }
+
+  /**
+   * Create promotion target if needed
+   */
+  async createPromotionTarget(promotionId: string): Promise<void> {
+    // Only create target if scope is Category, Product, or Brand
+    const scope = this.currentPromotion?.scope;
+    if (scope !== 'Category' && scope !== 'Product' && scope !== 'Brand') {
+      return;
     }
 
-    this.applySearch();
-    this.calculateStats();
-    this.closeAddEditModal();
-    alert(this.editMode ? 'Đã cập nhật khuyến mãi!' : 'Đã thêm khuyến mãi mới!');
+    // Check if targets are selected
+    if (!this.selectedTargets || this.selectedTargets.length === 0) {
+      console.log('⚠️ No targets selected, skipping promotion_target creation');
+      return;
+    }
+
+    // Map scope to target_type
+    let targetType: 'Category' | 'Subcategory' | 'Brand' | 'Product';
+    if (scope === 'Category') {
+      targetType = this.targetType === 'Subcategory' ? 'Subcategory' : 'Category';
+    } else if (scope === 'Brand') {
+      targetType = 'Brand';
+    } else if (scope === 'Product') {
+      targetType = 'Product';
+    } else {
+      return;
+    }
+
+    // Prepare target data
+    const targetData = {
+      promotion_id: promotionId,
+      target_type: targetType,
+      target_ref: this.selectedTargets
+    };
+
+    // Create promotion target
+    this.http.post('http://localhost:3000/api/promotion-targets', targetData).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          console.log('✅ Promotion target created successfully:', response.data);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error creating promotion target:', error);
+        // Don't fail the entire operation if target creation fails
+      }
+    });
+  }
+
+  /**
+   * Create new promotion in MongoDB
+   */
+  createPromotionInMongoDB(promotionData: any): void {
+    this.http.post('http://localhost:3000/api/promotions', promotionData).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          console.log('✅ Promotion created successfully:', response.data);
+          
+          // Get promotion_id from response
+          const promotionId = response.data.promotion_id || response.data._id?.toString();
+          
+          // Create promotion target if needed
+          if (promotionId && (promotionData.scope === 'Category' || promotionData.scope === 'Product' || promotionData.scope === 'Brand')) {
+            this.createPromotionTarget(promotionId);
+          }
+          
+          this.notificationService.showSuccess('Đã thêm khuyến mãi mới thành công!');
+          
+          // Reload promotions from MongoDB
+          this.loadPromotions();
+          
+          // Close modal
+          this.closeAddEditModal();
+        } else {
+          this.notificationService.showError(response.message || 'Lỗi khi tạo khuyến mãi');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error creating promotion:', error);
+        const errorMessage = error.error?.message || error.error?.error || 'Lỗi khi tạo khuyến mãi';
+        this.notificationService.showError(errorMessage);
+      }
+    });
+  }
+
+  /**
+   * Update promotion in MongoDB
+   */
+  updatePromotionInMongoDB(promotionData: any): void {
+    if (!this.currentPromotion?.code) {
+      this.notificationService.showError('Không tìm thấy mã khuyến mãi');
+      return;
+    }
+
+    // Find promotion_id from current promotion
+    // When editing, we need to find the original promotion to get its promotion_id
+    const originalPromotion = this.allPromotions.find(p => p.code === this.currentPromotion!.code);
+    
+    if (!originalPromotion) {
+      this.notificationService.showError('Không tìm thấy khuyến mãi để cập nhật');
+      return;
+    }
+
+    // Use promotion_id or code to identify the promotion
+    // Backend can find by either promotion_id or code
+    const identifier = (originalPromotion as any).promotion_id || this.currentPromotion.code;
+    const promotionId = (originalPromotion as any).promotion_id;
+    
+    // Keep the original promotion_id if editing
+    if (promotionId) {
+      promotionData.promotion_id = promotionId;
+    }
+    
+    this.http.put(`http://localhost:3000/api/promotions/${identifier}`, promotionData).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          console.log('✅ Promotion updated successfully:', response.data);
+          
+          // Update promotion target if needed
+          // Wait a bit to ensure promotion is updated first
+          setTimeout(() => {
+            if (promotionId && (promotionData.scope === 'Category' || promotionData.scope === 'Product' || promotionData.scope === 'Brand')) {
+              // Use POST which will create or update
+              this.createPromotionTarget(promotionId);
+            } else if (promotionId && (promotionData.scope === 'Order' || promotionData.scope === 'Shipping')) {
+              // Delete target if scope changed to Order/Shipping
+              this.http.delete(`http://localhost:3000/api/promotion-targets/${promotionId}`).subscribe({
+                next: () => console.log('✅ Promotion target deleted'),
+                error: (err) => {
+                  // 404 is okay - target might not exist
+                  if (err.status !== 404) {
+                    console.log('⚠️ Could not delete target:', err);
+                  }
+                }
+              });
+            }
+          }, 100);
+          
+          this.notificationService.showSuccess('Đã cập nhật khuyến mãi thành công!');
+          
+          // Reload promotions from MongoDB
+          this.loadPromotions();
+          
+          // Close modal
+          this.closeAddEditModal();
+        } else {
+          this.notificationService.showError(response.message || 'Lỗi khi cập nhật khuyến mãi');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error updating promotion:', error);
+        const errorMessage = error.error?.message || error.error?.error || 'Lỗi khi cập nhật khuyến mãi';
+        this.notificationService.showError(errorMessage);
+      }
+    });
   }
 
   /**
@@ -462,7 +1406,7 @@ export class PromotionManage implements OnInit {
   openGroupModal(): void {
     const selected = this.filteredPromotions.filter(p => p.selected);
     if (selected.length < 2) {
-      alert('Vui lòng chọn ít nhất 2 khuyến mãi để nhóm');
+      this.notificationService.showWarning('Vui lòng chọn ít nhất 2 khuyến mãi để nhóm');
       return;
     }
     this.showGroupModal = true;
@@ -474,7 +1418,7 @@ export class PromotionManage implements OnInit {
 
   createGroup(groupName: string): void {
     if (!groupName.trim()) {
-      alert('Vui lòng nhập tên nhóm');
+      this.notificationService.showWarning('Vui lòng nhập tên nhóm');
       return;
     }
 
@@ -490,7 +1434,7 @@ export class PromotionManage implements OnInit {
 
     this.extractAvailableGroups();
     this.closeGroupModal();
-    alert(`Đã nhóm ${selected.length} khuyến mãi vào "${groupName}"`);
+    this.notificationService.showSuccess(`Đã nhóm ${selected.length} khuyến mãi vào "${groupName}"`);
   }
 
   extractAvailableGroups(): void {
@@ -581,6 +1525,30 @@ export class PromotionManage implements OnInit {
    */
   viewPromotionDetail(promotion: Promotion): void {
     this.selectedPromotion = { ...promotion };
+    
+    // Reset detail target selection
+    this.detailSelectedTargets = [];
+    this.detailTargetSearchTerm = '';
+    this.detailTargetType = 'Category';
+    
+    // Load promotion target if exists
+    const promotionId = (promotion as any).promotion_id;
+    if (promotionId) {
+      // Wait a bit to ensure selectedPromotion is set
+      setTimeout(() => {
+        this.loadDetailPromotionTarget(promotionId);
+      }, 100);
+    }
+    
+    // Set default target type based on scope
+    if (this.selectedPromotion.scope === 'Category') {
+      this.detailTargetType = 'Category';
+    } else if (this.selectedPromotion.scope === 'Brand') {
+      this.detailTargetType = 'Brand';
+    } else if (this.selectedPromotion.scope === 'Product') {
+      this.detailTargetType = 'Product';
+    }
+    
     this.showDetailModal = true;
     this.cdr.detectChanges();
   }
@@ -588,6 +1556,10 @@ export class PromotionManage implements OnInit {
   closeDetailModal(): void {
     this.showDetailModal = false;
     this.selectedPromotion = null;
+    // Reset detail target selection
+    this.detailSelectedTargets = [];
+    this.detailTargetSearchTerm = '';
+    this.detailTargetType = 'Category';
   }
 
   /**
@@ -596,28 +1568,157 @@ export class PromotionManage implements OnInit {
   saveDetailChanges(): void {
     if (!this.selectedPromotion) return;
 
-    // Update promotion in arrays
-    const index = this.allPromotions.findIndex(p => p.code === this.selectedPromotion!.code);
-    if (index !== -1) {
-      this.allPromotions[index] = { ...this.selectedPromotion };
+    // Validate required fields
+    if (!this.selectedPromotion.code || !this.selectedPromotion.name || 
+        !this.selectedPromotion.discountValue || !this.selectedPromotion.startDate || 
+        !this.selectedPromotion.endDate) {
+      this.notificationService.showWarning('Vui lòng điền đầy đủ các trường bắt buộc (*)');
+      return;
     }
 
-    const filteredIndex = this.filteredPromotions.findIndex(p => p.code === this.selectedPromotion!.code);
-    if (filteredIndex !== -1) {
-      this.filteredPromotions[filteredIndex] = { ...this.selectedPromotion };
+    // Validate target selection for Category/Product/Brand scope
+    if ((this.selectedPromotion.scope === 'Category' || 
+         this.selectedPromotion.scope === 'Product' || 
+         this.selectedPromotion.scope === 'Brand') && 
+        (!this.detailSelectedTargets || this.detailSelectedTargets.length === 0)) {
+      this.notificationService.showWarning('Vui lòng chọn ít nhất một ' + 
+        (this.selectedPromotion.scope === 'Category' ? 'danh mục' : 
+         this.selectedPromotion.scope === 'Brand' ? 'thương hiệu' : 'sản phẩm'));
+      return;
     }
 
-    const promotionIndex = this.promotions.findIndex(p => p.code === this.selectedPromotion!.code);
-    if (promotionIndex !== -1) {
-      this.promotions[promotionIndex] = { ...this.selectedPromotion };
+    // Map frontend format to backend format
+    const promotionData: any = {
+      code: this.selectedPromotion.code.trim(),
+      name: this.selectedPromotion.name.trim(),
+      description: this.selectedPromotion.description || '',
+      type: this.selectedPromotion.type || 'User',
+      scope: this.selectedPromotion.scope || 'Order',
+      discount_type: this.selectedPromotion.discountType === 'percentage' ? 'percent' : 
+                     this.selectedPromotion.discountType || 'fixed',
+      discount_value: Number(this.selectedPromotion.discountValue) || 0,
+      max_discount_value: Number(this.selectedPromotion.maxDiscount) || 0,
+      min_order_value: Number(this.selectedPromotion.minPurchase) || 0,
+      usage_limit: Number(this.selectedPromotion.usageLimit) || 0,
+      user_limit: Number(this.selectedPromotion.userLimit) || 1,
+      is_first_order_only: this.selectedPromotion.isFirstOrderOnly || false,
+      start_date: new Date(this.selectedPromotion.startDate),
+      end_date: new Date(this.selectedPromotion.endDate),
+      status: this.mapStatusToBackend(this.selectedPromotion.status || 'active'),
+      updated_at: new Date()
+    };
+
+    // Get promotion_id from selectedPromotion
+    const promotionId = (this.selectedPromotion as any).promotion_id || this.selectedPromotion.code;
+
+    // Update promotion in MongoDB
+    this.updateDetailPromotionInMongoDB(promotionData, promotionId);
+  }
+
+  /**
+   * Update promotion in MongoDB from detail modal
+   */
+  updateDetailPromotionInMongoDB(promotionData: any, promotionId: string): void {
+    // First, try to update by promotion_id
+    this.http.put<any>(`http://localhost:3000/api/promotions/${promotionId}`, promotionData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          console.log('✅ Updated promotion in MongoDB:', response.data);
+          
+          // Update promotion target if needed
+          this.updateDetailPromotionTarget(promotionId);
+          
+          // Reload promotions to get latest data
+          this.loadPromotions();
+          
+          this.closeDetailModal();
+          this.notificationService.showSuccess('Đã cập nhật khuyến mãi!');
+        } else {
+          console.error('❌ Error updating promotion:', response.message);
+          this.notificationService.showError('Lỗi khi cập nhật khuyến mãi: ' + (response.message || 'Unknown error'));
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error updating promotion:', error);
+        this.notificationService.showError('Lỗi khi cập nhật khuyến mãi: ' + (error.error?.message || error.message || 'Unknown error'));
+      }
+    });
+  }
+
+  /**
+   * Update promotion target for detail modal
+   */
+  updateDetailPromotionTarget(promotionId: string): void {
+    // Only update target if scope is Category, Product, or Brand
+    const scope = this.selectedPromotion?.scope;
+    if (scope !== 'Category' && scope !== 'Product' && scope !== 'Brand') {
+      // If scope changed to non-target, try to delete existing target
+      this.http.delete(`http://localhost:3000/api/promotion-targets/${promotionId}`).subscribe({
+        next: () => {
+          console.log('✅ Deleted promotion target (scope changed to non-target)');
+        },
+        error: (error) => {
+          // Target doesn't exist, that's okay
+          console.log('No target to delete');
+        }
+      });
+      return;
     }
 
-    // Recalculate stats
-    this.calculateStats();
-    
-    this.closeDetailModal();
-    alert('Đã cập nhật khuyến mãi!');
-    this.cdr.detectChanges();
+    // Check if targets are selected
+    if (!this.detailSelectedTargets || this.detailSelectedTargets.length === 0) {
+      console.log('⚠️ No targets selected, skipping promotion_target update');
+      return;
+    }
+
+    // Map scope to target_type
+    let targetType: 'Category' | 'Subcategory' | 'Brand' | 'Product';
+    if (scope === 'Category') {
+      targetType = this.detailTargetType === 'Subcategory' ? 'Subcategory' : 'Category';
+    } else if (scope === 'Brand') {
+      targetType = 'Brand';
+    } else if (scope === 'Product') {
+      targetType = 'Product';
+    } else {
+      return;
+    }
+
+    // Prepare target data
+    const targetData = {
+      promotion_id: promotionId,
+      target_type: targetType,
+      target_ref: this.detailSelectedTargets
+    };
+
+    // Update promotion target
+    this.http.put<any>(`http://localhost:3000/api/promotion-targets/${promotionId}`, targetData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          console.log('✅ Updated promotion target:', response.data);
+        } else {
+          console.error('❌ Error updating promotion target:', response.message);
+        }
+      },
+      error: (error) => {
+        // If target doesn't exist, create it
+        if (error.status === 404) {
+          this.http.post<any>(`http://localhost:3000/api/promotion-targets`, targetData).subscribe({
+            next: (response) => {
+              if (response.success) {
+                console.log('✅ Created promotion target:', response.data);
+              } else {
+                console.error('❌ Error creating promotion target:', response.message);
+              }
+            },
+            error: (createError) => {
+              console.error('❌ Error creating promotion target:', createError);
+            }
+          });
+        } else {
+          console.error('❌ Error updating promotion target:', error);
+        }
+      }
+    });
   }
 
   getStatusClass(status: string): string {

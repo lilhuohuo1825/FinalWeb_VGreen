@@ -36,7 +36,43 @@
     >
       <div class="message-content">
         <p [innerHTML]="formatMessage(message.text)"></p>
+        
+        <!-- Hiển thị danh sách sản phẩm nếu có -->
+        <div class="product-suggestions" *ngIf="message.products && message.products.length > 0">
+          <div class="product-grid">
+            <div
+              class="product-card"
+              *ngFor="let product of message.products"
+              (click)="goToProductDetail(product)"
+            >
+              <div class="product-image-container">
+                <img
+                  [src]="product.image || 'assets/images/placeholder.png'"
+                  [alt]="product.name"
+                  class="product-image"
+                  (error)="$event.target.src='assets/images/placeholder.png'"
+                />
+              </div>
+              <div class="product-info">
+                <h4 class="product-name">{{ product.name }}</h4>
+                <p class="product-category">{{ product.category }}</p>
+                <p class="product-price">{{ formatPrice(product.price) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <span class="message-time">{{ message.time }}</span>
+      </div>
+    </div>
+    <!-- Loading indicator -->
+    <div class="message bot-message" *ngIf="isLoading">
+      <div class="message-content">
+        <p class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </p>
       </div>
     </div>
   </div>
@@ -49,9 +85,10 @@
       [(ngModel)]="inputMessage"
       (keydown.enter)="$event.preventDefault(); sendMessage()"
       placeholder="Nhập tin nhắn"
+      [disabled]="isLoading"
       #messageInput
     />
-    <button class="chat-send-btn" (click)="sendMessage()" aria-label="Gửi tin nhắn" type="button">
+    <button class="chat-send-btn" (click)="sendMessage()" [disabled]="isLoading || !inputMessage.trim()" aria-label="Gửi tin nhắn" type="button">
       <svg
         width="20"
         height="20"

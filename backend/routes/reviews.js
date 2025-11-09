@@ -139,29 +139,16 @@ router.post("/:sku", async (req, res) => {
     if (
       !trimmedFullname ||
       !trimmedCustomerId ||
-      !isValidRating ||
-      !trimmedOrderId
+      !isValidRating
     ) {
- // console.error(` [Reviews API] Missing required fields:`, {
- // has_fullname: !!trimmedFullname,
- // has_customer_id: !!trimmedCustomerId,
- // has_rating: isValidRating,
- // has_order_id: !!trimmedOrderId,
- // fullname_value: fullname,
- // customer_id_value: customer_id,
- // rating_value: rating,
- // order_id_value: order_id,
- // raw_body: JSON.stringify(req.body),
- // });
       return res.status(400).json({
         success: false,
         message:
-          "Thiếu thông tin bắt buộc (fullname, customer_id, rating, order_id)",
+          "Thiếu thông tin bắt buộc (fullname, customer_id, rating)",
         missing_fields: {
           fullname: !trimmedFullname,
           customer_id: !trimmedCustomerId,
           rating: !isValidRating,
-          order_id: !trimmedOrderId,
         },
       });
     }
@@ -169,14 +156,9 @@ router.post("/:sku", async (req, res) => {
  // Content có thể là empty string, không bắt buộc
     const reviewContent = content ? String(content).trim() : "";
 
- // Đảm bảo order_id không phải empty string
-    if (!trimmedOrderId || trimmedOrderId.trim() === "") {
- // console.error(` [Reviews API] order_id is empty after trim!`);
-      return res.status(400).json({
-        success: false,
-        message: "order_id không được để trống",
-      });
-    }
+ // order_id không bắt buộc (có thể để trống cho các reviews từ nguồn khác)
+    // Nếu không có order_id, dùng empty string
+    const finalOrderId = trimmedOrderId || "";
 
  // Thêm review mới
     const newReview = {
@@ -188,7 +170,7 @@ router.post("/:sku", async (req, res) => {
         ? images.filter((img) => img !== null && img !== undefined)
         : [], // Array of image URLs or base64 strings
       time: time ? new Date(time) : new Date(),
-      order_id: trimmedOrderId,
+      order_id: finalOrderId, // Có thể là empty string nếu không có order_id
     };
 
  // console.log(` [Reviews API] New review object:`, {
@@ -233,15 +215,17 @@ router.post("/:sku", async (req, res) => {
  // console.log(` [Reviews API] Added review for SKU: ${sku}`);
 
  // Sau khi review thành công, kiểm tra xem tất cả sản phẩm trong order đã được review chưa
- // Nếu có, chuyển order status sang completed
-    try {
-      await checkAndCompleteOrder(trimmedOrderId);
-    } catch (orderError) {
+ // Nếu có, chuyển order status sang completed (chỉ khi có order_id)
+    if (finalOrderId && finalOrderId.trim() !== "") {
+      try {
+        await checkAndCompleteOrder(finalOrderId);
+      } catch (orderError) {
  // console.error(
  // ` [Reviews API] Không thể kiểm tra order completion:`,
  // orderError.message
  // );
  // Không fail request nếu chỉ lỗi check order
+      }
     }
 
     res.json({
@@ -357,5 +341,249 @@ async function incrementProductPurchaseCount(items) {
     throw error;
   }
 }
+
+// PUT - Like/Unlike a review
+router.put("/:sku/like/:reviewIndex", async (req, res) => {
+  try {
+    const { sku, reviewIndex } = req.params;
+    const { customer_id, action } = req.body; // action: 'like' or 'unlike'
+
+    if (!customer_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu customer_id",
+      });
+    }
+
+    // Kiểm tra review có tồn tại không
+    const reviewData = await Review.findOne({ sku });
+    if (!reviewData || !reviewData.reviews || !reviewData.reviews[reviewIndex]) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy review",
+      });
+    }
+
+    const review = reviewData.reviews[reviewIndex];
+    const likes = review.likes || [];
+    const customerIdStr = String(customer_id).trim();
+
+    // Tính toán likes mới
+    let newLikes = [...likes];
+    if (action === "like") {
+      // Thêm like nếu chưa có
+      if (!newLikes.includes(customerIdStr)) {
+        newLikes.push(customerIdStr);
+      }
+    } else if (action === "unlike") {
+      // Xóa like nếu có
+      newLikes = newLikes.filter((id) => id !== customerIdStr);
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Action phải là 'like' hoặc 'unlike'",
+      });
+    }
+
+    // Cập nhật review - sử dụng updateOne với bypassDocumentValidation để tránh validate lại
+    // Update chỉ field likes của review cụ thể
+    const updatePath = `reviews.${reviewIndex}.likes`;
+    
+    // Sử dụng collection.updateOne trực tiếp để bypass validation
+    const ReviewCollection = Review.collection;
+    const updateResult = await ReviewCollection.updateOne(
+      { 
+        sku: sku,
+        [`reviews.${reviewIndex}`]: { $exists: true }
+      },
+      { 
+        $set: { [updatePath]: newLikes }
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy review",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: action === "like" ? "Đã thích review" : "Đã bỏ thích review",
+      data: {
+        reviewIndex: parseInt(reviewIndex),
+        likes: newLikes,
+        likesCount: newLikes.length,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi cập nhật like",
+      error: error.message,
+    });
+  }
+});
+
+// POST - Reply to a review
+router.post("/:sku/reply/:reviewIndex", async (req, res) => {
+  try {
+    const { sku, reviewIndex } = req.params;
+    const { fullname, customer_id, content } = req.body;
+
+    if (!fullname || !customer_id || !content) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu thông tin bắt buộc (fullname, customer_id, content)",
+      });
+    }
+
+    // Kiểm tra review có tồn tại không
+    const reviewData = await Review.findOne({ sku });
+    if (!reviewData || !reviewData.reviews || !reviewData.reviews[reviewIndex]) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy review",
+      });
+    }
+
+    const newReply = {
+      fullname: String(fullname).trim(),
+      customer_id: String(customer_id).trim(),
+      content: String(content).trim(),
+      time: new Date(),
+      likes: [],
+    };
+
+    // Thêm reply vào review - sử dụng collection.updateOne trực tiếp để bypass validation
+    const updatePath = `reviews.${reviewIndex}.replies`;
+    const ReviewCollection = Review.collection;
+    const updateResult = await ReviewCollection.updateOne(
+      { 
+        sku: sku,
+        [`reviews.${reviewIndex}`]: { $exists: true }
+      },
+      { 
+        $push: { [updatePath]: newReply }
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy review",
+      });
+    }
+
+    // Lấy lại review data để lấy số lượng replies
+    const updatedReviewData = await Review.findOne({ sku });
+    const updatedReview = updatedReviewData?.reviews?.[reviewIndex];
+    const repliesCount = updatedReview?.replies ? updatedReview.replies.length : 1;
+
+    res.json({
+      success: true,
+      message: "Đã thêm trả lời thành công",
+      data: {
+        reviewIndex: parseInt(reviewIndex),
+        reply: newReply,
+        repliesCount: repliesCount,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi thêm trả lời",
+      error: error.message,
+    });
+  }
+});
+
+// PUT - Like/Unlike a reply
+router.put("/:sku/reply/:reviewIndex/:replyIndex/like", async (req, res) => {
+  try {
+    const { sku, reviewIndex, replyIndex } = req.params;
+    const { customer_id, action } = req.body; // action: 'like' or 'unlike'
+
+    if (!customer_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Thiếu customer_id",
+      });
+    }
+
+    // Kiểm tra reply có tồn tại không
+    const reviewData = await Review.findOne({ sku });
+    if (
+      !reviewData ||
+      !reviewData.reviews ||
+      !reviewData.reviews[reviewIndex] ||
+      !reviewData.reviews[reviewIndex].replies ||
+      !reviewData.reviews[reviewIndex].replies[replyIndex]
+    ) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy reply",
+      });
+    }
+
+    const reply = reviewData.reviews[reviewIndex].replies[replyIndex];
+    const likes = reply.likes || [];
+    const customerIdStr = String(customer_id).trim();
+
+    // Tính toán likes mới
+    let newLikes = [...likes];
+    if (action === "like") {
+      if (!newLikes.includes(customerIdStr)) {
+        newLikes.push(customerIdStr);
+      }
+    } else if (action === "unlike") {
+      newLikes = newLikes.filter((id) => id !== customerIdStr);
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Action phải là 'like' hoặc 'unlike'",
+      });
+    }
+
+    // Cập nhật likes của reply - sử dụng collection.updateOne trực tiếp để bypass validation
+    const updatePath = `reviews.${reviewIndex}.replies.${replyIndex}.likes`;
+    const ReviewCollection = Review.collection;
+    const updateResult = await ReviewCollection.updateOne(
+      {
+        sku: sku,
+        [`reviews.${reviewIndex}`]: { $exists: true },
+        [`reviews.${reviewIndex}.replies.${replyIndex}`]: { $exists: true }
+      },
+      { 
+        $set: { [updatePath]: newLikes }
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy reply",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: action === "like" ? "Đã thích reply" : "Đã bỏ thích reply",
+      data: {
+        reviewIndex: parseInt(reviewIndex),
+        replyIndex: parseInt(replyIndex),
+        likes: newLikes,
+        likesCount: newLikes.length,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi cập nhật like cho reply",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;

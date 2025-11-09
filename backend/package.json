@@ -5,7 +5,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "sync-users:to-json": "node scripts/sync-users.js to-json",
+    "sync-users:to-mongo": "node scripts/sync-users.js to-mongo",
+    "sync-users:both": "node scripts/sync-users.js both",
+    "sync-data": "node sync-data-from-template.js",
+    "calculate-totalspent": "node scripts/calculate-totalspent-tiering.js",
+    "unify-status": "node scripts/unify-delivered-completed-status.js"
   },
   "keywords": [
     "mongodb",
@@ -16,11 +22,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sendinblue/client": "^3.3.1",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
     "mongodb": "^5.9.0",
+    "mongoose": "^8.19.3",
     "nodemailer": "^7.0.10"
   },
   "devDependencies": {

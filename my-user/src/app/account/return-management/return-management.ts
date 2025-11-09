@@ -1,8 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { Subscription, filter, interval } from 'rxjs';
 import { ReturnBadgeService } from '../../services/return-badge.service';
 import { ToastService } from '../../services/toast.service';
 import { OrderService } from '../../services/order.service';
@@ -38,7 +39,7 @@ interface Product {
   templateUrl: './return-management.html',
   styleUrls: ['./return-management.css'],
 })
-export class ReturnManagementComponent implements OnInit, AfterViewInit {
+export class ReturnManagementComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchInput') searchInput?: ElementRef;
   @ViewChild('tabList') tabList?: ElementRef;
 
@@ -49,6 +50,9 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
 
  // Returns data
   returns: ReturnItem[] = [];
+  
+  // Cached filtered returns for template (updated via getter)
+  filteredReturns: ReturnItem[] = [];
 
  // Track which returns are expanded to show all products
   expandedReturns: Set<string> = new Set();
@@ -62,6 +66,26 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
   showSuccessModal: boolean = false;
   showCancelModal: boolean = false;
   cancelReturnItem: ReturnItem | null = null;
+
+  // Router subscription
+  private routerSubscription?: Subscription;
+  
+  // Polling subscription for auto-refresh
+  private pollingSubscription?: Subscription;
+  private readonly POLLING_INTERVAL = 60000; // 60 seconds (tăng lên để giảm tải backend)
+  
+  // Cache filtered returns to avoid multiple calls
+  private _filteredReturns: ReturnItem[] = [];
+  private _lastFilterUpdate: number = 0;
+  
+  // Flag to prevent multiple simultaneous API calls
+  private isLoading: boolean = false;
+  
+  // Event handler references for proper cleanup
+  private storageHandler?: (e: StorageEvent) => void;
+  private customEventHandler?: () => void;
+  private focusHandler?: () => void;
+  private visibilityHandler?: () => void;
 
   tabs = [
     { id: 'processing_return', label: 'Đang chờ xử lý', count: 0 },
@@ -78,15 +102,132 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
- // Load returns to sync with orders (don't clear data to preserve changes)
+    // Load returns to sync with orders (don't clear data to preserve changes)
     this.loadReturns();
 
- // Listen for changes in orders data
-    window.addEventListener('storage', (e) => {
+    // Listen for router navigation events to reload data when navigating to this page
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        // Reload data when navigating to return-management page
+        if (event.url && event.url.includes('/account/return-management')) {
+          console.log('[Return Management] Navigation detected, reloading returns...');
+          this.loadReturns();
+          // Start polling when on this page (với interval dài hơn)
+          this.startPolling();
+        } else {
+          // Stop polling when navigating away
+          this.stopPolling();
+        }
+      });
+
+    // Không tự động start polling khi component init - chỉ start khi user thực sự ở trang này
+    // Polling sẽ được start khi navigate đến trang này
+
+    // Store event handler references for proper cleanup
+    this.storageHandler = (e: StorageEvent) => {
       if (e.key === 'ordersDataChanged' || e.key === 'returnManagementDataChanged') {
-        this.syncWithCompletedOrders();
+        // Debounce: chỉ reload nếu không đang load
+        if (!this.isLoading) {
+          this.syncWithCompletedOrders();
+        }
+      }
+    };
+
+    this.customEventHandler = () => {
+      // Debounce: chỉ reload nếu không đang load và đang ở trang này
+      // VÀ chỉ reload nếu không phải từ polling (tránh loop)
+      if (!this.isLoading && 
+          this.router.url.includes('/account/return-management') &&
+          (!this.pollingSubscription || this.pollingSubscription.closed)) {
+        console.log('[Return Management] Custom event detected, reloading returns...');
+        this.loadReturns();
+      }
+    };
+
+    this.focusHandler = () => {
+      // TẮT auto-reload khi focus để giảm tải backend
+      // User có thể dùng refresh button để reload manually
+      console.log('[Return Management] Window focus detected - auto-reload disabled to reduce backend load');
+      // this.loadReturns(); // Disabled
+    };
+
+    this.visibilityHandler = () => {
+      // TẮT auto-reload khi visibility change để giảm tải backend
+      // User có thể dùng refresh button để reload manually
+      console.log('[Return Management] Page visibility changed - auto-reload disabled to reduce backend load');
+      // this.loadReturns(); // Disabled
+    };
+
+    // Add event listeners với references đã lưu
+    window.addEventListener('storage', this.storageHandler);
+    window.addEventListener('returnManagementDataChanged', this.customEventHandler);
+    window.addEventListener('focus', this.focusHandler);
+    document.addEventListener('visibilitychange', this.visibilityHandler);
+  }
+
+  ngOnDestroy(): void {
+    // Stop polling
+    this.stopPolling();
+    
+    // Unsubscribe from router events
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    
+    // Remove event listeners với đúng references
+    if (this.storageHandler) {
+      window.removeEventListener('storage', this.storageHandler);
+    }
+    if (this.customEventHandler) {
+      window.removeEventListener('returnManagementDataChanged', this.customEventHandler);
+    }
+    if (this.focusHandler) {
+      window.removeEventListener('focus', this.focusHandler);
+    }
+    if (this.visibilityHandler) {
+      document.removeEventListener('visibilitychange', this.visibilityHandler);
+    }
+  }
+
+  /**
+   * Start polling for return orders updates
+   * TẮT polling để tránh backend chạy liên tục
+   * User có thể dùng refresh button để reload manually
+   */
+  private startPolling(): void {
+    // Stop existing polling if any
+    this.stopPolling();
+    
+    // TẮT polling để giảm tải backend
+    console.log('[Return Management] Polling is DISABLED to reduce backend load. Use refresh button to reload manually.');
+    return;
+    
+    // Code below is disabled - uncomment if polling is really needed (with longer interval)
+    /*
+    console.log('[Return Management] Starting polling for return orders updates (interval: 60s)...');
+    
+    // Poll every POLLING_INTERVAL milliseconds (60 seconds)
+    // Chỉ poll khi page visible và không đang load
+    this.pollingSubscription = interval(this.POLLING_INTERVAL).subscribe(() => {
+      // Only poll if page is visible (not hidden in background) and not already loading
+      if (!document.hidden && !this.isLoading && this.router.url.includes('/account/return-management')) {
+        console.log('[Return Management] Polling: Reloading returns...');
+        this.loadReturns();
       }
     });
+    */
+  }
+
+  /**
+   * Stop polling for return orders updates
+   */
+  private stopPolling(): void {
+    if (this.pollingSubscription) {
+      console.log('[Return Management] Stopping polling...');
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = undefined;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -119,80 +260,148 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
   }
 
   loadReturns(): void {
- // Load return orders from backend
+    // Prevent multiple simultaneous API calls
+    if (this.isLoading) {
+      console.log('[Return Management] Already loading, skipping duplicate request...');
+      return;
+    }
+
+    // Load return orders from backend
     const customerID = this.orderService.getCustomerID();
- console.log('Loading return orders for CustomerID:', customerID);
+    console.log('[Return Management] Loading return orders for CustomerID:', customerID);
 
     if (customerID && customerID !== 'guest') {
+      this.isLoading = true;
       this.orderService.getOrdersByCustomer(customerID).subscribe({
         next: (response) => {
-          if (response.success && response.data) {
- console.log(
-              ' Loaded orders from backend for return management:',
-              response.data.length
-            );
-
- // Filter orders with return statuses
-            const returnOrders = response.data.filter(
-              (order: any) =>
-                order.status === 'processing_return' ||
-                order.status === 'returning' ||
-                order.status === 'returned'
-            );
-
- // Convert backend orders to ReturnItem format
-            this.returns = returnOrders.map((order: any) => this.mapOrderToReturnItem(order));
-
- console.log(' Converted to return items:', this.returns.length);
-
-            this.updateTabCounts();
-
- // Trigger event to update sidebar badges and notify orders component
-            localStorage.setItem('returnManagementDataChanged', Date.now().toString());
-            localStorage.removeItem('returnManagementDataChanged');
-
- // Dispatch custom event for same-window updates
-            window.dispatchEvent(new Event('returnManagementDataChanged'));
-          } else {
- console.log('No orders found in backend for return management');
-            this.returns = [];
-            this.updateTabCounts();
+          console.log('[Return Management] API Response:', response);
+          
+          // Handle both response formats: { success: true, data: [...] } or direct array
+          let ordersData: any[] = [];
+          if (response && response.success && response.data) {
+            ordersData = Array.isArray(response.data) ? response.data : [];
+          } else if (Array.isArray(response)) {
+            ordersData = response;
           }
+
+          console.log('[Return Management] Loaded orders from backend:', ordersData.length);
+
+          // Filter orders with return statuses
+          const returnOrders = ordersData.filter(
+            (order: any) =>
+              order.status === 'processing_return' ||
+              order.status === 'returning' ||
+              order.status === 'returned'
+          );
+
+          console.log('[Return Management] Filtered return orders:', returnOrders.length);
+          console.log('[Return Management] Return orders by status:', {
+            processing_return: returnOrders.filter((o: any) => o.status === 'processing_return').length,
+            returning: returnOrders.filter((o: any) => o.status === 'returning').length,
+            returned: returnOrders.filter((o: any) => o.status === 'returned').length
+          });
+          
+          // Log all order statuses for debugging
+          const allStatuses = ordersData.map((o: any) => ({ OrderID: o.OrderID, status: o.status }));
+          console.log('[Return Management] All order statuses in response:', allStatuses);
+          console.log('[Return Management] Orders with returned status:', 
+            ordersData.filter((o: any) => o.status === 'returned').map((o: any) => ({ OrderID: o.OrderID, status: o.status, updatedAt: o.updatedAt, createdAt: o.createdAt }))
+          );
+
+          // Convert backend orders to ReturnItem format
+          this.returns = returnOrders.map((order: any) => this.mapOrderToReturnItem(order));
+
+          console.log('[Return Management] Converted to return items:', this.returns.length);
+
+          // Update tab counts
+          this.updateTabCounts();
+          
+          // Update filtered returns cache
+          this.updateFilteredReturnsCache();
+
+          // Trigger event to update sidebar badges and notify orders component
+          // Chỉ trigger localStorage event (cross-tab), không dispatch custom event để tránh loop
+          // Custom event sẽ được dispatch từ nơi khác khi cần (ví dụ: khi user thực hiện action)
+          localStorage.setItem('returnManagementDataChanged', Date.now().toString());
+          setTimeout(() => {
+            localStorage.removeItem('returnManagementDataChanged');
+          }, 100);
+          
+          // KHÔNG dispatch custom event trong loadReturns() để tránh infinite loop
+          // Custom event chỉ nên được dispatch từ user actions (submit return, cancel return, etc.)
+          
+          this.isLoading = false;
         },
         error: (error) => {
- console.error('Error loading return orders from backend:', error);
+          console.error('[Return Management] Error loading return orders from backend:', error);
           this.returns = [];
           this.updateTabCounts();
+          this.updateFilteredReturnsCache();
+          this.isLoading = false;
         },
       });
     } else {
- console.log('No customer ID or guest user');
+      console.log('[Return Management] No customer ID or guest user');
       this.returns = [];
       this.updateTabCounts();
+      this.updateFilteredReturnsCache();
+      this.isLoading = false;
     }
+  }
+  
+  /**
+   * Update filtered returns cache
+   */
+  private updateFilteredReturnsCache(): void {
+    // Update the public filteredReturns property by calling internal filter method
+    this.filteredReturns = this.getFilteredReturnsInternal();
   }
 
   mapOrderToReturnItem(backendOrder: any): ReturnItem {
- // Map items to allProducts format
-    const allProducts = backendOrder.items.map((item: any) => ({
-      product: {
-        _id: item.sku || item.id,
-        ProductName: item.productName,
-        Category: item.category || '',
-        Subcategory: item.subcategory || '',
-        Price: item.price,
-        Unit: item.unit || '',
-        Image: item.image || '',
-        Brand: '',
-      },
-      quantity: item.quantity,
-      totalValue: item.price * item.quantity,
-    }));
+    // Map items to allProducts format
+    const allProducts = (backendOrder.items || []).map((item: any) => {
+      // Handle image which can be array or string
+      let imageUrl = '';
+      if (Array.isArray(item.image)) {
+        imageUrl = item.image[0] || '';
+      } else if (item.image) {
+        imageUrl = item.image;
+      }
+      
+      return {
+        product: {
+          _id: item.sku || item.id || '',
+          ProductName: item.productName || item.name || '',
+          Category: item.category || '',
+          Subcategory: item.subcategory || '',
+          Price: item.price || 0,
+          Unit: item.unit || '',
+          Image: imageUrl,
+          Brand: '',
+        },
+        quantity: item.quantity || 0,
+        totalValue: (item.price || 0) * (item.quantity || 0),
+      };
+    });
+
+    // Use updatedAt for date if available (for returned orders, use updatedAt to show when it was returned)
+    // Otherwise use createdAt
+    // Store ISO date string for proper sorting, format only when displaying
+    const orderDate = backendOrder.updatedAt || backendOrder.createdAt || new Date().toISOString();
+    // Ensure it's a valid ISO date string
+    const isoDate = orderDate instanceof Date ? orderDate.toISOString() : 
+                    (typeof orderDate === 'string' ? orderDate : new Date().toISOString());
+
+    // Ensure status is correctly mapped - normalize status values
+    let normalizedStatus = backendOrder.status || 'processing_return';
+    
+    // Log for debugging
+    console.log(`[Return Management] Mapping order ${backendOrder.OrderID}: status=${normalizedStatus}`);
 
     return {
       id: `return_${backendOrder.OrderID}`,
-      status: backendOrder.status,
-      date: this.formatDate(backendOrder.createdAt),
+      status: normalizedStatus, // Use normalized status
+      date: isoDate, // Store ISO date string, not formatted date
       product: allProducts[0]?.product || {
         _id: '',
         ProductName: '',
@@ -205,7 +414,7 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
       },
       quantity: allProducts[0]?.quantity || 0,
       totalValue: allProducts[0]?.totalValue || 0,
-      totalAmount: backendOrder.totalAmount,
+      totalAmount: backendOrder.totalAmount || 0,
       allProducts: allProducts,
       orderId: backendOrder.OrderID,
       orderNumber: backendOrder.OrderID,
@@ -224,56 +433,85 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
 
   updateTabCounts(): void {
     this.tabs.forEach((tab) => {
-      tab.count = this.returns.filter((returnItem) => returnItem.status === tab.id).length;
+      const count = this.returns.filter((returnItem) => returnItem.status === tab.id).length;
+      tab.count = count;
+      console.log(`[Return Management] Tab "${tab.label}" (${tab.id}): ${count} items`);
     });
 
- // Lưu tab counts vào localStorage để sidebar có thể đọc
+    // Log detailed breakdown
+    console.log('[Return Management] Detailed status breakdown:');
+    const statusBreakdown = this.returns.reduce((acc, item) => {
+      acc[item.status] = (acc[item.status] || 0) + 1;
+      return acc;
+    }, {} as any);
+    console.log('[Return Management] Status breakdown:', statusBreakdown);
+
+    // Lưu tab counts vào localStorage để sidebar có thể đọc
     const tabCounts = this.tabs.reduce((acc, tab) => {
       acc[tab.id] = tab.count;
       return acc;
     }, {} as any);
     localStorage.setItem('returnTabCounts', JSON.stringify(tabCounts));
 
- // Cập nhật service để badge cập nhật ngay lập tức trong cùng tab
+    // Cập nhật service để badge cập nhật ngay lập tức trong cùng tab
     const pendingCount = this.tabs.find((tab) => tab.id === 'pending')?.count || 0;
     this.returnBadgeService.setPendingCount(pendingCount);
   }
 
   onTabClick(tabId: string): void {
     this.activeTab = tabId;
+    // Update filtered returns cache when tab changes
+    this.updateFilteredReturnsCache();
   }
 
   clearSearch(): void {
     this.searchQuery = '';
+    // Update filtered returns cache when search is cleared
+    this.updateFilteredReturnsCache();
     setTimeout(() => {
       this.searchInput?.nativeElement.focus();
     }, 0);
   }
 
   performSearch(): void {
- // Search is performed automatically when getFilteredReturns() is called
- // This method can be used for additional actions if needed
- console.log('Searching for:', this.searchQuery);
+    // Update filtered returns cache when search changes
+    this.updateFilteredReturnsCache();
+    console.log('Searching for:', this.searchQuery);
   }
 
-  getFilteredReturns(): ReturnItem[] {
- // First filter by active tab
+  /**
+   * Reload returns manually (called by refresh button)
+   */
+  reloadReturns(): void {
+    console.log('[Return Management] Manual reload triggered');
+    this.loadReturns();
+    // Show a brief toast notification (using success type since info is not supported)
+    this.toastService.show('Đang tải lại dữ liệu...', 'success');
+  }
+
+  /**
+   * Internal method to get filtered returns (used for caching)
+   */
+  private getFilteredReturnsInternal(): ReturnItem[] {
+    // First filter by active tab
     let filteredReturns: ReturnItem[] = [];
 
     if (this.activeTab === 'all') {
       filteredReturns = [...this.returns];
     } else {
-      filteredReturns = this.returns.filter((returnItem) => returnItem.status === this.activeTab);
+      filteredReturns = this.returns.filter((returnItem) => {
+        return returnItem.status === this.activeTab;
+      });
     }
 
- // Then filter by search query (product name)
+    // Then filter by search query (product name) if exists
     if (this.searchQuery && this.searchQuery.trim() !== '') {
       const query = this.searchQuery.toLowerCase().trim();
       filteredReturns = filteredReturns.filter((returnItem) => {
- // Check if product name matches the search query
+        // Check if product name matches the search query
         const productName = (returnItem.product?.ProductName || '').toLowerCase();
 
- // Also check in allProducts if available
+        // Also check in allProducts if available
         const hasMatchingProductInAll = returnItem.allProducts?.some((productItem: any) => {
           const allProductName = (productItem.product?.ProductName || '').toLowerCase();
           return allProductName.includes(query);
@@ -283,17 +521,52 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
       });
     }
 
- // Sort by date for processing_return items (most recent first)
-    if (this.activeTab === 'processing_return') {
-      return filteredReturns.sort((a, b) => {
- // Convert date strings to Date objects for comparison
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        return dateB.getTime() - dateA.getTime(); // Most recent first
-      });
-    }
+    // Sort by date (most recent first) for all tabs
+    const sortedReturns = filteredReturns.sort((a, b) => {
+      // Convert ISO date strings to Date objects for comparison
+      try {
+        // Handle both ISO strings and already formatted dates (backward compatibility)
+        const dateAStr = typeof a.date === 'string' ? a.date : '';
+        const dateBStr = typeof b.date === 'string' ? b.date : '';
+        
+        // If date is in DD/MM/YYYY format, try to parse it
+        let dateA: Date, dateB: Date;
+        
+        if (dateAStr.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+          // Already formatted, parse DD/MM/YYYY
+          const [day, month, year] = dateAStr.split('/');
+          dateA = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        } else {
+          dateA = new Date(dateAStr);
+        }
+        
+        if (dateBStr.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+          // Already formatted, parse DD/MM/YYYY
+          const [day, month, year] = dateBStr.split('/');
+          dateB = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        } else {
+          dateB = new Date(dateBStr);
+        }
+        
+        // Most recent first
+        return dateB.getTime() - dateA.getTime();
+      } catch (error) {
+        console.warn('[Return Management] Error sorting dates:', error, a.date, b.date);
+        return 0;
+      }
+    });
 
-    return filteredReturns;
+    // Return sorted results
+    return sortedReturns;
+  }
+  
+  /**
+   * Public method to get filtered returns (for template)
+   * Returns the cached filteredReturns property
+   */
+  getFilteredReturns(): ReturnItem[] {
+    // Always return the cached version (updated via updateFilteredReturnsCache)
+    return this.filteredReturns;
   }
 
   getStatusLabel(status: string): string {
@@ -313,13 +586,22 @@ export class ReturnManagementComponent implements OnInit, AfterViewInit {
     }).format(amount);
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | Date): string {
     if (!dateString) return '';
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    try {
+      const date = dateString instanceof Date ? dateString : new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.warn('[Return Management] Invalid date:', dateString);
+        return '';
+      }
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch (error) {
+      console.error('[Return Management] Error formatting date:', error, dateString);
+      return '';
+    }
   }
 
   onViewMore(returnItem: ReturnItem): void {

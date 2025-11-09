@@ -10,6 +10,7 @@ const {
   Product,
 } = require("../db");
 const backupService = require("../services/backup.service");
+const { updateUserTotalSpentAndTieringAsync } = require("../services/totalspent-tiering.service");
 
 // ========== CREATE ORDER ==========
 // POST /api/orders - Tạo đơn hàng mới
@@ -188,13 +189,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Helper function: Tự động chuyển các đơn hàng delivered sang completed sau 24h
+// Helper function: Tự động chuyển các đơn hàng delivered sang completed (thống nhất status)
 async function autoCompleteDeliveredOrders(customerID) {
   try {
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    // Tìm các đơn hàng delivered
+    // Tìm các đơn hàng delivered để chuyển thành completed
     const deliveredOrders = await Order.find({
       CustomerID: customerID,
       status: "delivered",
@@ -223,6 +224,10 @@ async function autoCompleteDeliveredOrders(customerID) {
       // Initialize routes if it doesn't exist
       const routes = order.routes || new Map();
       routes.set("completed", new Date());
+      // Keep delivered timestamp for history
+      if (!routes.has("delivered")) {
+        routes.set("delivered", new Date());
+      }
 
       await Order.findOneAndUpdate(
         { OrderID: order.OrderID },
@@ -248,33 +253,9 @@ async function autoCompleteDeliveredOrders(customerID) {
         }
 
         // Update customer TotalSpent and CustomerTiering
-        const user = await User.findOne({ CustomerID: order.CustomerID });
-        if (user) {
-          const newTotalSpent = (user.TotalSpent || 0) + order.totalAmount;
-          const points = Math.floor(newTotalSpent / 10000);
-          let newCustomerTiering = "Đồng";
-
-          if (points >= 3500) {
-            newCustomerTiering = "Bạch Kim";
-          } else if (points >= 1500) {
-            newCustomerTiering = "Vàng";
-          } else if (points >= 500) {
-            newCustomerTiering = "Bạc";
-          }
-
-          await User.findOneAndUpdate(
-            { CustomerID: order.CustomerID },
-            {
-              TotalSpent: newTotalSpent,
-              CustomerTiering: newCustomerTiering,
-            },
-            { new: true }
-          );
-
-          // console.log(
-          //   ` [Orders] Updated customer stats (auto-complete) - TotalSpent: ${newTotalSpent}, CustomerTiering: ${newCustomerTiering}`
-          // );
-        }
+        // Sử dụng service để tính lại từ tất cả orders đã completed
+        const { updateUserTotalSpentAndTieringAsync } = require("../services/totalspent-tiering.service");
+        updateUserTotalSpentAndTieringAsync(User, Order, order.CustomerID);
       } catch (updateError) {
         // console.error(
         //   ` [Orders] Error updating product/customer stats for auto-completed order ${order.OrderID}:`,
@@ -318,6 +299,133 @@ router.get("/:orderId", async (req, res) => {
   }
 });
 
+// ========== UPDATE ORDER ==========
+// PUT /api/orders/:orderId - Update order (full or partial)
+router.put("/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const orderData = req.body;
+
+    // Check if order exists
+    const existingOrder = await Order.findOne({ OrderID: orderId });
+    if (!existingOrder) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // If only CustomerID is being updated (partial update), allow it
+    if (Object.keys(orderData).length === 1 && orderData.CustomerID) {
+      const updatedOrder = await Order.findOneAndUpdate(
+        { OrderID: orderId },
+        { 
+          CustomerID: orderData.CustomerID,
+          updatedAt: new Date()
+        },
+        { new: true }
+      );
+
+      console.log(`✅ [Orders] Updated order ${orderId} CustomerID to ${orderData.CustomerID}`);
+
+      return res.json({
+        success: true,
+        message: "Order CustomerID updated successfully",
+        data: updatedOrder,
+      });
+    }
+
+    // Full order update
+    // Validate required fields
+    if (!orderData.CustomerID || !orderData.shippingInfo || !orderData.items || orderData.items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields: CustomerID, shippingInfo, or items",
+      });
+    }
+
+    // Validate shipping info
+    if (
+      !orderData.shippingInfo.fullName ||
+      !orderData.shippingInfo.phone ||
+      !orderData.shippingInfo.address ||
+      !orderData.shippingInfo.address.city ||
+      !orderData.shippingInfo.address.district ||
+      !orderData.shippingInfo.address.ward ||
+      !orderData.shippingInfo.address.detail
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required shipping information",
+      });
+    }
+
+    // Prepare update data
+    const updateData = {
+      CustomerID: orderData.CustomerID,
+      shippingInfo: orderData.shippingInfo,
+      items: orderData.items.map(item => ({
+        sku: String(item.sku || ''),
+        name: String(item.name || ''),
+        quantity: Number(item.quantity || 0),
+        price: Number(item.price || 0),
+        image: Array.isArray(item.image) ? String(item.image[0] || '') : String(item.image || ''),
+        unit: String(item.unit || ''),
+        category: String(item.category || ''),
+        subcategory: String(item.subcategory || '')
+      })),
+      paymentMethod: orderData.paymentMethod || 'cod',
+      subtotal: Number(orderData.subtotal || 0),
+      shippingFee: Number(orderData.shippingFee || 0),
+      shippingDiscount: Number(orderData.shippingDiscount || 0),
+      discount: Number(orderData.discount || 0),
+      vatRate: Number(orderData.vatRate || 0),
+      vatAmount: Number(orderData.vatAmount || 0),
+      totalAmount: Number(orderData.totalAmount || 0),
+      code: orderData.code || '',
+      promotionName: orderData.promotionName || '',
+      wantInvoice: orderData.wantInvoice || false,
+      invoiceInfo: orderData.invoiceInfo || {},
+      consultantCode: orderData.consultantCode || '',
+      updatedAt: new Date()
+    };
+
+    // Update status if provided
+    if (orderData.status) {
+      updateData.status = orderData.status;
+      
+      // Update routes if status changed
+      const routes = existingOrder.routes || new Map();
+      if (!routes.has(orderData.status)) {
+        routes.set(orderData.status, new Date());
+      }
+      updateData.routes = routes;
+    }
+
+    // Update order
+    const updatedOrder = await Order.findOneAndUpdate(
+      { OrderID: orderId },
+      { $set: updateData },
+      { new: true }
+    );
+
+    console.log(`✅ [Orders] Updated order ${orderId}`);
+
+    res.json({
+      success: true,
+      message: "Order updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    console.error("❌ [Orders] Error updating order:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update order",
+      error: error.message,
+    });
+  }
+});
+
 // ========== UPDATE ORDER STATUS ==========
 // PUT /api/orders/:orderId/status
 router.put("/:orderId/status", async (req, res) => {
@@ -354,77 +462,40 @@ router.put("/:orderId/status", async (req, res) => {
       });
     }
 
-    // Initialize routes if it doesn't exist
+    // Initialize routes map from existing order or create new one
     const routes = currentOrder.routes || new Map();
-    routes.set(status, new Date());
+    
+    // If order status is "delivered", automatically convert to "completed" (unified status)
+    // Both "delivered" and "completed" are considered the same final status
+    let finalStatus = status;
+    if (status === "delivered") {
+      finalStatus = "completed";
+      routes.set("completed", new Date());
+      // Keep delivered timestamp for history
+      if (!routes.has("delivered")) {
+        routes.set("delivered", new Date());
+      }
+    } else {
+      routes.set(status, new Date());
+    }
 
     const order = await Order.findOneAndUpdate(
       { OrderID: orderId },
-      { status, routes, updatedAt: new Date() },
+      { status: finalStatus, routes, updatedAt: new Date() },
       { new: true }
     );
 
-    // console.log(` [Orders] Updated order ${orderId} status to: ${status}`);
+    // console.log(` [Orders] Updated order ${orderId} status to: ${finalStatus}`);
 
-    // If order is completed, update customer's TotalSpent, upgrade CustomerTiering, and increment product purchase_count
-    if (status === "completed") {
+    // If order is completed or delivered, recalculate customer's TotalSpent and CustomerTiering
+    // Both statuses are treated the same (final completed status)
+    if (finalStatus === "completed" || status === "delivered") {
       try {
-        // Find user
-        const user = await User.findOne({ CustomerID: order.CustomerID });
-        if (user) {
-          // Update TotalSpent
-          const newTotalSpent = (user.TotalSpent || 0) + order.totalAmount;
-
-          // Determine new customer type based on total spent
-          // 10k = 1 điểm
-          // Đồng: 0 điểm
-          // Bạc: 500 điểm (5,000k = 5M)
-          // Vàng: 1500 điểm (15,000k = 15M)
-          // Bạch Kim: 3500 điểm (35,000k = 35M)
-          const points = Math.floor(newTotalSpent / 10000);
-          let newCustomerTiering = "Đồng";
-
-          if (points >= 3500) {
-            newCustomerTiering = "Bạch Kim";
-          } else if (points >= 1500) {
-            newCustomerTiering = "Vàng";
-          } else if (points >= 500) {
-            newCustomerTiering = "Bạc";
-          }
-
-          // Update user
-          const updatedUser = await User.findOneAndUpdate(
-            { CustomerID: order.CustomerID },
-            {
-              TotalSpent: newTotalSpent,
-              CustomerTiering: newCustomerTiering,
-            },
-            { new: true }
-          );
-
-          // console.log(
-          //   ` [Orders] Updated customer stats - TotalSpent: ${newTotalSpent}, Points: ${points}, CustomerTiering: ${newCustomerTiering}`
-          // );
-
-          // If customer tiering upgraded, log it
-          if (updatedUser && user.CustomerTiering !== newCustomerTiering) {
-            // console.log(
-            //   ` [Orders] Customer ${order.CustomerID} upgraded from ${user.CustomerTiering} to ${newCustomerTiering}!`
-            // );
-          }
-
-          // Backup to JSON file (commented - chỉ dùng MongoDB)
-          // if (updatedUser) {
-          //   const backupResult = backupService.updateUser(updatedUser.Phone, {
-          //     CustomerTiering: newCustomerTiering,
-          //     TotalSpent: newTotalSpent,
-          //   });
-          //   if (backupResult) {
-          //     // console.log(" [Orders] Backup customer stats to JSON file");
-          //   }
-          // }
-        }
-
+        // Update customer TotalSpent and CustomerTiering
+        // Sử dụng service để tính lại từ tất cả orders đã completed
+        const { updateUserTotalSpentAndTieringAsync } = require("../services/totalspent-tiering.service");
+        updateUserTotalSpentAndTieringAsync(User, Order, order.CustomerID);
+        
         // Tăng purchase_count cho tất cả sản phẩm trong order
         try {
           for (const item of order.items) {
@@ -433,19 +504,11 @@ router.put("/:orderId/status", async (req, res) => {
               { $inc: { purchase_count: item.quantity } },
               { new: true }
             );
-            // console.log(
-            //   ` [Orders] Incremented purchase_count for SKU: ${item.sku} by ${item.quantity}`
-            // );
           }
         } catch (productError) {
-          // console.error(
-          //   " [Orders] Error incrementing product purchase_count:",
-          //   productError
-          // );
           // Don't fail the order update if product update fails
         }
       } catch (error) {
-        // console.error(" [Orders] Error updating customer stats:", error);
         // Don't fail the order update if customer stats update fails
       }
     }
@@ -471,14 +534,34 @@ router.delete("/:orderId", async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    const order = await Order.findOneAndDelete({ OrderID: orderId });
+    console.log(`🗑️ [Orders] Attempting to delete order with ID: ${orderId}`);
+
+    // Try to find order by OrderID (supports both with and without ORD prefix)
+    // First try exact match
+    let order = await Order.findOneAndDelete({ OrderID: orderId });
+    
+    // If not found and orderId doesn't start with "ORD", try with "ORD" prefix
+    if (!order && !orderId.startsWith('ORD')) {
+      console.log(`🗑️ [Orders] Order not found with ${orderId}, trying with ORD prefix...`);
+      order = await Order.findOneAndDelete({ OrderID: `ORD${orderId}` });
+    }
+    
+    // If still not found and orderId starts with "ORD", try without prefix
+    if (!order && orderId.startsWith('ORD')) {
+      const orderIdWithoutPrefix = orderId.substring(3); // Remove "ORD" prefix
+      console.log(`🗑️ [Orders] Order not found with ${orderId}, trying without ORD prefix: ${orderIdWithoutPrefix}...`);
+      order = await Order.findOneAndDelete({ OrderID: orderIdWithoutPrefix });
+    }
 
     if (!order) {
+      console.log(`❌ [Orders] Order not found: ${orderId}`);
       return res.status(404).json({
         success: false,
         message: "Order not found",
       });
     }
+
+    console.log(`✅ [Orders] Order deleted successfully: ${order.OrderID}`);
 
     // console.log(` [Orders] Deleted order: ${orderId}`);
 

@@ -152,13 +152,22 @@ export class Login implements OnInit {
         this.verifyPassword();
       },
       error: (error) => {
- console.error('Lỗi kiểm tra số điện thoại:', error);
+        console.error('Lỗi kiểm tra số điện thoại:', error);
         this.isLoading = false;
 
-        if (error.status === 400) {
+        // Xử lý các loại lỗi khác nhau
+        if (error.status === 0) {
+          // Network error - không kết nối được đến backend
+          this.loginError = 'Không thể kết nối đến server. Vui lòng kiểm tra backend đang chạy tại http://localhost:3000';
+        } else if (error.status === 503) {
+          // Service Unavailable - MongoDB chưa kết nối
+          this.loginError = 'Server chưa sẵn sàng. Vui lòng thử lại sau.';
+        } else if (error.status === 400) {
+          this.phoneError = 'Số điện thoại chưa được đăng ký';
+        } else if (error.status === 404) {
           this.phoneError = 'Số điện thoại chưa được đăng ký';
         } else {
-          this.phoneError = 'Lỗi kết nối, vui lòng thử lại';
+          this.loginError = 'Lỗi kết nối, vui lòng thử lại';
         }
       },
     });
@@ -207,11 +216,17 @@ export class Login implements OnInit {
         }
       },
       error: (error) => {
- console.error('Lỗi đăng nhập:', error);
+        console.error('Lỗi đăng nhập:', error);
         this.isLoading = false;
 
- // Kiểm tra error message từ backend
-        if (error.error && error.error.message) {
+        // Xử lý các loại lỗi khác nhau
+        if (error.status === 0) {
+          // Network error - không kết nối được đến backend
+          this.loginError = 'Không thể kết nối đến server. Vui lòng kiểm tra backend đang chạy tại http://localhost:3000';
+        } else if (error.status === 503) {
+          // Service Unavailable - MongoDB chưa kết nối
+          this.loginError = 'Server chưa sẵn sàng. Vui lòng thử lại sau.';
+        } else if (error.error && error.error.message) {
           const errorMessage = error.error.message.toLowerCase();
 
           if (errorMessage.includes('mật khẩu') || errorMessage.includes('password')) {
@@ -219,11 +234,11 @@ export class Login implements OnInit {
           } else if (errorMessage.includes('số điện thoại') || errorMessage.includes('phone')) {
             this.phoneError = 'Số điện thoại không tồn tại';
           } else {
-            this.loginError = error.error.message;
+            this.loginError = error.error.message || error.error.error || 'Có lỗi xảy ra';
           }
         } else if (error.status === 401) {
- // 401 Unauthorized = Mật khẩu sai (vì số điện thoại đã được xác nhận ở bước 1)
- console.log('401 Unauthorized - Mật khẩu sai');
+          // 401 Unauthorized = Mật khẩu sai (vì số điện thoại đã được xác nhận ở bước 1)
+          console.log('401 Unauthorized - Mật khẩu sai');
           this.passwordError = 'Mật khẩu không chính xác';
         } else if (error.status === 400) {
           this.passwordError = 'Mật khẩu không chính xác';

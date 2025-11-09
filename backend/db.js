@@ -4,21 +4,24 @@ const { MONGODB_URI, DATABASE_NAME } = require("./config/database");
 // Kết nối đến MongoDB
 const connectDB = async () => {
   try {
-    // console.log(" Đang kết nối đến MongoDB...");
-    // console.log(" MongoDB URI:", MONGODB_URI);
+    console.log("🔗 [Mongoose] Đang kết nối đến MongoDB...");
+    console.log(`🔗 [Mongoose] MongoDB URI: ${MONGODB_URI}`);
     await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000, // Increase timeout
+      socketTimeoutMS: 45000,
     });
-    // console.log(" Đã kết nối thành công đến MongoDB");
-    // console.log(`Database: ${DATABASE_NAME}`);
+    console.log("✅ [Mongoose] Đã kết nối thành công đến MongoDB");
+    console.log(`✅ [Mongoose] Database: ${DATABASE_NAME}`);
+    return mongoose.connection;
   } catch (error) {
-    // console.error(" Lỗi kết nối MongoDB:", error.message);
-    // console.error(" Hướng dẫn khắc phục:");
-    // console.error("1. Đảm bảo MongoDB đang chạy");
-    // console.error("2. Kiểm tra kết nối: mongodb://localhost:27017");
-    // console.error("3. Khởi động MongoDB service");
-    process.exit(1);
+    console.error("❌ [Mongoose] Lỗi kết nối MongoDB:", error.message);
+    console.error("❌ [Mongoose] Hướng dẫn khắc phục:");
+    console.error("1. Đảm bảo MongoDB đang chạy");
+    console.error("2. Kiểm tra kết nối: mongodb://localhost:27017");
+    console.error("3. Khởi động MongoDB service");
+    throw error; // Throw error instead of exiting
   }
 };
 
@@ -461,6 +464,15 @@ const PromotionTarget = mongoose.model(
 // ============================================
 // SCHEMA: Review
 // ===========================================
+// Schema for reply to a review
+const replySchema = new mongoose.Schema({
+  fullname: { type: String, required: true },
+  customer_id: { type: String, required: true },
+  content: { type: String, required: true },
+  time: { type: Date, default: Date.now },
+  likes: { type: [String], default: [] }, // Array of customer_id who liked this reply
+});
+
 const reviewItemSchema = new mongoose.Schema({
   fullname: { type: String, required: true },
   customer_id: { type: String, required: true },
@@ -468,7 +480,9 @@ const reviewItemSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 1, max: 5 },
   images: { type: [String], default: [] }, // Array of image URLs or base64 strings
   time: { type: Date, default: Date.now },
-  order_id: { type: String, required: true, index: true }, // ID đơn hàng để liên kết
+  order_id: { type: String, required: false, index: true, default: "" }, // ID đơn hàng để liên kết (không bắt buộc cho các reviews cũ)
+  likes: { type: [String], default: [] }, // Array of customer_id who liked this review
+  replies: { type: [replySchema], default: [] }, // Array of replies to this review
 });
 
 const reviewSchema = new mongoose.Schema(
@@ -483,6 +497,8 @@ const reviewSchema = new mongoose.Schema(
   },
   {
     collection: "reviews",
+    validateBeforeSave: false, // Tắt validation khi save để tránh lỗi với reviews cũ
+    strict: false, // Cho phép fields không được định nghĩa trong schema
   }
 );
 
@@ -524,13 +540,15 @@ const Review = mongoose.model("Review", reviewSchema);
 const blogSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true },
-    img: { type: String, required: true },
+    img: { type: String, default: '' },
     title: { type: String, required: true },
     excerpt: { type: String, required: true },
     pubDate: { type: Date, required: true },
     author: { type: String, required: true },
+    email: { type: String, default: '' }, // Email của tác giả (optional)
     categoryTag: { type: String, required: true },
     content: { type: String, required: true },
+    hashtags: { type: String, default: '' }, // Hashtags (optional)
     status: {
       type: String,
       enum: ["Active", "Draft", "Archived"],
@@ -600,6 +618,51 @@ const instructionSchema = new mongoose.Schema(
 
 const Instruction = mongoose.model("Instruction", instructionSchema);
 
+// ============================================
+// SCHEMA: Chat Conversation
+// ============================================
+const chatMessageSchema = new mongoose.Schema({
+  role: {
+    type: String,
+    required: true,
+    enum: ["user", "assistant", "system"],
+  },
+  content: {
+    type: String,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const chatConversationSchema = new mongoose.Schema(
+  {
+    sessionId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    userId: {
+      type: String,
+      default: null,
+      index: true,
+    },
+    messages: {
+      type: [chatMessageSchema],
+      default: [],
+    },
+  },
+  {
+    collection: "chat_conversations",
+    timestamps: true, // Tự động thêm createdAt và updatedAt
+  }
+);
+
+const ChatConversation = mongoose.model("ChatConversation", chatConversationSchema);
+
 // Helper function để tạo CustomerID tự động
 const generateCustomerID = () => {
   const timestamp = Date.now().toString();
@@ -633,6 +696,7 @@ module.exports = {
   Blog,
   Dish,
   Instruction,
+  ChatConversation,
   generateCustomerID,
   generateOrderID,
 };

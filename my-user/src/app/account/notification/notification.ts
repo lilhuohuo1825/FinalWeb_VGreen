@@ -1,14 +1,7 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface NotificationItem {
-  id: number;
-  type: 'order' | 'promotion' | 'other';
-  title: string;
-  content: string;
-  timestamp: Date;
-  isRead: boolean;
-}
+import { NotificationService, Notification as NotificationItem } from '../../services/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notification',
@@ -16,45 +9,12 @@ interface NotificationItem {
   templateUrl: './notification.html',
   styleUrl: './notification.css'
 })
-export class Notification implements OnInit {
+export class NotificationComponent implements OnInit, OnDestroy {
   @Output() unreadCountChange = new EventEmitter<number>();
   activeTab: string = 'all';
   
- // Dữ liệu thông báo hiện tại 
-  notifications: NotificationItem[] = [
-    {
-      id: 1,
-      type: 'order',
-      title: 'Đơn hàng của bạn đã giao thành công',
-      content: 'Đơn hàng với mã #VGR001 đã được giao thành công. Cảm ơn bạn đã tin tưởng VGreen!',
-      timestamp: new Date('2024-01-15T10:30:00'),
-      isRead: false
-    },
-    {
-      id: 2,
-      type: 'other',
-      title: 'Thông báo khác',
-      content: 'Sản phẩm từ giỏ hàng của bạn đã được cập nhật giá. Kiểm tra ngay!',
-      timestamp: new Date('2024-01-14T15:20:00'),
-      isRead: true
-    },
-    {
-      id: 3,
-      type: 'promotion',
-      title: 'Khuyến mãi',
-      content: 'Bạn có một voucher từ chương trình khuyến mãi tháng 1. Sử dụng ngay!',
-      timestamp: new Date('2024-01-13T09:15:00'),
-      isRead: false
-    },
-    {
-      id: 4,
-      type: 'order',
-      title: 'Đơn hàng đang được xử lý',
-      content: 'Đơn hàng #VGR002 của bạn đang được chuẩn bị và sẽ được giao trong 2-3 ngày tới.',
-      timestamp: new Date('2024-01-12T14:45:00'),
-      isRead: true
-        }
-  ];
+  notifications: NotificationItem[] = [];
+  private subscription: Subscription = new Subscription();
 
   tabs = [
     { key: 'all', label: 'Tất cả thông báo' },
@@ -63,8 +23,47 @@ export class Notification implements OnInit {
     { key: 'other', label: 'Thông báo khác' }
   ];
 
+  constructor(private notificationService: NotificationService) {}
+
   ngOnInit(): void {
-    this.updateUnreadCount();
+    // Load customerId and set it in service
+    this.loadCustomerId();
+    
+    // Load notifications
+    this.notificationService.loadNotifications();
+    this.notificationService.loadUnreadCount();
+    
+    // Subscribe to notifications
+    const notifSub = this.notificationService.notifications$.subscribe(notifications => {
+      this.notifications = notifications;
+      this.updateUnreadCount();
+    });
+    this.subscription.add(notifSub);
+    
+    // Subscribe to unread count
+    const countSub = this.notificationService.unreadCount$.subscribe(count => {
+      this.unreadCountChange.emit(count);
+    });
+    this.subscription.add(countSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private loadCustomerId(): void {
+    const userInfo = localStorage.getItem('user');
+    if (userInfo) {
+      try {
+        const user = JSON.parse(userInfo);
+        const customerId = user.CustomerID;
+        if (customerId) {
+          this.notificationService.setCustomerId(customerId);
+        }
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+    }
   }
 
   setActiveTab(tab: string) {
@@ -72,7 +71,7 @@ export class Notification implements OnInit {
   }
 
   updateUnreadCount(): void {
-    const unreadCount = this.notifications.filter(n => !n.isRead).length;
+    const unreadCount = this.notifications.filter(n => !this.isNotificationRead(n)).length;
     this.unreadCountChange.emit(unreadCount);
   }
 
@@ -89,24 +88,51 @@ export class Notification implements OnInit {
 
   getTabBadge(tabKey: string): number {
     if (tabKey === 'all') {
-      return this.notifications.filter(n => !n.isRead).length;
+      return this.notifications.filter(n => !this.isNotificationRead(n)).length;
     }
-    return this.notifications.filter(n => n.type === tabKey && !n.isRead).length;
+    return this.notifications.filter(n => n.type === tabKey && !this.isNotificationRead(n)).length;
   }
 
-  formatTimestamp(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
+  formatTimestamp(date: Date | string | undefined): string {
+    if (!date) {
+      return '';
+    }
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      if (isNaN(dateObj.getTime())) {
+        return '';
+      }
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const year = dateObj.getFullYear();
+      const hours = String(dateObj.getHours()).padStart(2, '0');
+      const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    } catch (error) {
+      return '';
+    }
+  }
+
+  getNotificationTimestamp(notification: NotificationItem): Date | string {
+    if (notification.timestamp) {
+      return notification.timestamp;
+    }
+    if (notification.createdAt) {
+      return notification.createdAt;
+    }
+    return new Date();
+  }
+
+  isNotificationRead(notification: NotificationItem): boolean {
+    return notification.read === true || notification.isRead === true;
   }
 
   markAsRead(notification: NotificationItem): void {
-    if (!notification.isRead) {
-      notification.isRead = true;
-      this.updateUnreadCount();
+    if (!this.isNotificationRead(notification)) {
+      const notificationId = notification._id || notification.id;
+      if (notificationId) {
+        this.notificationService.markAsRead(notificationId);
+      }
     }
   }
 
@@ -123,14 +149,25 @@ export class Notification implements OnInit {
     }
   }
 
+  getNotificationTitle(notification: NotificationItem): string {
+    return notification.title || 'Thông báo';
+  }
+
+  getNotificationContent(notification: NotificationItem): string {
+    return notification.content || notification.message || '';
+  }
+
   onMenuItemClicked(menuId: string): void {
- console.log('Menu item clicked:', menuId); 
+    console.log('Menu item clicked:', menuId); 
   }
 
   deleteAllNotifications(): void {
     if (confirm('Bạn có chắc chắn muốn xóa tất cả thông báo?')) {
-      this.notifications = [];
-      this.updateUnreadCount();
+      this.notificationService.deleteAllNotifications();
+      // Reload notifications after deletion
+      setTimeout(() => {
+        this.notificationService.loadNotifications();
+      }, 500);
     }
   }
 }

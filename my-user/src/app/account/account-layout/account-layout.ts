@@ -19,14 +19,36 @@ export class AccountLayout implements OnInit, OnDestroy {
   constructor(private notificationService: NotificationService) {}
 
   ngOnInit(): void {
- // Subscribe to notification count changes 
+    // Load customerId and set it in notification service
+    this.loadCustomerId();
+    
+    // Subscribe to notification count changes 
     const sub = this.notificationService.unreadCount$.subscribe((count: number) => {
       this.notificationBadge = count;
     });
     this.subscription.add(sub);
 
- // Get initial count 
+    // Load initial count and notifications
+    this.notificationService.loadUnreadCount();
+    this.notificationService.loadNotifications();
+    
+    // Get initial count 
     this.notificationBadge = this.notificationService.getUnreadCount();
+  }
+
+  private loadCustomerId(): void {
+    const userInfo = localStorage.getItem('user');
+    if (userInfo) {
+      try {
+        const user = JSON.parse(userInfo);
+        const customerId = user.CustomerID;
+        if (customerId) {
+          this.notificationService.setCustomerId(customerId);
+        }
+      } catch (error) {
+        console.error('Error loading user info:', error);
+      }
+    }
   }
 
   ngOnDestroy(): void {

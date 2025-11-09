@@ -16,7 +16,7 @@ import { BlogDetail } from './vg-blog/blog-detail/blog-detail';
 import { AboutComponent } from './about/about';
 import { Policy } from './policy/policy';
 import { Support } from './support/support';
-import { Notification } from './account/notification/notification';
+import { NotificationComponent } from './account/notification/notification';
 import { Wishlist } from './account/wishlist/wishlist';
 import { AccountLayout } from './account/account-layout/account-layout';
 import { OrdersComponent } from './account/orders/orders';
@@ -91,7 +91,7 @@ export const routes: Routes = [
       },
       {
         path: 'notifications',
-        component: Notification,
+        component: NotificationComponent,
         title: 'Thông báo - VGreen',
       },
       {

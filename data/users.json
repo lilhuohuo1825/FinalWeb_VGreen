@@ -1,15 +1,80 @@
 [
-  {
-    "_id": {
-      "$oid": "69099293000000000099582e"
-    },
-    "user_id": 1,
-    "full_name": "",
-    "phone": "02183773674",
-    "email": "",
-    "address": "",
-    "register_date": "2025-11-04",
-    "customer_type": "Đồng",
-    "password": "$2b$10$fmsWIsa1TskNAzBgLBl2NO6JtfhFEi4VcDOfCivSQ7ZR2IZHvYE3S"
-  }
+	{
+		"_id": "6906c1163a3d368ca5b77271",
+		"CustomerID": "CUS000001",
+		"Phone": "0815275677",
+		"Password": "$2b$10$0XAEidV2Vyds2hI.oHTtNOxcLA.rBSfhZU/cnOvdXIQ7liUE3TMyi",
+		"RegisterDate": {
+			"$date": "2025-11-02T09:25:26.738Z"
+		},
+		"FullName": "Nguyễn Như Huyền",
+		"Email": "genecarlesi80y3@ceptos.com",
+		"Address": "39 Nguyễn Huệ, p1, q2, hcm",
+		"BirthDay": {
+			"$date": "2007-10-10T00:00:00.000Z"
+		},
+		"Gender": "female",
+		"CustomerType": "",
+		"CustomerTiering": "Đồng",
+		"TotalSpent": 468114,
+		"PasswordVersion": 1,
+		"LastPasswordReset": null,
+		"__v": 0
+	},
+	{
+		"_id": "690733fcff49b6f0cd507e31",
+		"CustomerID": "CUS000002",
+		"Phone": "0963420472",
+		"Password": "$2b$10$IspYhzRt7p2FIyOKTLqHvuzQhiI08nz6oGik3BI1enrgs2qICHT8m",
+		"FullName": "Nguyen Hera",
+		"Email": "huyennn23406@microsoft.com",
+		"Address": "39 Nguyễn Huệ, p1, q2, hcm",
+		"BirthDay": null,
+		"Gender": "female",
+		"CustomerType": "",
+		"CustomerTiering": "Bạc",
+		"TotalSpent": 2146047,
+		"PasswordVersion": 1,
+		"LastPasswordReset": null,
+		"RegisterDate": {
+			"$date": "2025-11-02T10:35:40.204Z"
+		},
+		"__v": 0
+	},
+	{
+		"_id": "690b880e99844a4b21f3fc5c",
+		"CustomerID": "CUS000003",
+		"Phone": "0987655755",
+		"Password": "ThinhTran09082005@",
+		"FullName": "Trần Thanh Thịnh",
+		"Email": "",
+		"Address": "123 Trần Hưng Đạo, dong-mai, ha-dong, ha-noi",
+		"RegisterDate": {
+			"$date": "2025-11-05T17:23:26.009Z"
+		},
+		"CustomerType": "",
+		"CustomerTiering": "Đồng",
+		"TotalSpent": 0,
+		"PasswordVersion": 1,
+		"LastPasswordReset": null,
+		"Gender": "male",
+		"updatedAt": "2025-11-05T18:05:27.685Z"
+	},
+	{
+		"_id": "690ecef2493c30f5edf0e45c",
+		"CustomerID": "CUS000004",
+		"Phone": "0965813408",
+		"Password": "Huong1234567890",
+		"FullName": "",
+		"Email": "",
+		"Address": "",
+		"RegisterDate": {
+			"$date": "2025-11-08T05:02:42.624Z"
+		},
+		"CustomerType": "",
+		"CustomerTiering": "Đồng",
+		"TotalSpent": 0,
+		"PasswordVersion": 1,
+		"LastPasswordReset": null
+	}
 ]

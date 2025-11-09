@@ -73,27 +73,6 @@ export class CustomerDetail implements OnInit {
 
     // Load address data
     this.loadAddressData();
-    
-    // Initialize addresses (sample data)
-    this.initializeAddresses();
-  }
-
-  /**
-   * Initialize sample addresses
-   */
-  initializeAddresses(): void {
-    this.addresses = [
-      {
-        id: 1,
-        fullAddress: 'Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh',
-        isDefault: true
-      },
-      {
-        id: 2,
-        fullAddress: 'Số 10, Ngõ 5, Đường Nguyễn Trãi, Phường Văn Miếu, Đống Đa, Hà Nội',
-        isDefault: false
-      }
-    ];
   }
 
   /**
@@ -221,51 +200,177 @@ export class CustomerDetail implements OnInit {
   }
 
   /**
-   * Load customer detail
+   * Normalize customer ID to CUSxxxxxx format
+   */
+  private normalizeCustomerID(customerId: string): string {
+    // If already in CUS format, return as is
+    if (customerId.toUpperCase().startsWith('CUS')) {
+      return customerId.toUpperCase();
+    }
+    
+    // If in KH format, convert to CUS
+    if (customerId.toUpperCase().startsWith('KH')) {
+      const idNum = customerId.toUpperCase().replace('KH', '').replace(/^0+/, '') || '0';
+      return `CUS${idNum.padStart(6, '0')}`;
+    }
+    
+    // If just numbers, add CUS prefix
+    const idNum = customerId.replace(/^0+/, '') || '0';
+    return `CUS${idNum.padStart(6, '0')}`;
+  }
+
+  /**
+   * Load customer detail - Try MongoDB first, fallback to JSON
    */
   loadCustomerDetail(): void {
-    this.http.get<any[]>('data/users.json').subscribe({
-      next: (users) => {
-        // Extract customer ID number from format KH0001
-        const customerIdNum = parseInt(this.customerId.replace('KH', ''));
-        this.customer = users.find(u => u.user_id === customerIdNum);
-        
-        if (this.customer) {
+    // Normalize customer ID to CUSxxxxxx format
+    const customerID = this.normalizeCustomerID(this.customerId);
+    
+    console.log(`📋 Loading customer detail for: ${customerID} (original: ${this.customerId})`);
+    
+    // Try to load from MongoDB API first
+    this.http.get<any>(`http://localhost:3000/api/users/customer/${customerID}`).subscribe({
+      next: (response) => {
+        if (response.success && response.customer) {
+          console.log('✅ Found customer in MongoDB:', response.customer);
+          this.customer = response.customer;
           this.loadCustomerOrders();
+          this.loadCustomerAddresses();
+        } else {
+          console.log('⚠️ Customer not found in MongoDB, trying JSON...');
+          this.loadCustomerFromJson(customerID);
         }
       },
       error: (error) => {
-        console.error('Error loading customer:', error);
+        console.log('⚠️ MongoDB API error, trying JSON file...', error);
+        this.loadCustomerFromJson(customerID);
       }
     });
   }
 
   /**
-   * Load customer orders
+   * Load customer from JSON file (fallback)
+   */
+  loadCustomerFromJson(customerID: string): void {
+    this.http.get<any[]>('data/temp/users.json').subscribe({
+      next: (users) => {
+        // Find customer by CustomerID
+        this.customer = users.find((u: any) => u.CustomerID === customerID);
+        
+        if (this.customer) {
+          console.log('✅ Found customer in JSON:', this.customer);
+          this.loadCustomerOrders();
+          this.loadCustomerAddresses();
+        } else {
+          console.error('❌ Customer not found in JSON:', customerID);
+          // Show error message to user
+          alert(`Không tìm thấy khách hàng với ID: ${customerID}`);
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading customer from JSON:', error);
+        alert('Lỗi khi tải thông tin khách hàng');
+      }
+    });
+  }
+
+  /**
+   * Load customer orders - Try MongoDB API first, fallback to JSON
    */
   loadCustomerOrders(): void {
-    // Try to load from orderdetail.json first, fallback to orders.json
-    this.http.get<any[]>('data/orderdetail.json').subscribe({
+    const customerID = this.customer.CustomerID;
+    console.log(`📦 Loading orders for customer: ${customerID}`);
+    
+    // Try to load from MongoDB API first
+    this.http.get<any>(`http://localhost:3000/api/orders/customer/${customerID}`).subscribe({
+      next: (response) => {
+        if (response.success && response.orders) {
+          console.log(`✅ Found ${response.orders.length} orders in MongoDB`);
+          this.orders = response.orders;
+          this.transformCustomerData();
+        } else {
+          console.log('⚠️ Orders not found in MongoDB, trying JSON...');
+          this.loadOrdersFromJson(customerID);
+        }
+      },
+      error: (error) => {
+        console.log('⚠️ MongoDB API error for orders, trying JSON file...', error);
+        this.loadOrdersFromJson(customerID);
+      }
+    });
+  }
+
+  /**
+   * Load orders from JSON file (fallback)
+   */
+  loadOrdersFromJson(customerID: string): void {
+    this.http.get<any[]>('data/temp/orders.json').subscribe({
       next: (orders) => {
-        this.orders = orders.filter(o => o.user_id === this.customer.user_id);
-        console.log(`Found ${this.orders.length} orders for customer from orderdetail.json`);
+        // Filter orders by CustomerID
+        this.orders = orders.filter((o: any) => o.CustomerID === customerID);
+        console.log(`✅ Found ${this.orders.length} orders in JSON for customer ${customerID}`);
         // Transform customer data after orders are loaded
         this.transformCustomerData();
       },
       error: (error) => {
-        console.error('Error loading orders from orderdetail.json, trying orders.json:', error);
-        // Fallback to orders.json
-        this.http.get<any[]>('data/orders.json').subscribe({
-          next: (orders) => {
-            this.orders = orders.filter(o => o.user_id === this.customer.user_id);
-            console.log(`Found ${this.orders.length} orders for customer from orders.json`);
-            this.transformCustomerData();
-          },
-          error: (err) => {
-            console.error('Error loading orders:', err);
-            this.transformCustomerData();
-          }
-        });
+        console.error('❌ Error loading orders from JSON:', error);
+        this.orders = [];
+        this.transformCustomerData();
+      }
+    });
+  }
+
+  /**
+   * Load customer addresses
+   */
+  loadCustomerAddresses(): void {
+    // Load from data/temp/useraddresses.json
+    this.http.get<any[]>('data/temp/useraddresses.json').subscribe({
+      next: (userAddresses) => {
+        // Find addresses for this customer
+        const customerID = this.customer.CustomerID;
+        const userAddress = userAddresses.find((ua: any) => ua.CustomerID === customerID);
+        
+        if (userAddress && userAddress.addresses && userAddress.addresses.length > 0) {
+          // Transform addresses to display format
+          this.addresses = userAddress.addresses.map((addr: any) => {
+            // Build full address string
+            const addressParts: string[] = [];
+            if (addr.detail) addressParts.push(addr.detail);
+            if (addr.ward) addressParts.push(addr.ward);
+            if (addr.district) addressParts.push(addr.district);
+            if (addr.city) addressParts.push(addr.city);
+            
+            return {
+              id: addr._id?.$oid || Date.now(),
+              fullAddress: addressParts.join(', ') || 'Chưa có địa chỉ',
+              isDefault: addr.isDefault || false,
+              fullName: addr.fullName,
+              phone: addr.phone,
+              email: addr.email,
+              city: addr.city,
+              district: addr.district,
+              ward: addr.ward,
+              detail: addr.detail
+            };
+          });
+          
+          // Sort: default address first
+          this.addresses.sort((a, b) => {
+            if (a.isDefault) return -1;
+            if (b.isDefault) return 1;
+            return 0;
+          });
+          
+          console.log(`✅ Loaded ${this.addresses.length} addresses for customer ${customerID}`);
+        } else {
+          console.log(`⚠️  No addresses found for customer ${customerID}`);
+          this.addresses = [];
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error loading addresses:', error);
+        this.addresses = [];
       }
     });
   }
@@ -274,60 +379,190 @@ export class CustomerDetail implements OnInit {
    * Transform customer data for display
    */
   transformCustomerData(): void {
-    // Format date from YYYY-MM-DD to DD/MM/YYYY
-    const dateParts = this.customer.register_date.split('-');
-    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-
-    // Map customer_type to memberTier
-    let memberTier = 'Đồng';
-    let customerType = this.customer.customer_type || 'Regular';
-    
-    if (this.customer.customer_type === 'VIP') {
-      memberTier = 'Vàng';
-    } else if (this.customer.customer_type === 'Premium') {
-      memberTier = 'Bạc';
-    } else if (this.customer.customer_type === 'Regular') {
-      memberTier = 'Đồng';
+    // Format RegisterDate from MongoDB date format (support both JSON and MongoDB format)
+    let formattedDate = '---';
+    if (this.customer.RegisterDate) {
+      let registerDate: Date;
+      if (this.customer.RegisterDate.$date) {
+        // JSON format from MongoDB export
+        registerDate = new Date(this.customer.RegisterDate.$date);
+      } else if (this.customer.RegisterDate instanceof Date) {
+        // MongoDB native Date object
+        registerDate = this.customer.RegisterDate;
+      } else {
+        // String or other format
+        registerDate = new Date(this.customer.RegisterDate);
+      }
+      const day = String(registerDate.getDate()).padStart(2, '0');
+      const month = String(registerDate.getMonth() + 1).padStart(2, '0');
+      const year = registerDate.getFullYear();
+      formattedDate = `${day}/${month}/${year}`;
     }
 
-    // Default values - will be updated when orders are loaded
+    // Get CustomerTiering from customer data (Đồng, Bạc, Vàng)
+    const memberTier = this.customer.CustomerTiering || 'Đồng';
+    
+    // Map CustomerTiering to customerType
+    let customerType = 'Regular';
+    if (memberTier === 'Vàng') {
+      customerType = 'VIP';
+    } else if (memberTier === 'Bạc') {
+      customerType = 'Premium';
+    }
+
+    // Calculate statistics from orders
     let recentOrder = '---';
     let totalSpent = '---';
     let totalOrders = '---';
 
-    if (this.orders.length > 0) {
-      // Calculate total spent - use order_total from orderdetail.json or total_amount from orders.json
-      const total = this.orders.reduce((sum, order) => sum + (order.order_total || order.total_amount || 0), 0);
-      totalSpent = this.formatCurrency(total);
-      totalOrders = this.orders.length.toString();
-      
-      // Find most recent order
-      const sortedOrders = [...this.orders].sort((a, b) => 
-        new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
-      );
-      
-      // Format recent order date
-      const recentOrderDate = new Date(sortedOrders[0].order_date);
-      const day = String(recentOrderDate.getDate()).padStart(2, '0');
-      const month = String(recentOrderDate.getMonth() + 1).padStart(2, '0');
-      const year = recentOrderDate.getFullYear();
-      recentOrder = `${day}/${month}/${year}`;
+    // Use TotalSpent from customer data if available and > 0 (from MongoDB), otherwise calculate from orders
+    // Note: If TotalSpent is 0, it might be outdated, so we recalculate from orders
+    if (this.customer.TotalSpent !== undefined && this.customer.TotalSpent !== null && this.customer.TotalSpent > 0) {
+      totalSpent = this.formatCurrency(this.customer.TotalSpent);
     }
 
-    // Determine if customer has account (has email and full_name)
-    const hasAccount = !!(this.customer.email && this.customer.full_name);
+    // Calculate order statistics
+    if (this.orders.length > 0) {
+      // Count completed/delivered orders (orders that are paid/finalized)
+      const completedOrders = this.orders.filter((o: any) => {
+        const status = (o.status || '').toLowerCase();
+        // Include completed, delivered, and also shipping/processing with non-COD payment
+        return status === 'completed' || status === 'delivered' ||
+               (status === 'shipping' || status === 'processing' || status === 'confirmed') && 
+               (o.paymentMethod || '').toLowerCase() !== 'cod';
+      });
+      
+      // Also count all orders (for display)
+      const allOrdersCount = this.orders.length;
+      totalOrders = allOrdersCount.toString();
+      
+      // Calculate total spent - prioritize MongoDB TotalSpent, but also calculate from orders for verification
+      if (this.customer.TotalSpent !== undefined && this.customer.TotalSpent !== null && this.customer.TotalSpent > 0) {
+        // Use MongoDB TotalSpent if available
+        totalSpent = this.formatCurrency(this.customer.TotalSpent);
+      } else {
+        // Calculate from orders - include completed/delivered and paid orders
+        const calculatedTotal = this.orders.reduce((sum: number, order: any) => {
+          const status = (order.status || '').toLowerCase();
+          const paymentMethod = (order.paymentMethod || '').toLowerCase();
+          const totalAmount = order.totalAmount || 0;
+          
+          // Skip cancelled/returned orders
+          if (status === 'cancelled' || status === 'returned') {
+            return sum;
+          }
+          
+          // Count completed/delivered orders (always paid)
+          if (status === 'completed' || status === 'delivered') {
+            return sum + totalAmount;
+          }
+          
+          // Count shipping/processing/confirmed orders that are not COD (already paid)
+          if ((status === 'shipping' || status === 'processing' || status === 'confirmed') && 
+              paymentMethod !== 'cod' && paymentMethod !== '') {
+            return sum + totalAmount;
+          }
+          
+          return sum;
+        }, 0);
+        
+        totalSpent = this.formatCurrency(calculatedTotal);
+        
+        // Log for debugging
+        console.log(`💰 Calculated TotalSpent from orders: ${calculatedTotal.toLocaleString('vi-VN')}đ`);
+        console.log(`   - Total orders: ${allOrdersCount}`);
+        console.log(`   - Completed/delivered orders: ${completedOrders.length}`);
+      }
+      
+      // Find most recent order (any status)
+      const sortedOrders = [...this.orders].sort((a: any, b: any) => {
+        let dateA: Date, dateB: Date;
+        
+        // Handle date format from JSON or MongoDB
+        if (a.createdAt?.$date) {
+          dateA = new Date(a.createdAt.$date);
+        } else if (a.createdAt instanceof Date) {
+          dateA = a.createdAt;
+        } else {
+          dateA = new Date(a.createdAt || 0);
+        }
+        
+        if (b.createdAt?.$date) {
+          dateB = new Date(b.createdAt.$date);
+        } else if (b.createdAt instanceof Date) {
+          dateB = b.createdAt;
+        } else {
+          dateB = new Date(b.createdAt || 0);
+        }
+        
+        return dateB.getTime() - dateA.getTime();
+      });
+      
+      if (sortedOrders.length > 0) {
+        let recentOrderDate: Date;
+        const firstOrder = sortedOrders[0];
+        
+        // Handle date format from JSON or MongoDB
+        if (firstOrder.createdAt?.$date) {
+          recentOrderDate = new Date(firstOrder.createdAt.$date);
+        } else if (firstOrder.createdAt instanceof Date) {
+          recentOrderDate = firstOrder.createdAt;
+        } else {
+          recentOrderDate = new Date(firstOrder.createdAt || 0);
+        }
+        
+        const day = String(recentOrderDate.getDate()).padStart(2, '0');
+        const month = String(recentOrderDate.getMonth() + 1).padStart(2, '0');
+        const year = recentOrderDate.getFullYear();
+        recentOrder = `${day}/${month}/${year}`;
+      }
+    }
+
+    // Format birthdate (support both JSON and MongoDB format)
+    let birthdate = '---';
+    if (this.customer.BirthDay) {
+      let birthDay: Date;
+      if (this.customer.BirthDay.$date) {
+        // JSON format from MongoDB export
+        birthDay = new Date(this.customer.BirthDay.$date);
+      } else if (this.customer.BirthDay instanceof Date) {
+        // MongoDB native Date object
+        birthDay = this.customer.BirthDay;
+      } else {
+        // String or other format
+        birthDay = new Date(this.customer.BirthDay);
+      }
+      const day = String(birthDay.getDate()).padStart(2, '0');
+      const month = String(birthDay.getMonth() + 1).padStart(2, '0');
+      const year = birthDay.getFullYear();
+      birthdate = `${day}/${month}/${year}`;
+    }
+
+    // Format gender
+    let gender = '---';
+    if (this.customer.Gender) {
+      gender = this.customer.Gender === 'male' ? 'Nam' : 
+               this.customer.Gender === 'female' ? 'Nữ' : 
+               this.customer.Gender;
+    }
+
+    // Determine if customer has account (has email and FullName)
+    const hasAccount = !!(this.customer.Email && this.customer.FullName);
     
     // Email consent - assume false for now (not in JSON)
     const emailConsent = false;
 
+    // Normalize customer ID for display
+    const normalizedCustomerID = this.normalizeCustomerID(this.customerId);
+    
     this.customerData = {
-      id: this.customerId,
-      name: this.customer.full_name || '(Chưa cập nhật)',
-      gender: 'Nam', // Default, not in JSON
-      email: this.customer.email || '(Chưa cập nhật)',
-      birthdate: '01/01/2000', // Default, not in JSON
-      phone: this.customer.phone || '(Chưa cập nhật)',
-      address: this.customer.address || '(Chưa cập nhật)',
+      id: normalizedCustomerID,
+      name: this.customer.FullName || '---',
+      gender: gender,
+      email: this.customer.Email || '---',
+      birthdate: birthdate,
+      phone: this.customer.Phone || '---',
+      address: this.customer.Address || '---',
       memberTier: memberTier,
       customerType: customerType,
       joinDate: formattedDate,
@@ -382,16 +617,26 @@ export class CustomerDetail implements OnInit {
    */
   toggleEditMode(): void {
     if (!this.isEditMode) {
+      // Map memberTier from database format to select value
+      let memberTierValue = 'bronze';
+      if (this.customerData.memberTier === 'Vàng') {
+        memberTierValue = 'gold';
+      } else if (this.customerData.memberTier === 'Bạc') {
+        memberTierValue = 'silver';
+      } else if (this.customerData.memberTier === 'Đồng') {
+        memberTierValue = 'bronze';
+      }
+      
       // Enter edit mode - copy current data to editable
       this.editableData = {
-        name: this.customerData.name === '(Chưa cập nhật)' ? '' : this.customerData.name,
-        email: this.customerData.email === '(Chưa cập nhật)' ? '' : this.customerData.email,
-        phone: this.customerData.phone,
-        address: this.customerData.address === '(Chưa cập nhật)' ? '' : this.customerData.address,
-        memberTier: this.customerData.memberTier,
+        name: this.customerData.name === '---' ? '' : this.customerData.name,
+        email: this.customerData.email === '---' ? '' : this.customerData.email,
+        phone: this.customerData.phone === '---' ? '' : this.customerData.phone,
+        address: this.customerData.address === '---' ? '' : this.customerData.address,
+        memberTier: memberTierValue,
         emailConsent: this.customerData.emailConsent,
-        gender: this.customerData.gender === 'Nam' ? 'Nam' : this.customerData.gender === 'Nữ' ? 'Nữ' : '',
-        birthdate: this.customerData.birthdate
+        gender: this.customerData.gender === '---' ? '' : this.customerData.gender,
+        birthdate: this.customerData.birthdate === '---' ? '' : this.customerData.birthdate
       };
       
       // Parse existing address if available
@@ -598,33 +843,95 @@ export class CustomerDetail implements OnInit {
    * Save customer changes
    */
   saveCustomer(): void {
-    // Update customer data
-    this.customerData.name = this.editableData.name || '(Chưa cập nhật)';
-    this.customerData.email = this.editableData.email || '(Chưa cập nhật)';
-    this.customerData.phone = this.editableData.phone;
+    // Normalize customer ID to CUSxxxxxx format
+    const customerID = this.normalizeCustomerID(this.customerId);
     
-    // Build full address from components
-    const fullAddress = this.buildFullAddress();
-    this.customerData.address = fullAddress || '(Chưa cập nhật)';
+    // Prepare update data
+    const updateData: any = {
+      name: this.editableData.name || '',
+      email: this.editableData.email || '',
+      phone: this.editableData.phone || '',
+      gender: this.editableData.gender || '',
+      birthdate: this.editableData.birthdate || '',
+      memberTier: this.editableData.memberTier || 'Đồng',
+      address: this.buildFullAddress() || ''
+    };
     
-    this.customerData.memberTier = this.editableData.memberTier;
-    this.customerData.emailConsent = this.editableData.emailConsent;
-    this.customerData.gender = this.editableData.gender;
-    this.customerData.birthdate = this.editableData.birthdate;
-
-    // Update customer type label
-    if (this.editableData.memberTier === 'gold') {
-      this.customerData.customerType = 'VIP';
-    } else if (this.editableData.memberTier === 'silver') {
-      this.customerData.customerType = 'Premium';
-    } else {
-      this.customerData.customerType = 'Regular';
+    // Map memberTier to CustomerTiering format
+    if (updateData.memberTier === 'gold') {
+      updateData.memberTier = 'Vàng';
+      updateData.customerType = 'VIP';
+    } else if (updateData.memberTier === 'silver') {
+      updateData.memberTier = 'Bạc';
+      updateData.customerType = 'Premium';
+    } else if (updateData.memberTier === 'bronze') {
+      updateData.memberTier = 'Đồng';
+      updateData.customerType = 'Regular';
     }
-
-    // Exit edit mode
-    this.isEditMode = false;
-
-    console.log('Saved customer data:', this.customerData);
+    
+    console.log('💾 Saving customer data:', updateData);
+    console.log('📱 CustomerID:', customerID);
+    
+    // Call API to update customer
+    this.http.put(`http://localhost:3000/api/users/customer/${customerID}`, updateData).subscribe({
+      next: (response: any) => {
+        console.log('✅ Customer updated successfully:', response);
+        
+        // Update local customer data
+        this.customerData.name = updateData.name || '---';
+        this.customerData.email = updateData.email || '---';
+        this.customerData.phone = updateData.phone || '---';
+        this.customerData.address = updateData.address || '---';
+        this.customerData.memberTier = updateData.memberTier || '---';
+        this.customerData.gender = updateData.gender || '---';
+        this.customerData.birthdate = updateData.birthdate || '---';
+        this.customerData.customerType = updateData.customerType || '---';
+        
+        // Update customer object
+        if (this.customer) {
+          this.customer.FullName = updateData.name || '';
+          this.customer.Email = updateData.email || '';
+          this.customer.Phone = updateData.phone || '';
+          this.customer.Address = updateData.address || '';
+          this.customer.CustomerTiering = updateData.memberTier;
+          this.customer.CustomerType = updateData.customerType;
+          
+          // Update gender
+          if (updateData.gender === 'Nam') {
+            this.customer.Gender = 'male';
+          } else if (updateData.gender === 'Nữ') {
+            this.customer.Gender = 'female';
+          } else {
+            this.customer.Gender = updateData.gender;
+          }
+          
+          // Update birthdate
+          if (updateData.birthdate && updateData.birthdate !== '---') {
+            const dateParts = updateData.birthdate.split('/');
+            if (dateParts.length === 3) {
+              const day = parseInt(dateParts[0]);
+              const month = parseInt(dateParts[1]) - 1;
+              const year = parseInt(dateParts[2]);
+              this.customer.BirthDay = { $date: new Date(year, month, day).toISOString() };
+            }
+          }
+        }
+        
+        // Exit edit mode
+        this.isEditMode = false;
+        
+        // Reload customer data to get latest from JSON
+        setTimeout(() => {
+          this.loadCustomerDetail();
+        }, 1000);
+        
+        alert('✅ Đã cập nhật thông tin khách hàng thành công!');
+      },
+      error: (error) => {
+        console.error('❌ Error updating customer:', error);
+        alert('❌ Lỗi khi cập nhật thông tin khách hàng: ' + (error.error?.message || error.message));
+      }
+    });
   }
 
   /**
@@ -644,7 +951,7 @@ export class CustomerDetail implements OnInit {
   /**
    * View order detail
    */
-  viewOrderDetail(orderId: number): void {
+  viewOrderDetail(orderId: string): void {
     // Navigate to order detail with state to know we came from customer detail
     this.router.navigate(['/orders', orderId], { 
       state: { 
@@ -659,15 +966,25 @@ export class CustomerDetail implements OnInit {
    */
   getStatusLabel(status: string): string {
     const labels: any = {
+      'pending': 'Chờ xác nhận',
+      'confirmed': 'Đã xác nhận',
+      'processing': 'Đang xử lý',
+      'shipping': 'Đang giao hàng',
+      'delivered': 'Hoàn thành',
+      'completed': 'Hoàn thành',
+      'cancelled': 'Đã huỷ',
+      'processing_return': 'Đang xử lý hoàn trả',
+      'returning': 'Đang hoàn trả',
+      'returned': 'Đã hoàn trả',
       'Pending': 'Chờ xác nhận',
       'Confirmed': 'Đã xác nhận',
       'Cancel Requested': 'Yêu cầu huỷ/hoàn tiền',
       'Return Requested': 'Yêu cầu huỷ/hoàn tiền',
       'Cancelled': 'Đã huỷ',
       'Refunded': 'Đã hoàn tiền',
-      'Delivered': 'Đã giao'
+      'Delivered': 'Hoàn thành'
     };
-    return labels[status] || status;
+    return labels[status] || status || '---';
   }
 
   /**
@@ -675,6 +992,16 @@ export class CustomerDetail implements OnInit {
    */
   getStatusClass(status: string): string {
     const classes: any = {
+      'pending': 'status-pending',
+      'confirmed': 'status-confirmed',
+      'processing': 'status-confirmed',
+      'shipping': 'status-confirmed',
+      'delivered': 'status-confirmed',
+      'completed': 'status-confirmed',
+      'cancelled': 'status-cancelled',
+      'processing_return': 'status-refund-requested',
+      'returning': 'status-refund-requested',
+      'returned': 'status-refunded',
       'Pending': 'status-pending',
       'Confirmed': 'status-confirmed',
       'Cancel Requested': 'status-refund-requested',
@@ -689,8 +1016,18 @@ export class CustomerDetail implements OnInit {
   /**
    * Format order date
    */
-  formatOrderDate(dateStr: string): string {
-    const date = new Date(dateStr);
+  formatOrderDate(order: any): string {
+    let date: Date;
+    if (order.createdAt?.$date) {
+      date = new Date(order.createdAt.$date);
+    } else if (order.createdAt) {
+      date = new Date(order.createdAt);
+    } else if (order.order_date) {
+      date = new Date(order.order_date);
+    } else {
+      return '---';
+    }
+    
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();

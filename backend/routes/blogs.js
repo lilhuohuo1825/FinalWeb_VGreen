@@ -19,16 +19,26 @@ router.get("/", async (req, res) => {
         "id img title excerpt pubDate author categoryTag content status views createdAt updatedAt"
       );
 
+    // Normalize blog IDs: trim và loại bỏ dấu phẩy thừa
+    const normalizedBlogs = blogs.map(blog => {
+      const blogObj = blog.toObject();
+      // Normalize ID: trim và loại bỏ dấu phẩy ở cuối
+      if (blogObj.id && typeof blogObj.id === 'string') {
+        blogObj.id = blogObj.id.trim().replace(/,$/, '').trim();
+      }
+      return blogObj;
+    });
+
     // Log để debug
-    // console.log(` [Blogs] Found ${blogs.length} active blogs`);
+    // console.log(` [Blogs] Found ${normalizedBlogs.length} active blogs`);
 
     res.json({
       success: true,
-      data: blogs,
-      count: blogs.length,
+      data: normalizedBlogs, // Trả về blogs với ID đã normalize
+      count: normalizedBlogs.length,
     });
   } catch (error) {
-    // console.error(" [Blogs] Error fetching blogs:", error);
+    console.error(" [Blogs] Error fetching blogs:", error);
     res.status(500).json({
       success: false,
       message: "Lỗi khi lấy danh sách blog",
@@ -40,15 +50,65 @@ router.get("/", async (req, res) => {
 // GET /api/blogs/:id - Lấy blog theo ID
 router.get("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const blog = await Blog.findOne({ id: id, status: "Active" });
+    let { id } = req.params;
+    // Trim ID để loại bỏ khoảng trắng và dấu phẩy thừa
+    id = id.trim().replace(/,$/, '').trim();
+    console.log(` [Blogs] Fetching blog with ID: "${id}"`);
+    
+    // Tạo regex để tìm ID với hoặc không có dấu phẩy ở cuối
+    const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const idRegex = new RegExp(`^${escapedId},?$`);
+    
+    // Tìm blog với ID đã trim, và cả với các biến thể có dấu phẩy/khoảng trắng
+    // Thử tìm với điều kiện status "Active" hoặc không có status trước
+    let blog = await Blog.findOne({
+      $and: [
+        {
+          $or: [
+            { id: id }, // Exact match với ID đã trim
+            { id: id + ',' }, // ID với dấu phẩy ở cuối
+            { id: { $regex: idRegex } }, // Regex match (id hoặc id,)
+          ]
+        },
+        {
+          $or: [
+            { status: "Active" },
+            { status: { $exists: false } },
+            { status: null },
+            { status: "" },
+          ]
+        }
+      ]
+    });
+
+    // Nếu không tìm thấy với điều kiện status, thử tìm không có điều kiện status
+    if (!blog) {
+      blog = await Blog.findOne({
+        $or: [
+          { id: id },
+          { id: id + ',' },
+          { id: { $regex: idRegex } },
+        ],
+      });
+    }
 
     if (!blog) {
+      console.log(` [Blogs] Blog with ID "${id}" not found`);
+      // Debug: Liệt kê tất cả IDs có trong database
+      const allBlogs = await Blog.find({}).select('id title status').limit(10);
+      console.log(` [Blogs] Sample blog IDs in database:`, allBlogs.map(b => ({ id: `"${b.id}"`, title: b.title, status: b.status })));
       return res.status(404).json({
         success: false,
         message: "Không tìm thấy bài viết",
       });
     }
+
+    console.log(` [Blogs] Found blog: ${blog.title} (id: "${blog.id}", status: ${blog.status || 'undefined'})`);
+
+    // Normalize blog ID: trim và loại bỏ dấu phẩy thừa (nếu có)
+    // Nhưng không lưu vào database ngay, chỉ trả về ID đã normalize
+    const normalizedBlog = blog.toObject();
+    normalizedBlog.id = normalizedBlog.id.trim().replace(/,$/, '').trim();
 
     // Tăng views
     blog.views = (blog.views || 0) + 1;
@@ -56,10 +116,10 @@ router.get("/:id", async (req, res) => {
 
     res.json({
       success: true,
-      data: blog,
+      data: normalizedBlog, // Trả về blog với ID đã normalize
     });
   } catch (error) {
-    // console.error(" [Blogs] Error fetching blog:", error);
+    console.error(" [Blogs] Error fetching blog:", error);
     res.status(500).json({
       success: false,
       message: "Lỗi khi lấy bài viết",

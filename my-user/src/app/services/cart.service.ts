@@ -36,7 +36,7 @@ interface Cart {
 export class CartService {
   private http = inject(HttpClient);
   private toastService = inject(ToastService);
-  private apiUrl = 'http://localhost:3000/api/cart';
+  private apiUrl = '/api/cart'; // Use proxy configuration
 
   private isOpen = signal(false);
   private cartItems = signal<any[]>([]);

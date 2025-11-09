@@ -1,40 +1,61 @@
 {
-    "admins": [
-      {
-        "id": "ADM001",
-        "name": "Huỳnh Hương",
-        "email": "huongpth23411@st.uel.edu.vn",
-        "password": "1234567890"
-      },
-      {
-        "id": "ADM002",
-        "name": "Yến Nhi",
-        "email": "nhinly23406@st.uel.edu.vn",
-        "password": "1234567890"
-      },
-      {
-        "id": "ADM003",
-        "name": "Như Huyền",
-        "email": "huyennn23406@st.uel.edu.vn",
-        "password": "1234567890"
-      },
-      {
-        "id": "ADM004",
-        "name": "Thu Hà",
-        "email": "hamtt23406@st.uel.edu.vn",
-        "password": "1234567890"
-      },
-      {
-        "id": "ADM005",
-        "name": "Huyền Linh",
-        "email": "linhdth23411@st.uel.edu.vn",
-        "password": "1234567890"
-      },
-      {
-        "id": "ADM006",
-        "name": "Huỳnh Hương",
-        "email": "huynhhuong1825@gmail.com",
-        "password": "1234567890"
-      }
-    ]
-  }
+	"admins": [
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e84e"
+			},
+			"id": "ADM001",
+			"name": "Huỳnh Hương",
+			"email": "huongpth23411@st.uel.edu.vn",
+			"password": "000000",
+			"updated_at": {
+				"$date": "2025-11-06T15:13:14.592Z"
+			}
+		},
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e84f"
+			},
+			"id": "ADM002",
+			"name": "Yến Nhi",
+			"email": "nhinly23406@st.uel.edu.vn",
+			"password": "1234567890"
+		},
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e850"
+			},
+			"id": "ADM003",
+			"name": "Như Huyền",
+			"email": "huyennn23406@st.uel.edu.vn",
+			"password": "1234567890"
+		},
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e851"
+			},
+			"id": "ADM004",
+			"name": "Thu Hà",
+			"email": "hamtt23406@st.uel.edu.vn",
+			"password": "1234567890"
+		},
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e852"
+			},
+			"id": "ADM005",
+			"name": "Huyền Linh",
+			"email": "linhdth23411@st.uel.edu.vn",
+			"password": "1234567890"
+		},
+		{
+			"_id": {
+				"$oid": "690b1361ca42a26c89d2e853"
+			},
+			"id": "ADM006",
+			"name": "Huỳnh Hương",
+			"email": "huynhhuong1825@gmail.com",
+			"password": "1234567890"
+		}
+	]
+}

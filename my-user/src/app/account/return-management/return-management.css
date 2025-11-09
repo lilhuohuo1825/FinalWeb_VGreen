@@ -29,6 +29,40 @@
   flex-wrap: wrap;
 }
 
+.refresh-btn {
+  background: #349409;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  width: 42px;
+  height: 42px;
+}
+
+.refresh-btn:hover {
+  background: #2d7d08;
+  transform: scale(1.05);
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+}
+
+.refresh-icon {
+  /* Icon exchange_lightgreen.png đã có màu, không cần filter */
+  transition: transform 0.3s ease;
+  width: 20px;
+  height: 20px;
+}
+
+.refresh-btn:hover .refresh-icon {
+  transform: rotate(180deg);
+}
+
 .search-container {
   display: flex;
   align-items: center;

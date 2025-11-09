@@ -11,7 +11,7 @@
 
   <!-- Statistics Cards -->
   <div class="stats-container">
-    <div class="stat-card">
+    <div class="stat-card clickable" (click)="navigateToProducts()">
       <div class="stat-icon">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
           <rect x="6" y="8" width="20" height="18" rx="2" stroke="#1A1A1A" stroke-width="2"/>
@@ -55,7 +55,7 @@
       <div class="stat-subtitle">tổng số đơn hàng</div>
     </div>
 
-    <a class="stat-card clickable" (click)="navigateToOrders()">
+    <div class="stat-card clickable" (click)="scrollToRevenue()">
       <div class="stat-icon">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
           <path d="M16 4L6 10V18C6 23 16 28 16 28C16 28 26 23 26 18V10L16 4Z" stroke="#1A1A1A" stroke-width="2"/>
@@ -72,9 +72,9 @@
         <span class="arrow">→</span> Không thay đổi
       </div>
       <div class="stat-subtitle">so với hôm qua</div>
-    </a>
+    </div>
 
-    <a class="stat-card clickable" (click)="navigateToCustomers()">
+    <div class="stat-card clickable" (click)="navigateToCustomers()">
       <div class="stat-icon">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
           <path d="M6 8L10 4L16 10L22 4L26 8V24L22 28L16 22L10 28L6 24V8Z" stroke="#1A1A1A" stroke-width="2"/>
@@ -90,11 +90,11 @@
         <span class="arrow">→</span> Không thay đổi
       </div>
       <div class="stat-subtitle">tổng số người dùng</div>
-    </a>
+    </div>
   </div>
 
   <!-- Revenue Chart - Full Width -->
-  <div class="revenue-chart-full">
+  <div class="revenue-chart-full" id="revenue-chart-section">
     <div class="chart-section">
       <div class="chart-header">
         <h2 class="chart-title">Doanh thu</h2>
@@ -156,6 +156,24 @@
       <div class="chart-section">
         <div class="chart-header">
           <h2 class="chart-title">Khách hàng</h2>
+          <div class="chart-controls">
+            <select class="year-selector" [(ngModel)]="selectedYearCustomers" (change)="onYearChangeCustomers()">
+              <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+            </select>
+            <select class="month-selector" [(ngModel)]="selectedMonthCustomers" (change)="onMonthChangeCustomers()">
+              <option *ngFor="let month of months; let i = index" [value]="i + 1">
+                Tháng {{ i + 1 }}
+              </option>
+            </select>
+            <div class="week-selector">
+              <span>Tuần:</span>
+              <select class="week-select" [(ngModel)]="selectedWeekCustomers" (change)="onWeekChangeCustomers()">
+                <option *ngFor="let week of availableWeeksCustomers" [value]="week.week">
+                  {{ week.label }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="chart-container">
           <canvas #customersChart></canvas>
@@ -166,6 +184,24 @@
       <div class="chart-section total-orders-inline">
         <div class="chart-header">
           <h2 class="chart-title">Tổng đơn hàng</h2>
+          <div class="chart-controls">
+            <select class="year-selector" [(ngModel)]="selectedYearOrders" (change)="onYearChangeOrders()">
+              <option *ngFor="let year of availableYears" [value]="year">{{ year }}</option>
+            </select>
+            <select class="month-selector" [(ngModel)]="selectedMonthOrders" (change)="onMonthChangeOrders()">
+              <option *ngFor="let month of months; let i = index" [value]="i + 1">
+                Tháng {{ i + 1 }}
+              </option>
+            </select>
+            <div class="week-selector">
+              <span>Tuần:</span>
+              <select class="week-select" [(ngModel)]="selectedWeekOrders" (change)="onWeekChangeOrders()">
+                <option *ngFor="let week of availableWeeksOrders" [value]="week.week">
+                  {{ week.label }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="chart-container">
           <canvas #ordersChart></canvas>
@@ -228,7 +264,7 @@
                   </div>
                 </div>
               </td>
-              <td>{{ formatReviewTime(review.review_date || review.date || review.created_at) }}</td>
+              <td>{{ formatReviewTime(review.time || review.review_date || review.date || review.created_at) }}</td>
               <td>
                 <div class="rating-stars">
                   <span *ngFor="let star of getStars(review.rating || 5)" class="star" [ngClass]="star">★</span>
@@ -262,10 +298,10 @@
       <!-- Out of Stock Products -->
       <div class="chart-section stock-section">
         <div class="section-header">
-          <h2 class="chart-title">Sản phẩm sắp hết hàng</h2>
+          <h2 class="chart-title">Tình trạng tồn kho</h2>
         </div>
         <div class="stock-list-container">
-          <div class="stock-list-item">
+          <div class="stock-list-item" (click)="navigateToProductsWithFilter('low-stock')" style="cursor: pointer;">
             <div class="stock-icon low-stock-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <rect x="4" y="5" width="12" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
@@ -275,7 +311,7 @@
             <span class="stock-label">Sắp hết hàng</span>
             <span class="stock-count">{{ lowStockCount }}</span>
           </div>
-          <div class="stock-list-item">
+          <div class="stock-list-item" (click)="navigateToProductsWithFilter('out-of-stock')" style="cursor: pointer;">
             <div class="stock-icon out-of-stock-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <rect x="4" y="5" width="12" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>

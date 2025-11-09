@@ -152,18 +152,25 @@ export class OrderComponent implements OnInit, OnDestroy {
 
  // console.log(' [Order] AddressList length:', this.addressList.length);
 
- // Auto-select default address or first address
+      // Auto-select default address or first address
       if (this.addressList.length > 0) {
-        const defaultAddress = addresses.find((addr) => addr.isDefault);
-        if (defaultAddress) {
-          const defaultIndex = addresses.indexOf(defaultAddress);
-          this.selectedAddressIndex = defaultIndex >= 0 ? defaultIndex : 0;
-        } else {
-          this.selectedAddressIndex = 0;
+        // Nếu đang có selectedAddressIndex hợp lệ, giữ nguyên (tránh reset khi subscription update)
+        // Chỉ auto-select nếu selectedAddressIndex không hợp lệ hoặc chưa được set
+        if (this.selectedAddressIndex < 0 || this.selectedAddressIndex >= this.addressList.length) {
+          const defaultAddress = addresses.find((addr) => addr.isDefault);
+          if (defaultAddress) {
+            const defaultIndex = addresses.indexOf(defaultAddress);
+            this.selectedAddressIndex = defaultIndex >= 0 ? defaultIndex : 0;
+          } else {
+            this.selectedAddressIndex = 0;
+          }
         }
 
- // Set addressInfo
-        this.addressInfo = { ...this.addressList[this.selectedAddressIndex] };
+ // Set addressInfo - CRITICAL: Always update from addressList
+        if (this.addressList[this.selectedAddressIndex]) {
+          this.addressInfo = { ...this.addressList[this.selectedAddressIndex] };
+          console.log('✅ [Order] Updated addressInfo from subscription:', this.addressInfo);
+        }
  // console.log(' [Order] Selected address:', this.addressInfo);
  // console.log(' [Order] Has addresses - NO popup');
       } else {
@@ -178,7 +185,7 @@ export class OrderComponent implements OnInit, OnDestroy {
           detail: '',
           deliveryMethod: 'standard',
         };
- // console.log('ℹ [Order] No addresses available');
+        console.log('ℹ️ [Order] No addresses available');
       }
     });
 
@@ -192,12 +199,25 @@ export class OrderComponent implements OnInit, OnDestroy {
 
  // Lấy dữ liệu cart từ CartService
     const allCartItems = this.cartService.getCartItems()();
-    const selectedItems = this.cartService.selectedItems();
+    let selectedItems = this.cartService.selectedItems();
 
- // Chỉ lấy những sản phẩm đã được chọn
+    // Nếu không có item nào được chọn, sử dụng tất cả items
+    // (Khi vào trang order, mặc định chọn tất cả items trong giỏ hàng)
+    if (selectedItems.length === 0 && allCartItems.length > 0) {
+      console.log('📦 [Order] No items selected, using all cart items');
+      selectedItems = allCartItems;
+    }
+
+    console.log('📦 [Order] Cart items loaded:', {
+      totalItems: allCartItems.length,
+      selectedItemsCount: selectedItems.length,
+      usingAllItems: selectedItems.length === allCartItems.length && allCartItems.length > 0
+    });
+
+ // Map items để tạo đơn hàng
     this.cartItems = selectedItems.map((item) => ({
       id: item.id,
-      name: item.name,
+      name: item.name || item.productName,
       price: item.price,
       quantity: item.quantity,
       image: item.image,
@@ -206,6 +226,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       sku: item.sku, // Thêm SKU để xóa items sau khi đặt hàng
       unit: item.unit, // Thêm unit để hiển thị trong order
     }));
+
+    console.log('📦 [Order] Mapped cart items for order:', this.cartItems.length);
 
  // Lấy thông tin promotion từ CartService
     this.selectedPromotion = this.cartService.getSelectedPromotion()();
@@ -375,6 +397,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onAddressComplete(addressInfo: FormAddressInfo) {
+    console.log('📝 [Order] onAddressComplete called with addressInfo:', addressInfo);
+    
     const serviceAddress: ServiceAddressInfo = {
       fullName: addressInfo.fullName,
       phone: addressInfo.phone,
@@ -383,61 +407,106 @@ export class OrderComponent implements OnInit, OnDestroy {
       district: addressInfo.district,
       ward: addressInfo.ward,
       detail: addressInfo.detail,
-      notes: addressInfo.notes,
+      notes: addressInfo.notes || '',
       deliveryMethod: addressInfo.deliveryMethod,
       isDefault: addressInfo.isDefault, // Thêm isDefault vào serviceAddress
     };
 
+    console.log('📝 [Order] Service address to save:', serviceAddress);
+
     if (this.addressMode === 'add') {
- // QUAN TRỌNG: Phải subscribe để Observable chạy
+      console.log('📝 [Order] Adding new address...');
+      // QUAN TRỌNG: Phải subscribe để Observable chạy
       this.addressService.addAddress(serviceAddress).subscribe({
         next: (success) => {
+          console.log('📝 [Order] addAddress response - success:', success);
           if (success) {
- console.log(' Đã thêm địa chỉ thành công');
- // Chờ subscription cập nhật addressList rồi chọn địa chỉ mới
+            console.log('✅ [Order] Đã thêm địa chỉ thành công');
+            
+            // Đợi một chút để addresses$ subscription cập nhật addressList
+            // Sau đó đóng modal và cập nhật selectedAddressIndex
             setTimeout(() => {
-              this.selectedAddressIndex = this.addressList.length - 1;
-              if (this.addressList[this.selectedAddressIndex]) {
-                this.addressInfo = { ...this.addressList[this.selectedAddressIndex] };
- console.log(' Đã chọn địa chỉ mới:', this.addressInfo);
+              // Tìm địa chỉ vừa thêm (thường là địa chỉ cuối cùng hoặc địa chỉ mặc định)
+              const addresses = this.addressService.getAddresses();
+              const newAddress = addresses.find(addr => 
+                addr.fullName === serviceAddress.fullName &&
+                addr.phone === serviceAddress.phone &&
+                addr.detail === serviceAddress.detail
+              );
+              
+              if (newAddress) {
+                const newIndex = addresses.indexOf(newAddress);
+                if (newIndex >= 0) {
+                  this.selectedAddressIndex = newIndex;
+                  console.log('✅ [Order] Selected new address at index:', newIndex);
+                }
+              } else if (this.addressList.length > 0) {
+                // Nếu không tìm thấy, chọn địa chỉ cuối cùng (mới thêm)
+                this.selectedAddressIndex = this.addressList.length - 1;
+                console.log('✅ [Order] Selected last address at index:', this.selectedAddressIndex);
               }
-            }, 100); // Tăng timeout lên 100ms để đảm bảo đã cập nhật
+              
+              // Đóng modal sau khi đã cập nhật
+              this.showAddressModal = false;
+              console.log('✅ [Order] Modal closed and address displayed');
+            }, 200); // Đợi 200ms để subscription cập nhật
+            
+            // AddressInfo sẽ được cập nhật tự động từ subscription callback
+            // (addressList sẽ được cập nhật từ addresses$ subscription)
           } else {
- console.error(' Thêm địa chỉ thất bại');
+            console.error('❌ [Order] Thêm địa chỉ thất bại');
+            // Không đóng modal nếu thất bại, để user có thể thử lại
           }
         },
         error: (error) => {
- console.error(' Lỗi khi thêm địa chỉ:', error);
+          console.error('❌ [Order] Lỗi khi thêm địa chỉ:', error);
+          // Không đóng modal nếu có lỗi
         },
       });
     } else if (this.addressMode === 'edit' && this.currentEditingIndex >= 0) {
+      console.log('📝 [Order] Updating address at index:', this.currentEditingIndex);
       const addresses = this.addressService.getAddresses();
       const addressId = addresses[this.currentEditingIndex]?._id;
       if (addressId) {
- // QUAN TRỌNG: Phải subscribe để Observable chạy
+        // QUAN TRỌNG: Phải subscribe để Observable chạy
         this.addressService.updateAddress(addressId, serviceAddress).subscribe({
           next: (success) => {
+            console.log('📝 [Order] updateAddress response - success:', success);
             if (success) {
- console.log(' Đã cập nhật địa chỉ thành công');
+              console.log('✅ [Order] Đã cập nhật địa chỉ thành công');
+              
+              // Đợi một chút để addresses$ subscription cập nhật addressList
               setTimeout(() => {
+                // Giữ nguyên selectedAddressIndex (đang edit địa chỉ đó)
                 if (this.addressList[this.currentEditingIndex]) {
                   this.selectedAddressIndex = this.currentEditingIndex;
                   this.addressInfo = { ...this.addressList[this.currentEditingIndex] };
- console.log(' Đã cập nhật addressInfo:', this.addressInfo);
+                  console.log('✅ [Order] Updated addressInfo after edit:', this.addressInfo);
                 }
-              }, 100);
+                
+                // Đóng modal sau khi đã cập nhật
+                this.showAddressModal = false;
+                console.log('✅ [Order] Modal closed after edit');
+              }, 200);
+              
+              // AddressInfo sẽ được cập nhật tự động từ subscription callback
             } else {
- console.error(' Cập nhật địa chỉ thất bại');
+              console.error('❌ [Order] Cập nhật địa chỉ thất bại');
+              // Không đóng modal nếu thất bại
             }
           },
           error: (error) => {
- console.error(' Lỗi khi cập nhật địa chỉ:', error);
+            console.error('❌ [Order] Lỗi khi cập nhật địa chỉ:', error);
+            // Không đóng modal nếu có lỗi
           },
         });
+      } else {
+        console.error('❌ [Order] Không tìm thấy addressId để update');
       }
+    } else {
+      console.warn('⚠️ [Order] Unknown address mode:', this.addressMode);
+      this.showAddressModal = false;
     }
-
-    this.showAddressModal = false;
   }
 
   onCloseAddressModal() {
@@ -778,12 +847,18 @@ export class OrderComponent implements OnInit, OnDestroy {
 
  // Order Processing
   onPlaceOrder() {
+    // Validate cart items first
+    if (!this.cartItems || this.cartItems.length === 0) {
+      this.toastService.show('Vui lòng thêm sản phẩm vào giỏ hàng trước khi đặt hàng', 'error');
+      return;
+    }
+
     if (!this.isAllRequiredFieldsComplete()) {
       if (!this.isAddressComplete()) {
         this.onOpenAddressModal();
         return;
       }
-      alert('Vui lòng điền đầy đủ tất cả thông tin bắt buộc');
+      this.toastService.show('Vui lòng điền đầy đủ tất cả thông tin bắt buộc', 'error');
       return;
     }
 
@@ -810,6 +885,35 @@ export class OrderComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Validate cart items
+    if (!this.cartItems || this.cartItems.length === 0) {
+      console.error('❌ [Order] Cannot create order: cart is empty');
+      this.toastService.show('Vui lòng thêm sản phẩm vào giỏ hàng trước khi đặt hàng', 'error');
+      return;
+    }
+
+    // Validate address info
+    if (!this.addressInfo || !this.addressInfo.fullName || !this.addressInfo.phone || 
+        !this.addressInfo.city || !this.addressInfo.district || !this.addressInfo.ward || !this.addressInfo.detail) {
+      console.error('❌ [Order] Cannot create order: address info is incomplete', this.addressInfo);
+      this.toastService.show('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng', 'error');
+      this.onOpenAddressModal();
+      return;
+    }
+
+    console.log('📦 [Order] Creating order with:', {
+      customerID,
+      cartItemsCount: this.cartItems.length,
+      addressInfo: {
+        fullName: this.addressInfo.fullName,
+        phone: this.addressInfo.phone,
+        city: this.addressInfo.city,
+        district: this.addressInfo.district,
+        ward: this.addressInfo.ward,
+        detail: this.addressInfo.detail
+      }
+    });
+
  // Prepare order items
     const orderItems: OrderItem[] = this.cartItems.map((item) => ({
       sku: item.sku || String(item.id),
@@ -821,6 +925,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       category: item.category,
       subcategory: item.subcategory,
     }));
+
+    console.log('📦 [Order] Order items prepared:', orderItems);
 
  // Calculate shipping discount and product discount
  // Kiểm tra free shipping (subtotal >= 200000)
@@ -874,7 +980,13 @@ export class OrderComponent implements OnInit, OnDestroy {
       consultantCode: this.consultantCode,
     };
 
- // console.log(' [Order] Sending order to backend:', orderRequest);
+    console.log('📦 [Order] Sending order to backend:', {
+      CustomerID: orderRequest.CustomerID,
+      itemsCount: orderRequest.items.length,
+      shippingInfo: orderRequest.shippingInfo,
+      subtotal: orderRequest.subtotal,
+      totalAmount: orderRequest.totalAmount
+    });
 
  // Call OrderService to create order
     this.orderService.createOrder(orderRequest).subscribe({

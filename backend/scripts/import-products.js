@@ -60,7 +60,7 @@ async function importProducts() {
         if (successCount % 100 === 0) {
  // console.log( 
             `   ⏳ Đã import ${successCount}/${productData.length} sản phẩm...`
-          );
+          ;
         }
       } catch (error) {
         errorCount++;

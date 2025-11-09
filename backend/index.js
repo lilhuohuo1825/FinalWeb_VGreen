@@ -1,3 +1,6 @@
+// Load environment variables
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -14,6 +17,7 @@ const reviewsRoutes = require("./routes/reviews");
 const blogsRoutes = require("./routes/blogs");
 const dishesRoutes = require("./routes/dishes");
 const instructionsRoutes = require("./routes/instructions");
+const chatRoutes = require("./routes/chat");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +44,7 @@ app.use("/api/reviews", reviewsRoutes);
 app.use("/api/blogs", blogsRoutes);
 app.use("/api/dishes", dishesRoutes);
 app.use("/api/instructions", instructionsRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Route kiểm tra server
 app.get("/", (req, res) => {

@@ -860,28 +860,26 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 0;
   background: transparent;
-  color: #374151;
   border: none;
-  border-radius: 8px;
+  color: #3CB018;
   font-family: 'Lexend', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  margin-bottom: 24px;
   transition: all 0.3s ease;
-  margin-bottom: 16px;
-  margin-left: -8px;
 }
 
 .btn-back-top:hover {
-  background: #F3F4F6;
-  transform: translateX(-4px);
+  color: #349409;
 }
 
 .btn-back-top img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+  filter: invert(55%) sepia(83%) saturate(434%) hue-rotate(54deg) brightness(93%) contrast(92%);
 }
 
 .detail-header {
@@ -1162,6 +1160,11 @@
   display: none;
 }
 
+/* Visible Edit Form (for new blog) */
+.blog-info-form {
+  display: block;
+}
+
 .blog-info-form-single {
   display: flex;
   flex-direction: column;
@@ -1241,6 +1244,109 @@
   width: 20px;
   height: 20px;
   opacity: 0.4;
+  z-index: 2;
+}
+
+/* Date Picker Styles */
+.date-picker-container {
+  position: relative;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: white;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 280px;
+  padding: 16px;
+}
+
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.date-picker-month-year {
+  font-weight: 600;
+  font-size: 16px;
+  color: #1A1A1A;
+}
+
+.date-picker-nav {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6B7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.date-picker-nav:hover {
+  background: #F3F4F6;
+  color: #1A1A1A;
+}
+
+.date-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.date-picker-weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  padding: 8px 0;
+}
+
+.date-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.date-picker-day {
+  text-align: center;
+  padding: 8px;
+  font-size: 14px;
+  color: #1A1A1A;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.date-picker-day:hover {
+  background: #F3F4F6;
+}
+
+.date-picker-day.other-month {
+  color: #D1D5DB;
+}
+
+.date-picker-day.today {
+  background: #E5E7EB;
+  font-weight: 600;
+}
+
+.date-picker-day.selected {
+  background: #3CB018;
+  color: white;
+  font-weight: 600;
+}
+
+.date-picker-day.selected:hover {
+  background: #349409;
 }
 
 /* Select Wrapper */
@@ -2362,5 +2468,154 @@
 
   .toolbar-divider {
     height: 24px;
+  }
+}
+
+/* Dark Mode Styles */
+.dark-mode .blogs-page {
+  background: linear-gradient(135deg, #1F3D1A 0%, #2A5A25 20%, #357030 40%, #40863B 60%, #4A9C45 80%, #55B250 100%);
+}
+
+.admin-layout.dark-mode .breadcrumb,
+.dark-mode .breadcrumb,
+:host-context(.dark-mode) .breadcrumb {
+  color: #FFFFFF !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .separator,
+.dark-mode .breadcrumb .separator,
+:host-context(.dark-mode) .breadcrumb .separator {
+  color: #D1D5DB !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .current,
+.dark-mode .breadcrumb .current,
+:host-context(.dark-mode) .breadcrumb .current {
+  color: #68CB3C !important;
+  font-weight: 600;
+}
+/* ========================================
+   CONFIRMATION DIALOG
+   ======================================== */
+
+.popup-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999 !important;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.confirm-dialog {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px 24px;
+  min-width: 400px;
+  max-width: 500px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: popupSlideIn 0.3s ease-out;
+  text-align: center;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.icon-question {
+  display: block;
+  line-height: 1;
+}
+
+.confirm-message {
+  font-size: 16px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-family: 'Lexend', sans-serif;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-ok {
+  padding: 12px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Lexend', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.btn-confirm-cancel {
+  background: #F3F4F6;
+  color: #374151;
+  border: 2px solid #E5E7EB;
+}
+
+.btn-confirm-cancel:hover {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-confirm-cancel:active {
+  transform: translateY(0);
+}
+
+.btn-confirm-ok {
+  background: linear-gradient(135deg, #3CB018 0%, #2D8A1F 100%);
+  color: white;
+}
+
+.btn-confirm-ok:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(60, 176, 24, 0.4);
+}
+
+.btn-confirm-ok:active {
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }

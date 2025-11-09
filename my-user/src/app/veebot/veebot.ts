@@ -8,11 +8,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ChatService, ProductCard } from '../services/chat.service';
 
 interface ChatMessage {
   text: string;
   time: string;
   isBot: boolean;
+  products?: ProductCard[];
 }
 
 @Component({
@@ -27,6 +31,7 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
   hasNewMessage: boolean = false;
   inputMessage: string = '';
   messages: ChatMessage[] = [];
+  isLoading: boolean = false;
 
   @ViewChild('chatMessages') chatMessages!: ElementRef;
   @ViewChild('messageInput') messageInput!: ElementRef;
@@ -34,13 +39,65 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScrollToBottom: boolean = false;
   private welcomeMessages: string[] = [
     'Xin chào! Tôi là Veebot, trợ lý ảo của VGreen. Tôi có thể giúp gì cho bạn?',
-    'Bạn có thể hỏi tôi về sản phẩm, đơn hàng, hoặc bất kỳ thắc mắc nào về VGreen!',
-    'Gõ "sản phẩm" để xem danh sách sản phẩm, "đơn hàng" để kiểm tra đơn hàng, hoặc "hỗ trợ" để được hỗ trợ!',
   ];
+
+  constructor(
+    private chatService: ChatService,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     // Thêm tin nhắn chào mừng khi component khởi tạo
     this.addWelcomeMessages();
+    
+    // Load chat history nếu có
+    this.loadChatHistory();
+  }
+
+  /**
+   * Load chat history từ API
+   */
+  private loadChatHistory(): void {
+    this.chatService.getHistory().subscribe({
+      next: (response) => {
+        if (response.success && response.data && response.data.messages && response.data.messages.length > 0) {
+          // Convert API messages to component messages
+          // Chỉ load các messages từ user và assistant (bỏ system messages)
+          const userMessages = response.data.messages
+            .filter((msg) => msg.role === 'user' || msg.role === 'assistant')
+            .map((msg) => ({
+              text: msg.content,
+              time: this.formatTimeFromDate(msg.timestamp || new Date()),
+              isBot: msg.role === 'assistant',
+            }));
+
+          // Chỉ thêm messages nếu có (không thêm welcome message nếu đã có history)
+          if (userMessages.length > 0) {
+            // Xóa welcome message nếu đã có history
+            if (this.messages.length > 0 && this.messages[0].isBot) {
+              this.messages = [];
+            }
+            this.messages.push(...userMessages);
+            this.shouldScrollToBottom = true;
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Error loading chat history:', error);
+        // Không block UI nếu lỗi load history
+      },
+    });
+  }
+
+  /**
+   * Format time from Date object
+   */
+  private formatTimeFromDate(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 
   ngAfterViewChecked(): void {
@@ -76,7 +133,7 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   sendMessage(): void {
-    if (!this.inputMessage || !this.inputMessage.trim()) {
+    if (!this.inputMessage || !this.inputMessage.trim() || this.isLoading) {
       return;
     }
 
@@ -98,23 +155,74 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
     // Đảm bảo input được clear trong DOM
     if (this.messageInput) {
       this.messageInput.nativeElement.value = '';
-      // Focus lại input để có thể tiếp tục nhập
-      setTimeout(() => {
-        if (this.messageInput) {
-          this.messageInput.nativeElement.focus();
-        }
-      }, 0);
     }
 
     this.shouldScrollToBottom = true;
+    this.isLoading = true;
 
-    // Mô phỏng phản hồi từ bot sau 1 giây
-    setTimeout(() => {
-      this.handleBotResponse(messageText);
-    }, 1000);
+    // Lấy userId từ localStorage nếu có
+    const userStr = localStorage.getItem('user');
+    let userId: string | undefined;
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        userId = user.CustomerID || user._id || user.id;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+
+    // Gọi API để nhận phản hồi từ AI
+    this.chatService.sendMessage(messageText, userId).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          const botMessage: ChatMessage = {
+            text: response.data.message,
+            time: this.getCurrentTime(),
+            isBot: true,
+            products: response.data.products || undefined, // Thêm danh sách sản phẩm nếu có
+          };
+
+          this.messages.push(botMessage);
+          this.shouldScrollToBottom = true;
+
+          // Đánh dấu có tin nhắn mới nếu chat đang đóng
+          if (!this.isChatOpen) {
+            this.hasNewMessage = true;
+          }
+        } else {
+          // Fallback to local response nếu API lỗi
+          this.handleBotResponseFallback(messageText);
+        }
+        this.isLoading = false;
+
+        // Focus lại input sau khi nhận phản hồi
+        setTimeout(() => {
+          if (this.messageInput) {
+            this.messageInput.nativeElement.focus();
+          }
+        }, 100);
+      },
+      error: (error) => {
+        console.error('Error sending message:', error);
+        // Fallback to local response
+        this.handleBotResponseFallback(messageText);
+        this.isLoading = false;
+
+        // Focus lại input sau khi lỗi
+        setTimeout(() => {
+          if (this.messageInput) {
+            this.messageInput.nativeElement.focus();
+          }
+        }, 100);
+      },
+    });
   }
 
-  private handleBotResponse(userMessage: string): void {
+  /**
+   * Fallback response handler - Sử dụng khi API lỗi
+   */
+  private handleBotResponseFallback(userMessage: string): void {
     const lowerMessage = userMessage.toLowerCase();
     let botResponse: string = '';
 
@@ -131,7 +239,7 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
       lowerMessage.includes('help')
     ) {
       botResponse =
-        'Bạn có thể liên hệ với chúng tôi qua:\n- Hotline: 0125 456 789\n- Email: vgreen@gmail.com\n- Hoặc truy cập trang "Hỗ trợ" để được giải đáp các câu hỏi thường gặp!';
+        'Bạn có thể liên hệ với chúng tôi qua:\n- Hotline: 0125 456 789\n- Email: vgreenhotro@gmail.com\n- Hoặc truy cập trang "Hỗ trợ" để được giải đáp các câu hỏi thường gặp!';
     } else if (
       lowerMessage.includes('giá') ||
       lowerMessage.includes('price') ||
@@ -211,5 +319,26 @@ export class Veebot implements OnInit, OnDestroy, AfterViewChecked {
   formatMessage(text: string): string {
     // Thay \n thành <br> để hiển thị xuống dòng đúng chỗ
     return text.replace(/\n/g, '<br>');
+  }
+
+  /**
+   * Chuyển hướng sang trang chi tiết sản phẩm
+   */
+  goToProductDetail(product: ProductCard): void {
+    if (product && product._id) {
+      this.router.navigate(['/product-detail', product._id]);
+      // Đóng chat khi chuyển hướng
+      this.closeChat();
+    }
+  }
+
+  /**
+   * Format giá tiền
+   */
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(price);
   }
 }

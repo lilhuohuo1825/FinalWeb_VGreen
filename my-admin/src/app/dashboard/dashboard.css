@@ -704,7 +704,8 @@ a.stat-card:hover {
 }
 
 .chart-section:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.15);
+  border-color: #3CB018;
 }
 
 .chart-header {
@@ -766,7 +767,8 @@ a.stat-card:hover {
 }
 
 .year-selector,
-.month-selector {
+.month-selector,
+.week-select {
   padding: 8px 12px;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
@@ -779,13 +781,32 @@ a.stat-card:hover {
 }
 
 .year-selector:focus,
-.month-selector:focus {
+.month-selector:focus,
+.week-select:focus {
   outline: none;
   border-color: #3CB018;
 }
 
 .year-selector {
   margin-right: 8px;
+}
+
+.week-select {
+  min-width: 150px;
+}
+
+.week-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.week-selector span {
+  font-family: 'SF Pro', sans-serif;
+  font-size: 13px;
+  color: #6B7280;
+  white-space: nowrap;
 }
 
 .chart-container {
@@ -898,6 +919,8 @@ a.stat-card:hover {
   flex: 1;
   min-height: 340px;
   max-height: 340px;
+  overflow: visible; /* Allow x-axis labels to show */
+  padding-bottom: 8px; /* Add bottom padding for x-axis labels */
 }
 
 .customers-orders-container > .chart-section.total-orders-inline .chart-container {
@@ -905,13 +928,17 @@ a.stat-card:hover {
   min-height: 280px;
   max-height: 280px;
   height: 280px;
-  overflow: hidden;
+  overflow: visible; /* Change to visible to allow labels to show */
   position: relative;
+  padding: 0 12px 12px 12px; /* Add padding to prevent x-axis labels from being cut off */
+  box-sizing: border-box;
 }
 
 .customers-orders-container > .chart-section.total-orders-inline .chart-container canvas {
-  max-width: 100% !important;
-  max-height: 100% !important;
+  max-width: calc(100% - 24px) !important; /* Account for padding */
+  max-height: calc(100% - 24px) !important;
+  width: calc(100% - 24px) !important;
+  height: calc(100% - 24px) !important;
 }
 
 /* Recent Orders and Total Orders Section - 2 Columns */
@@ -955,7 +982,7 @@ a.stat-card:hover {
   background: #3CB018;
   color: white;
   padding: 12px 16px;
-  text-align: left;
+  text-align: center;
   font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
@@ -968,6 +995,12 @@ a.stat-card:hover {
   font-size: 14px;
   color: #1A1A1A;
   font-weight: 400;
+  text-align: center;
+}
+
+/* Căn trái cột đầu tiên (Khách hàng) */
+.reviews-table tbody td:first-child {
+  text-align: left;
 }
 
 .reviews-table tbody tr:hover {
@@ -978,6 +1011,7 @@ a.stat-card:hover {
   display: flex;
   align-items: center;
   gap: 12px;
+  justify-content: flex-start;
 }
 
 .customer-avatar {
@@ -1025,7 +1059,8 @@ a.stat-card:hover {
 .recent-orders-section:hover,
 .recent-reviews-section:hover,
 .status-chart-section:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.15);
+  border-color: #3CB018;
 }
 
 .section-header {
@@ -1039,6 +1074,7 @@ a.stat-card:hover {
   color: #1A1A1A;
   margin: 0;
   letter-spacing: 0.3px;
+  text-align: center;
 }
 
 /* Orders Table */
@@ -1063,7 +1099,7 @@ a.stat-card:hover {
   background: #3CB018;
   color: white;
   padding: 12px 16px;
-  text-align: left;
+  text-align: center;
   font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
@@ -1085,6 +1121,7 @@ a.stat-card:hover {
   font-size: 14px;
   color: #1A1A1A;
   font-weight: 400;
+  text-align: center;
 }
 
 .orders-table .empty-state {
@@ -1161,9 +1198,9 @@ a.stat-card:hover {
 }
 
 .top-products-section:hover {
-  box-shadow: 0 8px 24px rgba(60, 176, 24, 0.15), 0 4px 8px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.15);
   border-color: #3CB018;
+  transform: translateY(-2px);
 }
 
 .top-products-section .chart-container {
@@ -1238,61 +1275,111 @@ a.stat-card:hover {
   font-style: italic;
 }
 
-/* Stock Section - Simple Card Style */
+/* Stock Section - Đồng điệu với design tổng thể */
 .stock-section {
   background: white;
   border-radius: 16px;
-  padding: 28px;
+  padding: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid #F3F4F6;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.stock-section:hover {
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.15);
+  border-color: #3CB018;
+}
+
+.stock-section .section-header {
+  margin-bottom: 24px;
+}
+
+.stock-section .chart-title {
+  font-family: 'SF Pro', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1A1A1A;
+  margin: 0;
+  letter-spacing: 0.3px;
+  text-align: center;
 }
 
 .stock-list-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
+  flex: 1;
 }
 
 .stock-list-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
+  gap: 16px;
+  padding: 16px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.stock-list-item:hover {
+  background: #F0F9ED;
+  border-color: #3CB018;
+  transform: translateX(4px);
 }
 
 .stock-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .stock-icon.low-stock-icon {
-  background: #E5F5E0;
-  color: #1A1A1A;
+  background: linear-gradient(135deg, #E5F5E0 0%, #C8E6C9 100%);
+  color: #3CB018;
+  box-shadow: 0 2px 8px rgba(60, 176, 24, 0.15);
+}
+
+.stock-icon.low-stock-icon:hover {
+  background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.25);
 }
 
 .stock-icon.out-of-stock-icon {
-  background: #E5F5E0;
-  color: #1A1A1A;
+  background: linear-gradient(135deg, #E5F5E0 0%, #C8E6C9 100%);
+  color: #3CB018;
+  box-shadow: 0 2px 8px rgba(60, 176, 24, 0.15);
+}
+
+.stock-icon.out-of-stock-icon:hover {
+  background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.25);
 }
 
 .stock-label {
   flex: 1;
   font-family: 'SF Pro', sans-serif;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 500;
   color: #1A1A1A;
+  letter-spacing: 0.2px;
 }
 
 .stock-count {
   font-family: 'SF Pro', sans-serif;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 700;
-  color: #1A1A1A;
+  color: #3CB018;
+  min-width: 60px;
+  text-align: right;
 }
 
 .stock-table-container {
@@ -1408,5 +1495,375 @@ a.stat-card:hover {
   .pie-chart-container {
     height: 300px;
   }
+}
+
+/* ========== DARK MODE STYLES ========== */
+.dark-mode .dashboard-container {
+  background: linear-gradient(135deg, #1F3D1A 0%, #2A5A25 20%, #357030 40%, #40863B 60%, #4A9C45 80%, #55B250 100%) !important;
+  color: #FFFFFF;
+}
+
+.admin-layout.dark-mode .breadcrumb,
+.dark-mode .breadcrumb,
+:host-context(.dark-mode) .breadcrumb,
+.admin-layout.dark-mode .breadcrumb span,
+.dark-mode .breadcrumb span,
+:host-context(.dark-mode) .breadcrumb span {
+  color: #FFFFFF !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .separator,
+.dark-mode .breadcrumb .separator,
+:host-context(.dark-mode) .breadcrumb .separator {
+  color: #D1D5DB !important;
+}
+
+.admin-layout.dark-mode .breadcrumb .current,
+.dark-mode .breadcrumb .current,
+:host-context(.dark-mode) .breadcrumb .current {
+  color: #68CB3C !important;
+  font-weight: 600;
+}
+
+.dark-mode .dashboard-title {
+  background: linear-gradient(90deg, #68CB3C 0%, #3CB018 50%, #256E05 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Stat Cards - Đảo ngược màu: trắng thành tối */
+.dark-mode .stat-card {
+  background: #1F2937;
+  border: 1px solid #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .stat-card:hover {
+  background: #374151;
+  box-shadow: 0 8px 24px rgba(60, 176, 24, 0.2);
+  border-left-color: #3CB018;
+}
+
+.dark-mode .stat-icon {
+  background: linear-gradient(135deg, rgba(60, 176, 24, 0.2) 0%, rgba(104, 203, 60, 0.2) 100%);
+}
+
+.dark-mode .stat-card:hover .stat-icon {
+  background: linear-gradient(135deg, rgba(60, 176, 24, 0.3) 0%, rgba(104, 203, 60, 0.3) 100%);
+}
+
+/* SVG icons trong stat cards - đổi màu từ đen sang trắng */
+.dark-mode .stat-icon svg,
+.dark-mode .stat-icon svg * {
+  stroke: #FFFFFF !important;
+}
+
+.dark-mode .stat-icon svg circle[fill],
+.dark-mode .stat-icon svg *[fill] {
+  fill: #FFFFFF !important;
+}
+
+.dark-mode .stat-card:hover .stat-icon svg,
+.dark-mode .stat-card:hover .stat-icon svg * {
+  stroke: #3CB018 !important;
+}
+
+.dark-mode .stat-card:hover .stat-icon svg circle[fill],
+.dark-mode .stat-card:hover .stat-icon svg *[fill] {
+  fill: #3CB018 !important;
+}
+
+/* Text colors - đen thành trắng */
+.dark-mode .stat-title {
+  color: #D1D5DB;
+}
+
+.dark-mode .stat-value {
+  color: #68CB3C !important;
+  background: none !important;
+  -webkit-text-fill-color: #68CB3C !important;
+}
+
+.dark-mode .stat-change.positive {
+  color: #68CB3C;
+}
+
+.dark-mode .stat-change.negative {
+  color: #F87171;
+}
+
+.dark-mode .stat-subtitle {
+  color: #9CA3AF;
+}
+
+/* Chart Sections - Đảo ngược màu */
+.dark-mode .chart-section,
+.dark-mode .recent-orders-section,
+.dark-mode .recent-reviews-section,
+.dark-mode .status-chart-section,
+.dark-mode .widget-item {
+  background: #1F2937;
+  border: 1px solid #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .chart-section:hover,
+.dark-mode .recent-orders-section:hover,
+.dark-mode .recent-reviews-section:hover,
+.dark-mode .status-chart-section:hover,
+.dark-mode .widget-item:hover {
+  background: #374151;
+  box-shadow: 0 4px 12px rgba(60, 176, 24, 0.2);
+  border-color: #3CB018;
+}
+
+.dark-mode .chart-title,
+.dark-mode .section-title,
+.dark-mode .widget-title {
+  color: #FFFFFF;
+}
+
+.dark-mode .chart-header {
+  border-bottom: 1px solid #374151;
+}
+
+.dark-mode .widget-header {
+  border-bottom: 1px solid #374151;
+}
+
+/* Chart Controls */
+.dark-mode .year-selector,
+.dark-mode .month-selector,
+.dark-mode .week-select,
+.dark-mode .widget-month-selector {
+  background: #374151;
+  border: 1px solid #4B5563;
+  color: #FFFFFF;
+}
+
+.dark-mode .year-selector:focus,
+.dark-mode .month-selector:focus,
+.dark-mode .week-select:focus,
+.dark-mode .widget-month-selector:focus {
+  border-color: #3CB018;
+}
+
+.dark-mode .toggle-btn {
+  color: #9CA3AF;
+}
+
+.dark-mode .toggle-btn.active {
+  color: #FFFFFF;
+}
+
+.dark-mode .toggle-btn .dot {
+  border-color: #6B7280;
+}
+
+.dark-mode .toggle-btn.active .dot {
+  background: #3CB018;
+  border-color: #3CB018;
+}
+
+/* Tables */
+.dark-mode .orders-table thead,
+.dark-mode .reviews-table thead {
+  background: #3CB018;
+}
+
+.dark-mode .orders-table tbody tr,
+.dark-mode .reviews-table tbody tr {
+  border-bottom: 1px solid #374151;
+}
+
+.dark-mode .orders-table tbody tr:hover,
+.dark-mode .reviews-table tbody tr:hover {
+  background: #374151;
+}
+
+.dark-mode .orders-table td,
+.dark-mode .reviews-table tbody td {
+  color: #F3F4F6;
+  border-bottom: 1px solid #374151;
+}
+
+.dark-mode .customer-name,
+.dark-mode .customer-role {
+  color: #F3F4F6;
+}
+
+/* Stock Section */
+.dark-mode .stock-section {
+  background: #1F2937;
+  border: 1px solid #374151;
+}
+
+.dark-mode .stock-section:hover {
+  border-color: #3CB018;
+}
+
+.dark-mode .stock-list-item {
+  background: #374151;
+  border: 1px solid #4B5563;
+}
+
+.dark-mode .stock-list-item:hover {
+  background: rgba(60, 176, 24, 0.15);
+  border-color: #3CB018;
+}
+
+.dark-mode .stock-label {
+  color: #F3F4F6;
+}
+
+.dark-mode .stock-count {
+  color: #68CB3C;
+}
+
+.dark-mode .stock-table thead {
+  background: #374151;
+  border-bottom: 2px solid #4B5563;
+}
+
+.dark-mode .stock-table th {
+  color: #D1D5DB;
+}
+
+.dark-mode .stock-table tbody tr {
+  border-bottom: 1px solid #374151;
+}
+
+.dark-mode .stock-table tbody tr:hover {
+  background-color: #374151;
+}
+
+.dark-mode .stock-table td {
+  color: #F3F4F6;
+}
+
+/* Top Products Section */
+.dark-mode .top-products-section {
+  background: linear-gradient(135deg, #1F2937 0%, #244320 100%);
+  border: 2px solid #374151;
+}
+
+.dark-mode .top-products-section:hover {
+  border-color: #3CB018;
+}
+
+.dark-mode .product-item {
+  background: #374151;
+}
+
+.dark-mode .product-item:hover {
+  background: rgba(60, 176, 24, 0.15);
+}
+
+.dark-mode .product-name {
+  color: #F3F4F6;
+}
+
+.dark-mode .empty-products {
+  color: #9CA3AF;
+}
+
+/* Modal */
+.dark-mode .modal-content {
+  background: #1F2937;
+  border: 1px solid #374151;
+}
+
+.dark-mode .modal-header {
+  border-bottom: 1px solid #374151;
+}
+
+.dark-mode .modal-title {
+  color: #FFFFFF;
+}
+
+.dark-mode .modal-close {
+  background: #374151;
+  color: #D1D5DB;
+}
+
+.dark-mode .modal-close:hover {
+  background: #4B5563;
+  color: #FFFFFF;
+}
+
+.dark-mode .modal-description {
+  color: #9CA3AF;
+}
+
+.dark-mode .chart-type-card {
+  background: #374151;
+  border: 2px solid #4B5563;
+}
+
+.dark-mode .chart-type-card:hover {
+  background: rgba(60, 176, 24, 0.15);
+  border-color: #3CB018;
+}
+
+.dark-mode .chart-type-name {
+  color: #FFFFFF;
+}
+
+/* Chart Detail Button */
+.dark-mode .chart-detail-btn {
+  border: 1px solid #4B5563;
+  color: #D1D5DB;
+  background: #374151;
+}
+
+.dark-mode .chart-detail-btn:hover {
+  background: #3CB018;
+  border-color: #3CB018;
+  color: #FFFFFF;
+}
+
+/* Empty State */
+.dark-mode .orders-table .empty-state {
+  color: #9CA3AF;
+}
+
+/* Grid Background */
+.dark-mode .grid-background::after {
+  background-image: 
+    repeating-linear-gradient(
+      to right,
+      transparent 0,
+      transparent calc((100% - 220px) / 12),
+      #374151 calc((100% - 220px) / 12),
+      #374151 calc((100% - 220px) / 12 + 1px),
+      transparent calc((100% - 220px) / 12 + 1px),
+      transparent calc((100% - 220px) / 12 + 20px)
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 79px,
+      #374151 79px,
+      #374151 80px,
+      transparent 80px,
+      transparent 100px
+    );
+  opacity: 0.3;
+}
+
+.dark-mode .widget-item.drag-over {
+  background: rgba(60, 176, 24, 0.1);
+  border-color: #3CB018;
+}
+
+.dark-mode .widget-remove {
+  background: #4B5563;
+  color: #D1D5DB;
+}
+
+.dark-mode .widget-remove:hover {
+  background: #DC2626;
+  color: #FFFFFF;
 }
 

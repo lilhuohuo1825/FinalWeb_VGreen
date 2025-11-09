@@ -44,7 +44,12 @@
         <img src="asset/icons/group.png" alt="Group">
         <span>Nhóm</span>
       </button>
-      <button class="btn-action btn-delete" (click)="deleteProducts()" [disabled]="selectedCount === 0">
+      <button 
+        class="btn-action btn-delete" 
+        [class.disabled]="selectedCount === 0"
+        [disabled]="selectedCount === 0"
+        (click)="deleteProducts(); $event.stopPropagation(); $event.preventDefault()" 
+        type="button">
         <img src="asset/icons/trash_red.png" alt="Delete">
         <span>Xoá</span>
       </button>
@@ -319,7 +324,10 @@
 </div>
 
 <!-- Product Form Modal -->
-<div class="product-modal-overlay" *ngIf="showProductForm" (click)="closeProductForm()">
+<div class="product-modal-overlay" 
+     *ngIf="showProductForm" 
+     [class.sidebar-collapsed]="isSidebarCollapsed"
+     (click)="closeProductForm()">
   <div class="product-modal-content" (click)="$event.stopPropagation()">
     <!-- Modal Header -->
     <div class="modal-header">
@@ -338,18 +346,18 @@
         <!-- Tên sản phẩm -->
         <div class="form-group full-width">
           <label class="form-label">Tên sản phẩm:</label>
-          <input type="text" class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="currentProduct.name" name="name">
+          <input type="text" class="form-input" placeholder="Tên sản phẩm" [(ngModel)]="currentProduct.name" (ngModelChange)="onFieldChange('name', $event)" name="name">
         </div>
 
         <!-- Mã sản phẩm & SKU -->
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Mã sản phẩm</label>
-            <input type="text" class="form-input" placeholder="Mã sản phẩm" [(ngModel)]="currentProduct.code" name="code">
+            <input type="text" class="form-input" placeholder="Mã sản phẩm" [(ngModel)]="currentProduct.code" (ngModelChange)="onFieldChange('code', $event)" name="code">
           </div>
           <div class="form-group">
             <label class="form-label">SKU:</label>
-            <input type="text" class="form-input" placeholder="SKU" [(ngModel)]="currentProduct.sku" name="sku">
+            <input type="text" class="form-input" placeholder="SKU" [(ngModel)]="currentProduct.sku" (ngModelChange)="onFieldChange('sku', $event)" name="sku">
           </div>
         </div>
 
@@ -357,11 +365,11 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Thương hiệu:</label>
-            <input type="text" class="form-input" placeholder="Thương hiệu" [(ngModel)]="currentProduct.brand" name="brand">
+            <input type="text" class="form-input" placeholder="Thương hiệu" [(ngModel)]="currentProduct.brand" (ngModelChange)="onFieldChange('brand', $event)" name="brand">
           </div>
           <div class="form-group">
             <label class="form-label">Phân loại:</label>
-            <input type="text" class="form-input" placeholder="Phân loại" [(ngModel)]="currentProduct.category" name="category">
+            <input type="text" class="form-input" placeholder="Phân loại" [(ngModel)]="currentProduct.category" (ngModelChange)="onFieldChange('category', $event)" name="category">
           </div>
         </div>
 
@@ -369,11 +377,11 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Phân loại phụ:</label>
-            <input type="text" class="form-input" placeholder="Phân loại phụ" [(ngModel)]="currentProduct.subcategory" name="subcategory">
+            <input type="text" class="form-input" placeholder="Phân loại phụ" [(ngModel)]="currentProduct.subcategory" (ngModelChange)="onFieldChange('subcategory', $event)" name="subcategory">
           </div>
           <div class="form-group">
             <label class="form-label">Xuất xứ:</label>
-            <input type="text" class="form-input" placeholder="Xuất xứ" [(ngModel)]="currentProduct.origin" name="origin">
+            <input type="text" class="form-input" placeholder="Xuất xứ" [(ngModel)]="currentProduct.origin" (ngModelChange)="onFieldChange('origin', $event)" name="origin">
           </div>
         </div>
 
@@ -381,53 +389,53 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Khối lượng:</label>
-            <input type="text" class="form-input" placeholder="Khối lượng" [(ngModel)]="currentProduct.weight" name="weight">
+            <input type="text" class="form-input" placeholder="Khối lượng" [(ngModel)]="currentProduct.weight" (ngModelChange)="onFieldChange('weight', $event)" name="weight">
           </div>
           <div class="form-group">
             <label class="form-label">Đơn vị tính:</label>
-            <input type="text" class="form-input" placeholder="Đơn vị tính" [(ngModel)]="currentProduct.unit" name="unit">
+            <input type="text" class="form-input" placeholder="Đơn vị tính" [(ngModel)]="currentProduct.unit" (ngModelChange)="onFieldChange('unit', $event)" name="unit">
           </div>
         </div>
 
         <!-- Tồn kho -->
         <div class="form-group full-width">
           <label class="form-label">Tồn kho:</label>
-          <input type="number" class="form-input" placeholder="xxx" [(ngModel)]="currentProduct.stock" name="stock">
+          <input type="number" class="form-input" placeholder="xxx" [(ngModel)]="currentProduct.stock" (ngModelChange)="onFieldChange('stock', $event)" name="stock">
         </div>
 
         <!-- Thành phần -->
         <div class="form-group full-width">
           <label class="form-label">Thành phần:</label>
-          <textarea class="form-textarea" placeholder="Thành phần" rows="3" [(ngModel)]="currentProduct.ingredients" name="ingredients"></textarea>
+          <textarea class="form-textarea" placeholder="Thành phần" rows="3" [(ngModel)]="currentProduct.ingredients" (ngModelChange)="onFieldChange('ingredients', $event)" name="ingredients"></textarea>
         </div>
 
         <!-- Hướng dẫn sử dụng -->
         <div class="form-group full-width">
           <label class="form-label">Hướng dẫn sử dụng:</label>
-          <textarea class="form-textarea" placeholder="Hướng dẫn sử dụng" rows="4" [(ngModel)]="currentProduct.usage" name="usage"></textarea>
+          <textarea class="form-textarea" placeholder="Hướng dẫn sử dụng" rows="4" [(ngModel)]="currentProduct.usage" (ngModelChange)="onFieldChange('usage', $event)" name="usage"></textarea>
         </div>
 
         <!-- Bảo quản -->
         <div class="form-group full-width">
           <label class="form-label">Bảo quản:</label>
-          <textarea class="form-textarea" placeholder="Bảo quản" rows="2" [(ngModel)]="currentProduct.storage" name="storage"></textarea>
+          <textarea class="form-textarea" placeholder="Bảo quản" rows="2" [(ngModel)]="currentProduct.storage" (ngModelChange)="onFieldChange('storage', $event)" name="storage"></textarea>
         </div>
 
         <!-- Màu sắc -->
         <div class="form-group full-width">
           <label class="form-label">Phân loại màu sắc:</label>
-          <input type="text" class="form-input" placeholder="Màu sắc" [(ngModel)]="currentProduct.color" name="color">
+          <input type="text" class="form-input" placeholder="Màu sắc" [(ngModel)]="currentProduct.color" (ngModelChange)="onFieldChange('color', $event)" name="color">
         </div>
 
         <!-- Nhà sản xuất & Tổ chức chịu trách nhiệm -->
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Nhà sản xuất:</label>
-            <input type="text" class="form-input" placeholder="Nhà sản xuất" [(ngModel)]="currentProduct.producer" name="producer">
+            <input type="text" class="form-input" placeholder="Nhà sản xuất" [(ngModel)]="currentProduct.producer" (ngModelChange)="onFieldChange('producer', $event)" name="producer">
           </div>
           <div class="form-group">
             <label class="form-label">Tổ chức chịu trách nhiệm:</label>
-            <input type="text" class="form-input" placeholder="Tổ chức chịu trách nhiệm" [(ngModel)]="currentProduct.responsibleOrg" name="responsibleOrg">
+            <input type="text" class="form-input" placeholder="Tổ chức chịu trách nhiệm" [(ngModel)]="currentProduct.responsibleOrg" (ngModelChange)="onFieldChange('responsibleOrg', $event)" name="responsibleOrg">
           </div>
         </div>
 
@@ -435,18 +443,18 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Ngày sản xuất:</label>
-            <input type="text" class="form-input" placeholder="Ngày sản xuất" [(ngModel)]="currentProduct.manufactureDate" name="manufactureDate">
+            <input type="text" class="form-input" placeholder="Ngày sản xuất" [(ngModel)]="currentProduct.manufactureDate" (ngModelChange)="onFieldChange('manufactureDate', $event)" name="manufactureDate">
           </div>
           <div class="form-group">
             <label class="form-label">Hạn sử dụng:</label>
-            <input type="text" class="form-input" placeholder="Hạn sử dụng" [(ngModel)]="currentProduct.expiryDate" name="expiryDate">
+            <input type="text" class="form-input" placeholder="Hạn sử dụng" [(ngModel)]="currentProduct.expiryDate" (ngModelChange)="onFieldChange('expiryDate', $event)" name="expiryDate">
           </div>
         </div>
 
         <!-- Cảnh báo an toàn -->
         <div class="form-group full-width">
           <label class="form-label">Cảnh báo an toàn:</label>
-          <textarea class="form-textarea" placeholder="Cảnh báo an toàn" rows="2" [(ngModel)]="currentProduct.safetyWarning" name="safetyWarning"></textarea>
+          <textarea class="form-textarea" placeholder="Cảnh báo an toàn" rows="2" [(ngModel)]="currentProduct.safetyWarning" (ngModelChange)="onFieldChange('safetyWarning', $event)" name="safetyWarning"></textarea>
         </div>
 
         <!-- Nhóm sản phẩm -->
@@ -513,10 +521,10 @@
             </div>
             <div class="price-body">
               <div class="price-cell">
-                <input type="number" class="price-input" placeholder="0" [(ngModel)]="currentProduct.originalPrice" name="originalPrice">
+                <input type="number" class="price-input" placeholder="0" [(ngModel)]="currentProduct.originalPrice" (ngModelChange)="onFieldChange('originalPrice', $event)" name="originalPrice">
               </div>
               <div class="price-cell">
-                <input type="number" class="price-input" placeholder="0" [(ngModel)]="currentProduct.price" name="price">
+                <input type="number" class="price-input" placeholder="0" [(ngModel)]="currentProduct.price" (ngModelChange)="onFieldChange('price', $event)" name="price">
               </div>
               <div class="price-cell">
                 <input type="number" class="price-input" placeholder="0" [(ngModel)]="currentProduct.salePrice" name="salePrice">
@@ -573,6 +581,35 @@
       <button class="btn-create-group" (click)="createGroup()">
         <span>✓</span> Tạo nhóm
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- Popup Notification -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <div class="popup-content" [ngClass]="'popup-' + popupType">
+      <div class="popup-icon">
+        <span *ngIf="popupType === 'success'">✓</span>
+        <span *ngIf="popupType === 'error'">✗</span>
+        <span *ngIf="popupType === 'info'">ℹ</span>
+      </div>
+      <div class="popup-message">{{popupMessage}}</div>
+      <button class="popup-close" (click)="closePopup()">×</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div class="popup-overlay" *ngIf="showConfirmDialog" (click)="cancelDelete()">
+  <div class="confirm-dialog" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">
+      <span class="icon-question">?</span>
+    </div>
+    <div class="confirm-message">{{ confirmMessage }}</div>
+    <div class="confirm-buttons">
+      <button class="btn-confirm-cancel" (click)="cancelDelete()">Hủy</button>
+      <button class="btn-confirm-ok" (click)="confirmDelete()">OK</button>
     </div>
   </div>
 </div>

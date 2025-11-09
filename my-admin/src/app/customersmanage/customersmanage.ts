@@ -1,20 +1,30 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { Subscription, filter } from 'rxjs';
 
 interface UserJSON {
   _id: any;
-  user_id: number;
-  full_name: string;
-  phone: string;
-  email: string;
-  address: string;
-  register_date: string;
-  customer_type: string;
-  password: string;
+  user_id?: number;
+  CustomerID?: string;
+  FullName?: string;
+  Phone?: string;
+  Email?: string;
+  Address?: string;
+  RegisterDate?: string | { $date: string };
+  customer_type?: string;
+  CustomerTiering?: string;
+  TotalSpent?: number;
+  full_name?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  register_date?: string;
+  password?: string;
 }
 
 interface Customer {
@@ -37,13 +47,17 @@ interface Customer {
   styleUrl: './customersmanage.css',
   standalone: true
 })
-export class CustomersManage implements OnInit {
+export class CustomersManage implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private router = inject(Router);
   private apiService = inject(ApiService);
+  private cdr = inject(ChangeDetectorRef);
+  private routerSubscription?: Subscription;
+  private previousUrl: string = '';
 
   customers: Customer[] = [];
   allCustomers: Customer[] = []; // Keep original data for search/filter
+  customerIdMap = new Map<string, string>(); // Map customer.id (KH format) to original CustomerID (CUS format)
   isLoading = false;
   loadError = '';
 
@@ -85,6 +99,16 @@ export class CustomersManage implements OnInit {
   // Sort state
   currentSortField: keyof Customer = 'joinDate';
   currentSortOrder: 'asc' | 'desc' = 'desc';
+
+  // Popup notification
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  popupType: 'success' | 'error' | 'info' = 'success';
+
+  // Confirmation dialog
+  showConfirmDialog: boolean = false;
+  confirmMessage: string = '';
+  confirmCallback: (() => void) | null = null;
   
   // Sort options for modal
   sortOptions = [
@@ -103,6 +127,35 @@ export class CustomersManage implements OnInit {
   ngOnInit(): void {
     this.loadCustomers();
     this.extractAllGroupNames();
+    
+    // Track previous URL and reload customers when navigating back from customer detail
+    this.previousUrl = this.router.url;
+    
+    // Reload customers when navigating back from customer detail page
+    this.routerSubscription = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const currentUrl = event.url;
+      
+      // Reload customers when navigating to customers page from customer detail page
+      if ((currentUrl === '/customers' || currentUrl.startsWith('/customers')) && 
+          (this.previousUrl?.includes('/customers/') && !this.previousUrl.includes('/customers/new'))) {
+        // Reload customers to get updated data
+        console.log('🔄 Reloading customers after navigation from customer detail...');
+        setTimeout(() => {
+          this.loadCustomers();
+        }, 100);
+      }
+      
+      this.previousUrl = currentUrl;
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   /**
@@ -112,21 +165,28 @@ export class CustomersManage implements OnInit {
     this.isLoading = true;
     this.loadError = '';
     
-    console.log('🔄 Attempting to load customers from MongoDB API...');
-    console.log('API URL:', 'http://localhost:3000/api/users');
+    console.log('🔄 Loading customers from MongoDB...');
     
-    // Call API to get users from MongoDB
+    // Load users from MongoDB API
     this.apiService.getUsers().subscribe({
       next: (data) => {
         console.log('✅ SUCCESS: Loaded customers from MongoDB!');
         console.log(`📊 Total customers: ${data.length}`);
-        console.log('🗄️ Data source: MongoDB via API');
+        console.log('🗄️ Data source: MongoDB');
         
-        // Map MongoDB data to Customer interface
-        this.allCustomers = data.map(user => this.mapUserToCustomer(user));
+        // Map MongoDB data to Customer interface and build CustomerID mapping
+        this.customerIdMap.clear();
+        this.allCustomers = data.map(user => {
+          const customer = this.mapUserToCustomer(user);
+          // Store mapping: customer.id (CUS format) -> original CustomerID (CUS format) - same format now
+          if (user.CustomerID) {
+            this.customerIdMap.set(customer.id, user.CustomerID);
+          }
+          return customer;
+        });
         this.customers = [...this.allCustomers];
         
-        // Load orders to calculate total spending
+        // Load orders to calculate total spending from MongoDB
         this.loadOrdersForCustomers();
         
         this.isLoading = false;
@@ -135,14 +195,11 @@ export class CustomersManage implements OnInit {
       error: (error) => {
         console.error('❌ ERROR loading from MongoDB:', error);
         console.error('Error details:', error.message);
-        console.error('Error status:', error.status);
         
-        this.loadError = '❌ Không thể kết nối MongoDB API. Backend có đang chạy không?';
+        this.loadError = '❌ Không thể tải dữ liệu từ MongoDB';
         this.isLoading = false;
         
-        // DO NOT FALLBACK - Show error instead
-        console.error('⚠️ FALLBACK DISABLED - Please fix MongoDB connection!');
-        alert('Lỗi kết nối MongoDB!\n\nKiểm tra:\n1. Backend đang chạy tại http://localhost:3000\n2. MongoDB đang chạy\n3. Database "VGreen" tồn tại\n4. Collection "users" có dữ liệu');
+        console.error('Failed to load customers from MongoDB');
       }
     });
   }
@@ -152,22 +209,26 @@ export class CustomersManage implements OnInit {
    */
 
   /**
-   * Load orders for customers to calculate total spending - MongoDB ONLY
+   * Load orders for customers to calculate total spending from MongoDB
    */
   private loadOrdersForCustomers(): void {
-    console.log('🔄 Loading orders from MongoDB API...');
+    console.log('🔄 Loading orders and users data from MongoDB...');
     
-    this.apiService.getOrders().subscribe({
-      next: (orders) => {
-        console.log('✅ SUCCESS: Loaded orders from MongoDB!');
+    // Load both orders and users data from MongoDB
+    forkJoin({
+      orders: this.apiService.getOrders(),
+      users: this.apiService.getUsers()
+    }).subscribe({
+      next: ({ orders, users }) => {
+        console.log('✅ SUCCESS: Loaded orders and users data from MongoDB!');
         console.log(`📊 Total orders: ${orders.length}`);
-        console.log('🗄️ Data source: MongoDB via API');
-        this.processOrders(orders);
+        console.log(`📊 Total users: ${users.length}`);
+        this.processOrders(orders, users);
       },
       error: (error) => {
-        console.error('❌ ERROR loading orders from MongoDB:', error);
+        console.error('❌ ERROR loading data from MongoDB:', error);
         console.error('⚠️ Cannot calculate customer spending without orders data');
-        // Don't fallback - just set total orders to 0
+        // Set total orders to 0 if orders not found
         this.allCustomers.forEach(customer => {
           customer.totalOrders = '0đ';
         });
@@ -177,26 +238,77 @@ export class CustomersManage implements OnInit {
   }
 
   /**
-   * Process orders data to calculate customer spending
+   * Process orders data to calculate customer spending - only count completed (paid) orders
    */
-  private processOrders(orders: any[]): void {
-    // Calculate total spending for each customer
-    const customerTotals = new Map<number, number>();
+  private processOrders(orders: any[], users: any[]): void {
+    // Build customer lookup maps by phone and email for fallback matching
+    const customerByPhone = new Map<string, string>(); // phone -> CustomerID
+    const customerByEmail = new Map<string, string>(); // email -> CustomerID
+    
+    users.forEach(user => {
+      if (user.CustomerID) {
+        if (user.Phone) {
+          customerByPhone.set(user.Phone, user.CustomerID);
+        }
+        if (user.Email) {
+          customerByEmail.set(user.Email, user.CustomerID);
+        }
+      }
+    });
+    
+    // Calculate total spending for each customer - only count orders with status "completed" (paid orders)
+    const customerTotals = new Map<string, number>();
     
     orders.forEach(order => {
-      const current = customerTotals.get(order.user_id) || 0;
-      customerTotals.set(order.user_id, current + (order.total_amount || 0));
+      // Only count orders that have been paid (status = "completed" or "delivered" - both are considered completed)
+      if (order.status !== 'completed' && order.status !== 'delivered') {
+        return;
+      }
+      
+      // Get CustomerID from order
+      let customerId = order.CustomerID || order.user_id?.toString() || '';
+      const totalAmount = order.totalAmount || order.total_amount || 0;
+      
+      // If CustomerID doesn't exist in our customer list, try to match by phone or email
+      if (!customerId || !Array.from(this.customerIdMap.values()).includes(customerId)) {
+        const orderPhone = order.shippingInfo?.phone || order.phone || '';
+        const orderEmail = order.shippingInfo?.email || order.email || '';
+        
+        // Try to find matching CustomerID by phone
+        if (orderPhone && customerByPhone.has(orderPhone)) {
+          customerId = customerByPhone.get(orderPhone)!;
+          console.log(`🔍 Matched order by phone ${orderPhone} → ${customerId}`);
+        }
+        // Try to find matching CustomerID by email
+        else if (orderEmail && customerByEmail.has(orderEmail)) {
+          customerId = customerByEmail.get(orderEmail)!;
+          console.log(`🔍 Matched order by email ${orderEmail} → ${customerId}`);
+        }
+      }
+      
+      if (customerId) {
+        const current = customerTotals.get(customerId) || 0;
+        customerTotals.set(customerId, current + totalAmount);
+      }
     });
+
+    console.log('💰 Customer totals calculated (completed orders only):', customerTotals);
 
     // Update customer total orders
     this.allCustomers.forEach(customer => {
-      const customerId = parseInt(customer.id.replace('KH', ''));
-      const total = customerTotals.get(customerId) || 0;
-      customer.totalOrders = this.formatCurrency(total);
+      // Get the original CustomerID from the mapping (CUS format)
+      const originalCustomerID = this.customerIdMap.get(customer.id);
+      
+      // Find matching total from orders using original CustomerID
+      const matchedTotal = originalCustomerID ? (customerTotals.get(originalCustomerID) || 0) : 0;
+      
+      // Update total orders with matched value
+      customer.totalOrders = this.formatCurrency(matchedTotal);
     });
 
     // Update displayed customers
     this.customers = [...this.allCustomers];
+    console.log('✅ Customer totals updated');
   }
 
   /**
@@ -207,32 +319,80 @@ export class CustomersManage implements OnInit {
   }
 
   /**
-   * Map UserJSON to Customer
+   * Map UserJSON to Customer - supports both old format and MongoDB format
    */
   private mapUserToCustomer(user: UserJSON): Customer {
-    // Format date from YYYY-MM-DD to DD/MM/YYYY
-    const dateParts = user.register_date.split('-');
-    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+    // Handle date - support both old format and MongoDB format
+    let formattedDate = '';
+    const registerDate = user.RegisterDate || user.register_date;
+    
+    if (registerDate) {
+      if (typeof registerDate === 'string') {
+        // Old format: YYYY-MM-DD
+        if (registerDate.includes('-')) {
+          const dateParts = registerDate.split('-');
+          formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        } else {
+          formattedDate = registerDate;
+        }
+      } else if (registerDate.$date) {
+        // MongoDB format: { $date: "ISO string" }
+        const dateObj = new Date(registerDate.$date);
+        if (!isNaN(dateObj.getTime())) {
+          const day = String(dateObj.getDate()).padStart(2, '0');
+          const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+          const year = dateObj.getFullYear();
+          formattedDate = `${day}/${month}/${year}`;
+        }
+      }
+    }
+    
+    if (!formattedDate) {
+      formattedDate = 'N/A';
+    }
 
-    // Map customer_type to memberTier
+    // Map customer_type or CustomerTiering to memberTier
     let memberTier = 'bronze';
-    if (user.customer_type === 'VIP') {
+    const tiering = user.CustomerTiering || user.customer_type || '';
+    
+    if (tiering === 'VIP' || tiering === 'Vàng' || tiering === 'Gold') {
       memberTier = 'gold';
-    } else if (user.customer_type === 'Premium') {
+    } else if (tiering === 'Premium' || tiering === 'Bạc' || tiering === 'Silver') {
       memberTier = 'silver';
-    } else if (user.customer_type === 'Regular') {
+    } else if (tiering === 'Regular' || tiering === 'Đồng' || tiering === 'Bronze') {
       memberTier = 'bronze';
     }
 
+    // Get customer ID - use CUS format directly
+    let customerId = '';
+    if (user.CustomerID) {
+      // Use CustomerID directly (CUS format)
+      customerId = user.CustomerID;
+    } else if (user.user_id) {
+      customerId = 'CUS' + String(user.user_id).padStart(6, '0');
+    } else {
+      customerId = 'CUS' + String(user._id).substring(0, 6).padStart(6, '0');
+    }
+
+    // Get customer name - support both formats
+    const name = user.FullName || user.full_name || '(Chưa cập nhật)';
+    const phone = user.Phone || user.phone || '';
+    const email = user.Email || user.email || '';
+    const address = user.Address || user.address || '(Chưa cập nhật)';
+    
+    // Calculate total orders from TotalSpent if available
+    const totalSpent = user.TotalSpent || 0;
+    const totalOrdersDisplay = totalSpent > 0 ? this.formatCurrency(totalSpent) : '0đ';
+
     return {
-      id: 'KH' + String(user.user_id).padStart(4, '0'),
+      id: customerId,
       joinDate: formattedDate,
-      name: user.full_name || '(Chưa cập nhật)',
-      phone: user.phone,
-      email: user.email,
-      address: user.address || '(Chưa cập nhật)',
+      name: name,
+      phone: phone,
+      email: email,
+      address: address,
       memberTier: memberTier,
-      totalOrders: '0đ',
+      totalOrders: totalOrdersDisplay,
       selected: false,
       group: undefined
     };
@@ -245,7 +405,7 @@ export class CustomersManage implements OnInit {
     console.log('Loading sample data as fallback');
     this.allCustomers = [
       {
-        id: 'KH0001',
+        id: 'CUS000001',
         joinDate: '20/10/2025',
         name: 'Khách hàng #1',
         phone: '123456789',
@@ -256,7 +416,7 @@ export class CustomersManage implements OnInit {
       selected: false
     },
     {
-        id: 'KH0002',
+        id: 'CUS000002',
       joinDate: '20/01/2025',
         name: 'Khách hàng #2',
         phone: '987654321',
@@ -427,23 +587,97 @@ export class CustomersManage implements OnInit {
    * Delete selected customers
    */
   deleteCustomers(): void {
+    // Check if any customers are selected
     const selected = this.customers.filter(c => c.selected);
     
     if (selected.length === 0) {
-      return; // Do nothing if no selection
+      this.displayPopup('Vui lòng chọn khách hàng cần xóa', 'error');
+      return;
     }
 
-    // Show confirmation in UI (you could use a modal here too)
-    if (confirm(`Xóa ${selected.length} khách hàng? Hành động này không thể hoàn tác!`)) {
-      const selectedIds = selected.map(c => c.id);
-      this.customers = this.customers.filter(c => !selectedIds.includes(c.id));
-      this.allCustomers = this.allCustomers.filter(c => !selectedIds.includes(c.id));
-      
-      this.selectedCount = 0;
-      this.selectAll = false;
-      
-      console.log('Deleted customers:', selectedIds);
+    // Show confirmation dialog
+    this.showConfirmation(
+      `Bạn có chắc chắn muốn xóa ${selected.length} khách hàng?`,
+      () => {
+        // Delete customers via API
+        const deletePromises = selected.map(customer => {
+          const customerId = customer.id || '';
+          if (!customerId) {
+            console.warn('⚠️ Customer missing ID:', customer);
+            return Promise.resolve(null);
+          }
+          return this.apiService.deleteCustomer(customerId).toPromise();
+        });
+
+        Promise.all(deletePromises).then(results => {
+          const successCount = results.filter(r => r !== null).length;
+          console.log(`✅ Deleted ${successCount} customers successfully`);
+          
+          // Reload customers from MongoDB to get updated list
+          this.loadCustomers();
+          
+          this.selectedCount = 0;
+          this.selectAll = false;
+          this.displayPopup(`Đã xóa ${successCount} khách hàng thành công`, 'success');
+        }).catch(error => {
+          console.error('❌ Error deleting customers:', error);
+          this.displayPopup('Lỗi khi xóa khách hàng: ' + (error.error?.message || error.message), 'error');
+          // Still reload to sync with server
+          this.loadCustomers();
+        });
+      }
+    );
+  }
+
+  /**
+   * Display popup notification
+   */
+  displayPopup(message: string, type: 'success' | 'error' | 'info' = 'success'): void {
+    this.popupMessage = message;
+    this.popupType = type;
+    this.showPopup = true;
+  }
+
+  /**
+   * Close popup
+   */
+  closePopup(): void {
+    this.showPopup = false;
+    this.popupMessage = '';
+  }
+
+  /**
+   * Show confirmation dialog
+   */
+  showConfirmation(message: string, callback: () => void): void {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.showConfirmDialog = true;
+    
+    // Force change detection to ensure popup shows
+    if (this.cdr) {
+      this.cdr.detectChanges();
     }
+  }
+
+  /**
+   * Confirm action
+   */
+  confirmDelete(): void {
+    if (this.confirmCallback) {
+      this.confirmCallback();
+      this.confirmCallback = null;
+    }
+    this.showConfirmDialog = false;
+  }
+
+  /**
+   * Cancel action
+   */
+  cancelDelete(): void {
+    this.showConfirmDialog = false;
+    this.confirmCallback = null;
+    this.confirmMessage = '';
   }
 
   /**

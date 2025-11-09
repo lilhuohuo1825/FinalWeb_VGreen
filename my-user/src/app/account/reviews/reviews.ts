@@ -345,7 +345,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
 
       // Gọi API để lưu review
       return this.http
-        .post(`/api/reviews/${sku}`, reviewData)
+        .post(`http://localhost:3000/api/reviews/${sku}`, reviewData)
         .toPromise()
         .then((response: any) => {
           console.log(` Review submitted successfully for SKU: ${sku}`, response);
@@ -673,7 +673,7 @@ export class ReviewsComponent implements OnInit, OnDestroy {
       skuOrderMap.forEach((orderProducts, sku) => {
         reviewPromises.push(
           this.http
-            .get<any>(`/api/reviews/${sku}`)
+            .get<any>(`http://localhost:3000/api/reviews/${sku}`)
             .toPromise()
             .then((response) => {
               if (response.success && response.data && response.data.reviews) {

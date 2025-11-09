@@ -37,7 +37,7 @@
         <div 
           *ngFor="let notification of filteredNotifications" 
           class="notification-card"
-          [class.unread]="!notification.isRead"
+          [class.unread]="!isNotificationRead(notification)"
           (click)="markAsRead(notification)">
           
           <div class="notification-icon">
@@ -46,14 +46,14 @@
           
           <div class="notification-content-wrapper">
             <div class="notification-main">
-              <h3 class="notification-title">{{ notification.title }}</h3>
-              <p class="notification-description">{{ notification.content }}</p>
+              <h3 class="notification-title">{{ getNotificationTitle(notification) }}</h3>
+              <p class="notification-description">{{ getNotificationContent(notification) }}</p>
               <div class="notification-footer">
-                <span class="notification-timestamp">{{ formatTimestamp(notification.timestamp) }}</span>
+                <span class="notification-timestamp">{{ formatTimestamp(getNotificationTimestamp(notification)) }}</span>
               </div>
             </div>
             
-            <div class="notification-indicator" *ngIf="!notification.isRead">
+            <div class="notification-indicator" *ngIf="!isNotificationRead(notification)">
               <span class="unread-dot"></span>
             </div>
           </div>
