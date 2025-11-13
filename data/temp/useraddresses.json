@@ -1,162 +1,98 @@
 [
-	{
-		"_id": {
-			"$oid": "6903307b966225afa60220c9"
-		},
-		"CustomerID": "CUS000002",
-		"addresses": [
-			{
-				"fullName": "Nguyen Hera",
-				"phone": "02183773673",
-				"email": "huyennn23406@microsoft.com",
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": true,
-				"createdAt": {
-					"$date": "2025-10-30T10:01:58.561Z"
-				},
-				"_id": {
-					"$oid": "69033796966225afa6022144"
-				}
-			}
-		],
-		"__v": 5
-	},
-	{
-		"_id": {
-			"$oid": "690366ef7e7925fe993e29eb"
-		},
-		"CustomerID": "CUS881229734",
-		"addresses": [
-			{
-				"fullName": "Nguyễn Như Huyền",
-				"phone": "02183773673",
-				"email": "genecarlesi80y3@ceptos.com",
-				"city": "hcm",
-				"district": "q1",
-				"ward": "p1",
-				"detail": "Số nhà hehe",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": true,
-				"createdAt": {
-					"$date": "2025-11-01T14:26:09.996Z"
-				},
-				"_id": {
-					"$oid": "690618815a2f8e22456a65ef"
-				}
-			},
-			{
-				"fullName": "hjefef",
-				"phone": "02183773673",
-				"email": "genecarlesi80y3@ceptos.com",
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "Số nhà hehe",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": false,
-				"createdAt": {
-					"$date": "2025-11-01T14:31:07.934Z"
-				},
-				"_id": {
-					"$oid": "690619ab5a2f8e22456a66e1"
-				}
-			}
-		],
-		"__v": 20
-	},
-	{
-		"_id": {
-			"$oid": "69062c9a5a2f8e22456a84f6"
-		},
-		"CustomerID": "CUS646672569",
-		"addresses": [
-			{
-				"fullName": "Nguyễn Như ",
-				"phone": "02183773673",
-				"email": "genecarlesi80y3@ceptos.com",
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "Số nhà hehe",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": true,
-				"createdAt": {
-					"$date": "2025-11-01T15:52:03.796Z"
-				},
-				"_id": {
-					"$oid": "69062ca35a2f8e22456a84fa"
-				}
-			}
-		],
-		"__v": 1
-	},
-	{
-		"_id": {
-			"$oid": "6906bee33a3d368ca5b77224"
-		},
-		"CustomerID": "CUS735790727",
-		"addresses": [],
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6906c1593a3d368ca5b772dc"
-		},
-		"CustomerID": "CUS000001",
-		"addresses": [
-			{
-				"fullName": "Nguyễn Như Huyền",
-				"phone": "0815275677",
-				"email": "genecarlesi80y3@ceptos.com",
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": true,
-				"createdAt": {
-					"$date": "2025-11-03T13:40:46.155Z"
-				},
-				"_id": {
-					"$oid": "6908b0dee79f402cc77a6b61"
-				}
-			},
-			{
-				"fullName": "hjefef",
-				"phone": "0815275677",
-				"email": "genecarlesi80y3@ceptos.com",
-				"city": "hn",
-				"district": "q2",
-				"ward": "p2",
-				"detail": "Số nhà hehe, phường haha, huyện hichic, tỉnh huhuhu",
-				"notes": "",
-				"deliveryMethod": "standard",
-				"isDefault": false,
-				"createdAt": {
-					"$date": "2025-11-03T13:41:00.968Z"
-				},
-				"_id": {
-					"$oid": "6908b0ece79f402cc77a6b66"
-				}
-			}
-		],
-		"__v": 18
-	},
-	{
-		"_id": {
-			"$oid": "690736e8ff49b6f0cd5086e8"
-		},
-		"CustomerID": "CUS000002",
-		"addresses": [],
-		"__v": 0
-	}
+  {
+    "_id": "690f7d2ffee2be43bf3c1790",
+    "CustomerID": "CUS000003",
+    "addresses": [
+      {
+        "fullName": "Trần Thanh Thịnh",
+        "phone": "0987655755",
+        "email": "huynhhuong1825@gmail.com",
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo",  
+        "notes": "",
+        "deliveryMethod": "standard",
+        "isDefault": true,
+        "createdAt": "2025-11-08T17:27:31.390Z",
+        "_id": "690f7d83fee2be43bf3c1798"
+      },
+      {
+        "fullName": "Trần Thanh Thịnh",
+        "phone": "0987655755",
+        "email": "huynhhuong1825@gmail.com",
+        "city": "quang-tri",
+        "district": "quan-3",
+        "ward": "phuong-3",
+        "detail": "123 Trần Hưng Đạo",
+        "notes": "",
+        "deliveryMethod": "standard",
+        "isDefault": false,
+        "createdAt": "2025-11-08T17:45:16.859Z",
+        "_id": "690f81acfee2be43bf3c17bc"
+      },
+      {
+        "fullName": "Trần Thanh Thịnh",
+        "phone": "0987655755",
+        "email": "o1s2t7qs9kq@tkcursor.tech",
+        "city": "hung-yen",
+        "district": "dong-van",
+        "ward": "pho-bang",
+        "detail": "55555555",
+        "notes": "",
+        "deliveryMethod": "standard",
+        "isDefault": false,
+        "createdAt": "2025-11-09T10:01:08.945Z",
+        "_id": "691066645970ae9d3c60790d"
+      }
+    ],
+    "__v": 3
+  },
+  {
+    "_id": "691097c7c00ec7dd5f8d2055",
+    "CustomerID": "CUS000004",
+    "addresses": [
+      {
+        "fullName": "Phạm Thái Huỳnh Hương",
+        "phone": "0965813408",
+        "email": "huongpth23411@st.uel.edu.vn",
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo",
+        "notes": "",
+        "deliveryMethod": "standard",
+        "isDefault": false,
+        "createdAt": "2025-11-09T13:33:19.699Z",
+        "_id": "6910981fc00ec7dd5f8d2944"
+      },
+      {
+        "fullName": "Phạm Thái Huỳnh Hương",
+        "phone": "0965813408",
+        "email": "huongpth23411@st.uel.edu.vn",
+        "city": "soc-trang",
+        "district": "soc-trang",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai",
+        "notes": "",
+        "deliveryMethod": "standard",
+        "isDefault": true,
+        "createdAt": "2025-11-10T16:44:36.251Z",
+        "_id": "69121674ad36ba153f790ba9"
+      }
+    ],
+    "__v": 2
+  },
+  {
+    "_id": "69122436bfd5a102643f4c43",
+    "CustomerID": "CUS000001",
+    "addresses": [],
+    "__v": 0
+  },
+  {
+    "_id": "6912275cbfd5a102643f4c4d",
+    "CustomerID": "CUS000002",
+    "addresses": [],
+    "__v": 0
+  }
 ]

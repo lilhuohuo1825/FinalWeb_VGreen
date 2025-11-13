@@ -1,2187 +1,3548 @@
 [
-	{
-		"_id": {
-			"$oid": "6906e40f5edfc736650ca746"
-		},
-		"OrderID": "ORD59279716902",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3359027",
-				"productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
-				"quantity": 1,
-				"price": 23300,
-				"image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
-				"unit": "Hộp",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "6906e40f5edfc736650ca747"
-				}
-			},
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 56500,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "6906e40f5edfc736650ca748"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 79800,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 7980,
-		"totalAmount": 117780,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T04:54:39.717Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-02T05:32:46.753Z"
-			},
-			"processing": {
-				"$date": "2025-11-02T05:32:48.015Z"
-			},
-			"shipping": {
-				"$date": "2025-11-02T05:32:49.376Z"
-			},
-			"delivered": {
-				"$date": "2025-11-02T05:32:51.359Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-02T05:33:06.540Z"
-			},
-			"completed": {
-				"$date": "2025-11-02T05:33:11.319Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T04:54:39.717Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-02T05:33:11.319Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6906e4265edfc736650ca797"
-		},
-		"OrderID": "ORD59302589659",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 56500,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "6906e4265edfc736650ca798"
-				}
-			},
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 1,
-				"price": 28500,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "6906e4265edfc736650ca799"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 85000,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 8500,
-		"totalAmount": 123500,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T04:55:02.589Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-02T05:21:42.607Z"
-			},
-			"processing": {
-				"$date": "2025-11-02T05:21:45.374Z"
-			},
-			"shipping": {
-				"$date": "2025-11-02T05:21:46.710Z"
-			},
-			"delivered": {
-				"$date": "2025-11-02T05:21:51.398Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-02T05:22:06.130Z"
-			},
-			"completed": {
-				"$date": "2025-11-02T05:22:17.615Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T04:55:02.589Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-02T05:22:17.615Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6906ed6e5edfc736650cabc0"
-		},
-		"OrderID": "ORD61678706140",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3278909",
-				"productName": "Mật ong Viethoney chai thủy tinh 300g",
-				"quantity": 1,
-				"price": 44000,
-				"image": "https://lh3.googleusercontent.com/xNjJzNW_HKHdZFWBt9SWf2p-_YTgFlZgYf3o9d4p24FUNUvk8Zeq_0IUV75VblkLc8sDsH-fiYiuTsCkhRhQ1_axMdFy_36D=rw",
-				"unit": "Chai",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "Mật ong",
-				"_id": {
-					"$oid": "6906ed6e5edfc736650cabc1"
-				}
-			},
-			{
-				"sku": "3063659",
-				"productName": "Mật ong Viethoney chai nhựa 300g",
-				"quantity": 1,
-				"price": 40000,
-				"image": "https://lh3.googleusercontent.com/LEOnbomCScir_zRYhrdJAAs_9ocbFPcknWWMpHOcjLVrTY9uMX5Uw1_S8CZzAXyWy0lSh_mViLO-sDNC1Ga584o4JVcau4c=rw",
-				"unit": "Chai",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "Mật ong",
-				"_id": {
-					"$oid": "6906ed6e5edfc736650cabc2"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 84000,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 8400,
-		"totalAmount": 122400,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "cancelled",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T05:34:38.706Z"
-			},
-			"cancelled": {
-				"$date": "2025-11-02T05:39:53.495Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T05:34:38.707Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-02T05:39:53.495Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6906ed765edfc736650cabd6"
-		},
-		"OrderID": "ORD61686234904",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3486015",
-				"productName": "Mật ong hoa chôm chôm Co.op Select 50ml",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/Uho4EVbJj-TgB8LwMaY38qacvH8-SHDMj3buxNNyfL_pJKn9bwG__-D2hKR8kCAADG5baiT7ex_dTA3hCyv6TSXcfvlX27aM=rw",
-				"unit": "Hủ",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "Mật ong",
-				"_id": {
-					"$oid": "6906ed765edfc736650cabd7"
-				}
-			},
-			{
-				"sku": "3486014",
-				"productName": "Mật ong hoa cà phê Co.op Select 50ml",
-				"quantity": 1,
-				"price": 25925,
-				"image": "https://lh3.googleusercontent.com/2zBnz0ECBoGN2kvQTiXHfd8IU38sYo0Wy1y6U0wBCEuHv1tZCyI5JjMJTNT-t_PGdU8bVqJj6sMpBtugs3yA2cydWhF960y3=rw",
-				"unit": "Hủ",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "Mật ong",
-				"_id": {
-					"$oid": "6906ed765edfc736650cabd8"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 50150,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 5015,
-		"totalAmount": 85165,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "cancelled",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T05:34:46.234Z"
-			},
-			"cancelled": {
-				"$date": "2025-11-02T05:36:18.403Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T05:34:46.234Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-02T05:36:18.403Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6906eeae5edfc736650cac8a"
-		},
-		"OrderID": "ORD61998131021",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3486014",
-				"productName": "Mật ong hoa cà phê Co.op Select 50ml",
-				"quantity": 1,
-				"price": 25925,
-				"image": "https://lh3.googleusercontent.com/2zBnz0ECBoGN2kvQTiXHfd8IU38sYo0Wy1y6U0wBCEuHv1tZCyI5JjMJTNT-t_PGdU8bVqJj6sMpBtugs3yA2cydWhF960y3=rw",
-				"unit": "Hủ",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "",
-				"_id": {
-					"$oid": "6906eeae5edfc736650cac8b"
-				}
-			},
-			{
-				"sku": "3486015",
-				"productName": "Mật ong hoa chôm chôm Co.op Select 50ml",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/Uho4EVbJj-TgB8LwMaY38qacvH8-SHDMj3buxNNyfL_pJKn9bwG__-D2hKR8kCAADG5baiT7ex_dTA3hCyv6TSXcfvlX27aM=rw",
-				"unit": "Hủ",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "",
-				"_id": {
-					"$oid": "6906eeae5edfc736650cac8c"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 50150,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 5015,
-		"totalAmount": 85165,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "returned",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T05:39:58.131Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-02T05:40:06.182Z"
-			},
-			"processing": {
-				"$date": "2025-11-02T05:40:08.916Z"
-			},
-			"shipping": {
-				"$date": "2025-11-02T05:40:17.965Z"
-			},
-			"delivered": {
-				"$date": "2025-11-02T05:40:19.125Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-02T05:41:11.436Z"
-			},
-			"returning": {
-				"$date": "2025-11-02T05:41:16.984Z"
-			},
-			"returned": {
-				"$date": "2025-11-02T05:43:54.003Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T05:39:58.131Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-02T05:43:54.003Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69073b81ff49b6f0cd508828"
-		},
-		"OrderID": "ORD81665731413",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3322627",
-				"productName": "Nấm hương tươi 200g -LTVN",
-				"quantity": 1,
-				"price": 32000,
-				"image": "https://lh3.googleusercontent.com/zYynvpfbrru3O65EXxMCiNZ6fzhpJDYR5BCKP1yRyXQhYKM6gtIQ4B7tJcvLL7tlYc8gdoOKr-iM77360LLy6aaLLf_SBHtXqQ=rw",
-				"unit": "Phần",
-				"category": "Rau củ",
-				"subcategory": "Nấm",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd508829"
-				}
-			},
-			{
-				"sku": "3382687",
-				"productName": "Nấm sò trắng VN 500g – LTVN",
-				"quantity": 1,
-				"price": 29900,
-				"image": "https://lh3.googleusercontent.com/4ao9mSEZ8ZZFa8uvsXPFTdTOcACVZ0tiKfXmvoYfsQ0rzzBcbVEq_OQGk_ejPl6X8XWBDeMOGcA3nPFU9gC-dXHz0lDiNbk=rw",
-				"unit": "Phần",
-				"category": "Rau củ",
-				"subcategory": "Nấm",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882a"
-				}
-			},
-			{
-				"sku": "3448545",
-				"productName": "Nấm đùi gà baby 200g – LTVN",
-				"quantity": 1,
-				"price": 29000,
-				"image": "https://lh3.googleusercontent.com/qbjlKZeIk43Sb4hgiKeO-O8imgkA9zuipKr8qoJQJCcvF9NDccK-ggGoPH07c8dqAr8qZEokOjX3cr3icSkkmuJz66NARkORoQ=rw",
-				"unit": "Phần",
-				"category": "Rau củ",
-				"subcategory": "Nấm",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882b"
-				}
-			},
-			{
-				"sku": "3579025",
-				"productName": "Nấm hương khô Xuân Hồng gói 50g",
-				"quantity": 1,
-				"price": 22000,
-				"image": "https://lh3.googleusercontent.com/upxL9UUeFenqpmXdiOlyNv3vZRQbSXmU_l_FrmX3Tbr6v27jygKqfJqm3Qv4bij6BaBBMPthejzi6i0lOJCi8dRi3NItiQ1JWg=rw",
-				"unit": "Gói",
-				"category": "Rau củ",
-				"subcategory": "Nấm",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882c"
-				}
-			},
-			{
-				"sku": "3583624",
-				"productName": "Cà phê sữa 3in1 Chất Vina hộp 240g",
-				"quantity": 1,
-				"price": 41325,
-				"image": "https://lh3.googleusercontent.com/8BvsgjeIgpMGBjvRGb2wJgDoAtAiLRYYhaV6JtfVubCwxzvVWej0EYxS6LE6i8XFAV-nyM4ohxxvC9FGYDWsX6knDPMarwa1zg=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882d"
-				}
-			},
-			{
-				"sku": "3150382",
-				"productName": "Cà Phê Trung Nguyên G7 Hòa Tan Đen 15 gói x 2g",
-				"quantity": 1,
-				"price": 37145,
-				"image": "https://lh3.googleusercontent.com/eLxDXJEGsxW6xsJqQVKmsnPfN9oMVuV8ei8nLoo1zwTV2G3Ox-91JVvu4USVfMnFNaIBvyCk52MBkGwuS7cWyp8UplCWLVwIig=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882e"
-				}
-			},
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd50882f"
-				}
-			},
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd508830"
-				}
-			},
-			{
-				"sku": "3457993",
-				"productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-				"quantity": 1,
-				"price": 48000,
-				"image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69073b81ff49b6f0cd508831"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 311620,
-		"shippingFee": 30000,
-		"shippingDiscount": 30000,
-		"discount": 31162,
-		"vatRate": 10,
-		"vatAmount": 31162,
-		"totalAmount": 311620,
-		"code": "WELCOME10",
-		"promotionName": "Giảm 10% cho đơn đầu tiên",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T11:07:45.731Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-02T11:07:57.064Z"
-			},
-			"processing": {
-				"$date": "2025-11-02T11:08:00.807Z"
-			},
-			"shipping": {
-				"$date": "2025-11-02T11:08:01.972Z"
-			},
-			"delivered": {
-				"$date": "2025-11-02T11:08:03.479Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-02T14:35:47.399Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T10:57:03.605Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T11:07:45.731Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T10:57:03.605Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69074ae34fab4e1f25ca9760"
-		},
-		"OrderID": "ORD85603145006",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3587604",
-				"productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
-				"quantity": 1,
-				"price": 90500,
-				"image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
-				"unit": "Hộp",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9761"
-				}
-			},
-			{
-				"sku": "3408730",
-				"productName": "Rau đay 200g – GFM",
-				"quantity": 1,
-				"price": 9900,
-				"image": "https://lh3.googleusercontent.com/AUKE5efCbniaE88CXYS137C4hzFChg4DYMF-nZfBzv5dObn3UkT5phcRWP2BCRvAU0ED4npIGRF4ZJuoaAC1i7JVMr0fMhZD=rw",
-				"unit": "Gói",
-				"category": "Rau củ",
-				"subcategory": "Rau lá",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9762"
-				}
-			},
-			{
-				"sku": "3457993",
-				"productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-				"quantity": 1,
-				"price": 48000,
-				"image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9763"
-				}
-			},
-			{
-				"sku": "3359027",
-				"productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
-				"quantity": 1,
-				"price": 19805,
-				"image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
-				"unit": "Hộp",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9764"
-				}
-			},
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9765"
-				}
-			},
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69074ae34fab4e1f25ca9766"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 240455,
-		"shippingFee": 30000,
-		"shippingDiscount": 30000,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 24046,
-		"totalAmount": 264501,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-02T12:13:23.145Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-02T14:43:57.266Z"
-			},
-			"processing": {
-				"$date": "2025-11-02T14:43:58.755Z"
-			},
-			"shipping": {
-				"$date": "2025-11-02T14:43:59.641Z"
-			},
-			"delivered": {
-				"$date": "2025-11-02T14:44:01.972Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T08:09:56.043Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-02T12:13:23.145Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T08:09:56.043Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "690885f8aab65aaec0b49aad"
-		},
-		"OrderID": "ORD66264269413",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3102435",
-				"productName": "Rong biển Gim Hete xanh dương 8 gói x 2g",
-				"quantity": 1,
-				"price": 26000,
-				"image": "https://lh3.googleusercontent.com/bREsCeoBnQAPnhL00_NXIqWqQ_FSAZBV18ji9z3pzYTqSVkVgjXr297vPvX0YYIOQxzY-PRW3DkiDyhP6k-Mcyk99LoMqIlEbA=rw",
-				"unit": "Lốc",
-				"category": "Rong biển",
-				"subcategory": "Rong, tảo biển",
-				"_id": {
-					"$oid": "690885f8aab65aaec0b49aae"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 26000,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 2600,
-		"totalAmount": 58600,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "cancelled",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T10:37:44.269Z"
-			},
-			"cancelled": {
-				"$date": "2025-11-03T10:37:50.990Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T10:37:44.269Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T10:37:50.990Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088606aab65aaec0b4ac83"
-		},
-		"OrderID": "ORD66278442426",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3102435",
-				"productName": "Rong biển Gim Hete xanh dương 8 gói x 2g",
-				"quantity": 1,
-				"price": 26000,
-				"image": "https://lh3.googleusercontent.com/bREsCeoBnQAPnhL00_NXIqWqQ_FSAZBV18ji9z3pzYTqSVkVgjXr297vPvX0YYIOQxzY-PRW3DkiDyhP6k-Mcyk99LoMqIlEbA=rw",
-				"unit": "Lốc",
-				"category": "Rong biển",
-				"subcategory": "",
-				"_id": {
-					"$oid": "69088606aab65aaec0b4ac84"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 26000,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 2600,
-		"totalAmount": 58600,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T10:37:58.442Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T10:38:03.279Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T10:38:05.829Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T10:38:07.463Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T10:38:12.301Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-03T10:38:19.614Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T10:38:26.359Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T10:37:58.442Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T10:38:26.359Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908862faab65aaec0b50688"
-		},
-		"OrderID": "ORD66319357723",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3102435",
-				"productName": "Rong biển Gim Hete xanh dương 8 gói x 2g",
-				"quantity": 1,
-				"price": 26000,
-				"image": "https://lh3.googleusercontent.com/bREsCeoBnQAPnhL00_NXIqWqQ_FSAZBV18ji9z3pzYTqSVkVgjXr297vPvX0YYIOQxzY-PRW3DkiDyhP6k-Mcyk99LoMqIlEbA=rw",
-				"unit": "Lốc",
-				"category": "Rong biển",
-				"subcategory": "Rong, tảo biển",
-				"_id": {
-					"$oid": "6908862faab65aaec0b50689"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 26000,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 2600,
-		"totalAmount": 58600,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T10:38:39.357Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T10:38:43.966Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T10:38:45.750Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T10:38:46.681Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T10:38:48.808Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T11:00:00.252Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T10:38:39.358Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T11:00:00.253Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088766aab65aaec0b5a84d"
-		},
-		"OrderID": "ORD66630812273",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 2,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088766aab65aaec0b5a84e"
-				}
-			},
-			{
-				"sku": "3457993",
-				"productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-				"quantity": 1,
-				"price": 48000,
-				"image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69088766aab65aaec0b5a84f"
-				}
-			},
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088766aab65aaec0b5a850"
-				}
-			},
-			{
-				"sku": "3445088",
-				"productName": "Nước yến sào Thiên Việt có đường 15% hộp 6 hủ x 70ml",
-				"quantity": 1,
-				"price": 252500,
-				"image": "https://lh3.googleusercontent.com/DZKXz1K9UgUShOkesltzYKHxmwDczE62BBM5R_QHkODJYaoAjg12ApYsfScKMKuV4etOFFunPQBOUhuHAD0Arzx2AQOauoeG=rw",
-				"unit": "Hộp",
-				"category": "Thực phẩm bồi bổ",
-				"subcategory": "Nước yến",
-				"_id": {
-					"$oid": "69088766aab65aaec0b5a851"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 396975,
-		"shippingFee": 30000,
-		"shippingDiscount": 30000,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 39698,
-		"totalAmount": 436673,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T10:43:50.812Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T10:43:53.512Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T10:43:55.293Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T10:43:56.013Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T10:43:57.341Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T10:56:35.806Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T10:43:50.812Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T10:56:35.806Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088997aab65aaec0b60406"
-		},
-		"OrderID": "ORD67191460789",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088997aab65aaec0b60407"
-				}
-			},
-			{
-				"sku": "3555338",
-				"productName": "Bột bánh đúc cốt dừa Taky 250g",
-				"quantity": 4,
-				"price": 16900,
-				"image": "https://lh3.googleusercontent.com/QEKcxNWG5Yk3_BW1_N71sqdsL6QYLvXvmbJCRZrbLfiTvz6CZfKvB5nwV_zp6cBVVvExD6i9yki5OIfmhHkfkz3WXHGIMG53=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088997aab65aaec0b60408"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 91825,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 9183,
-		"totalAmount": 131008,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T10:53:11.460Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T10:53:15.450Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T10:53:17.790Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T10:53:18.687Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T10:53:20.271Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T10:53:29.776Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T10:53:11.460Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T10:53:29.776Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088b55aab65aaec0b68834"
-		},
-		"OrderID": "ORD67637490735",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088b55aab65aaec0b68835"
-				}
-			},
-			{
-				"sku": "3263551",
-				"productName": "Bột bánh xèo Co.op Select 1kg",
-				"quantity": 1,
-				"price": 24225,
-				"image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
-				"unit": "Gói",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088b55aab65aaec0b68836"
-				}
-			},
-			{
-				"sku": "3457993",
-				"productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
-				"quantity": 1,
-				"price": 48000,
-				"image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69088b55aab65aaec0b68837"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 120250,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 12025,
-		"totalAmount": 162275,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T11:00:37.491Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T11:00:41.471Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T11:00:43.188Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T11:00:43.971Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T11:00:44.919Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T11:00:49.134Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T11:00:37.491Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T11:00:49.134Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088c18aab65aaec0b6e389"
-		},
-		"OrderID": "ORD67832781085",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3158047",
-				"productName": "Bột cacao Good Night hộp giấy 150g",
-				"quantity": 1,
-				"price": 82500,
-				"image": "https://lh3.googleusercontent.com/aeezj8iqPQTl9dOC7cMcZ4pQ2gojsU6EldWQAcqH50xQnFLMSbr8AUFDPjHSpuhdAsXbE6v3DhenzzxQ2GTSaXCGo0aZolk=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69088c18aab65aaec0b6e38a"
-				}
-			},
-			{
-				"sku": "3587604",
-				"productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
-				"quantity": 1,
-				"price": 90500,
-				"image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
-				"unit": "Hộp",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088c18aab65aaec0b6e38b"
-				}
-			},
-			{
-				"sku": "3408730",
-				"productName": "Rau đay 200g – GFM",
-				"quantity": 1,
-				"price": 9900,
-				"image": "https://lh3.googleusercontent.com/AUKE5efCbniaE88CXYS137C4hzFChg4DYMF-nZfBzv5dObn3UkT5phcRWP2BCRvAU0ED4npIGRF4ZJuoaAC1i7JVMr0fMhZD=rw",
-				"unit": "Gói",
-				"category": "Rau củ",
-				"subcategory": "Rau lá",
-				"_id": {
-					"$oid": "69088c18aab65aaec0b6e38c"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 182900,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 18290,
-		"totalAmount": 231190,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T11:03:52.781Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T11:03:56.344Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T11:03:59.904Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T11:04:00.584Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T11:04:01.448Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T11:04:05.343Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T11:03:52.781Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T11:04:05.343Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088c85aab65aaec0b71aa7"
-		},
-		"OrderID": "ORD67941689724",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3158047",
-				"productName": "Bột cacao Good Night hộp giấy 150g",
-				"quantity": 1,
-				"price": 82500,
-				"image": "https://lh3.googleusercontent.com/aeezj8iqPQTl9dOC7cMcZ4pQ2gojsU6EldWQAcqH50xQnFLMSbr8AUFDPjHSpuhdAsXbE6v3DhenzzxQ2GTSaXCGo0aZolk=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Ca cao",
-				"_id": {
-					"$oid": "69088c85aab65aaec0b71aa8"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 82500,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 8250,
-		"totalAmount": 120750,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T11:05:41.689Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T11:05:44.414Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T11:05:46.419Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T11:05:47.692Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T11:05:48.998Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T11:05:52.383Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T11:05:41.689Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T11:05:52.383Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "69088cc5aab65aaec0b75b33"
-		},
-		"OrderID": "ORD68005100068",
-		"CustomerID": "CUS000002",
-		"shippingInfo": {
-			"fullName": "Nguyen Hera",
-			"phone": "0815275677",
-			"email": "huyennn23406@microsoft.com",
-			"address": {
-				"city": "hn",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3587604",
-				"productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
-				"quantity": 1,
-				"price": 90500,
-				"image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
-				"unit": "Hộp",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "69088cc5aab65aaec0b75b34"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 90500,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 9050,
-		"totalAmount": 129550,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T11:06:45.100Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T11:06:57.841Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T11:06:58.510Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T11:07:00.152Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T11:07:01.068Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-03T11:07:13.440Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T11:07:18.215Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T11:06:45.100Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T11:07:18.215Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908cf0d1f29b33e8667e39c"
-		},
-		"OrderID": "ORD84973952161",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "Bột",
-				"_id": {
-					"$oid": "6908cf0d1f29b33e8667e39d"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 48025,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4803,
-		"totalAmount": 82828,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "cancelled",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T15:49:33.952Z"
-			},
-			"cancelled": {
-				"$date": "2025-11-03T15:49:37.382Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T15:49:33.952Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T15:49:37.382Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908cf1e1f29b33e86682caf"
-		},
-		"OrderID": "ORD84990805895",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "",
-				"_id": {
-					"$oid": "6908cf1e1f29b33e86682cb0"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 48025,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4803,
-		"totalAmount": 82828,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "completed",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T15:49:50.805Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T15:49:54.339Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T15:49:56.074Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T15:49:56.872Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T15:49:57.843Z"
-			},
-			"processing_return": {
-				"$date": "2025-11-03T15:50:03.937Z"
-			},
-			"completed": {
-				"$date": "2025-11-03T15:50:11.720Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T15:49:50.805Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T15:50:11.720Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908d2061f29b33e8668ce63"
-		},
-		"OrderID": "ORD85734092527",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3514277",
-				"productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
-				"quantity": 1,
-				"price": 48025,
-				"image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
-				"unit": "Bịch",
-				"category": "Lương thực - ngũ cốc",
-				"subcategory": "",
-				"_id": {
-					"$oid": "6908d2061f29b33e8668ce64"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 48025,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4803,
-		"totalAmount": 82828,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "delivered",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T16:02:14.092Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T16:02:18.509Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T16:02:19.991Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T16:02:20.851Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T16:02:21.636Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T16:02:14.092Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T16:02:21.636Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908d21a1f29b33e8668fbd7"
-		},
-		"OrderID": "ORD85754394729",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3423530",
-				"productName": "Cà phê sữa hòa tan Nescafé 3in1 hộp 10 gói x 24g",
-				"quantity": 1,
-				"price": 44650,
-				"image": "https://lh3.googleusercontent.com/wzJEWm0o1OapcyWBqn2MBFEXuPRh-cXnHvTKx_e_DcsRUzRUuNbMkKtCQDyXN2WrEdaWKrzqSqjWa7k7O-KvZPXfRg6zAzwFQQ=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "6908d21a1f29b33e8668fbd8"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 44650,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4465,
-		"totalAmount": 79115,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "delivered",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T16:02:34.394Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T16:02:37.743Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T16:03:20.131Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T16:03:21.026Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T16:03:21.931Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T16:02:34.394Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T16:03:21.931Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908d2241f29b33e86690e01"
-		},
-		"OrderID": "ORD85764810344",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3150382",
-				"productName": "Cà Phê Trung Nguyên G7 Hòa Tan Đen 15 gói x 2g",
-				"quantity": 1,
-				"price": 37145,
-				"image": "https://lh3.googleusercontent.com/eLxDXJEGsxW6xsJqQVKmsnPfN9oMVuV8ei8nLoo1zwTV2G3Ox-91JVvu4USVfMnFNaIBvyCk52MBkGwuS7cWyp8UplCWLVwIig=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "6908d2241f29b33e86690e02"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 37145,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 3715,
-		"totalAmount": 70860,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "delivered",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T16:02:44.810Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T16:03:05.506Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T16:03:15.441Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T16:03:17.239Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T16:03:18.427Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T16:02:44.810Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T16:03:18.427Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908d22d1f29b33e8669171b"
-		},
-		"OrderID": "ORD85773989135",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3521939",
-				"productName": "Cà phê uống liền My Café Latte vị Mild 220ml – CX – F",
-				"quantity": 1,
-				"price": 42750,
-				"image": "https://lh3.googleusercontent.com/CNZ8myCPMHE9Tz86vO9HaAJFYshMIDDZJcpCjIx0Y-JmK5x57gIaO9oxTmw3lZ1JESUmPymCGkvqNt9FMq46nqTYUbRe1Ov-=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "6908d22d1f29b33e8669171c"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 42750,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4275,
-		"totalAmount": 77025,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "delivered",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T16:02:53.989Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T16:03:03.882Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T16:03:09.188Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T16:03:12.994Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T16:03:13.836Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T16:02:53.989Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T16:03:13.836Z"
-		},
-		"__v": 0
-	},
-	{
-		"_id": {
-			"$oid": "6908d2331f29b33e86692034"
-		},
-		"OrderID": "ORD85779636034",
-		"CustomerID": "CUS000001",
-		"shippingInfo": {
-			"fullName": "Nguyễn Như Huyền",
-			"phone": "0815275677",
-			"email": "genecarlesi80y3@ceptos.com",
-			"address": {
-				"city": "hcm",
-				"district": "q2",
-				"ward": "p1",
-				"detail": "39 Nguyễn Huệ"
-			},
-			"deliveryMethod": "standard",
-			"warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
-			"notes": ""
-		},
-		"items": [
-			{
-				"sku": "3583624",
-				"productName": "Cà phê sữa 3in1 Chất Vina hộp 240g",
-				"quantity": 1,
-				"price": 41325,
-				"image": "https://lh3.googleusercontent.com/8BvsgjeIgpMGBjvRGb2wJgDoAtAiLRYYhaV6JtfVubCwxzvVWej0EYxS6LE6i8XFAV-nyM4ohxxvC9FGYDWsX6knDPMarwa1zg=rw",
-				"unit": "Hộp",
-				"category": "Cà phê, Cacao",
-				"subcategory": "Cà phê",
-				"_id": {
-					"$oid": "6908d2331f29b33e86692035"
-				}
-			}
-		],
-		"paymentMethod": "cod",
-		"subtotal": 41325,
-		"shippingFee": 30000,
-		"shippingDiscount": 0,
-		"discount": 0,
-		"vatRate": 10,
-		"vatAmount": 4133,
-		"totalAmount": 75458,
-		"code": "",
-		"promotionName": "",
-		"wantInvoice": false,
-		"invoiceInfo": {
-			"companyName": "",
-			"taxId": "",
-			"invoiceEmail": "",
-			"invoiceAddress": ""
-		},
-		"consultantCode": "",
-		"status": "delivered",
-		"routes": {
-			"pending": {
-				"$date": "2025-11-03T16:02:59.636Z"
-			},
-			"confirmed": {
-				"$date": "2025-11-03T16:03:02.887Z"
-			},
-			"processing": {
-				"$date": "2025-11-03T16:03:07.171Z"
-			},
-			"shipping": {
-				"$date": "2025-11-03T16:03:10.358Z"
-			},
-			"delivered": {
-				"$date": "2025-11-03T16:03:11.239Z"
-			}
-		},
-		"createdAt": {
-			"$date": "2025-11-03T16:02:59.636Z"
-		},
-		"updatedAt": {
-			"$date": "2025-11-03T16:03:11.239Z"
-		},
-		"__v": 0
-	}
+  {
+    "_id": "6906e40f5edfc736650ca746",
+    "OrderID": "ORD59279716902",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3359027",
+        "productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
+        "quantity": 1,
+        "price": 23300,
+        "image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6906e40f5edfc736650ca747"
+      },
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 56500,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6906e40f5edfc736650ca748"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 79800,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 7980,
+    "totalAmount": 117780,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-02T04:54:39.717Z",
+      "confirmed": "2025-11-02T05:32:46.753Z",
+      "processing": "2025-11-02T05:32:48.015Z",
+      "shipping": "2025-11-02T05:32:49.376Z",
+      "delivered": "2025-11-02T05:32:51.359Z",
+      "processing_return": "2025-11-02T05:33:06.540Z",
+      "completed": "2025-11-02T05:33:11.319Z"
+    },
+    "createdAt": "2025-11-02T04:54:39.717Z",
+    "updatedAt": "2025-11-08T01:00:10.613Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6906e4265edfc736650ca797",
+    "OrderID": "ORD59302589659",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 56500,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6906e4265edfc736650ca798"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 28500,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6906e4265edfc736650ca799"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 85000,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 8500,
+    "totalAmount": 123500,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-02T04:55:02.589Z",
+      "confirmed": "2025-11-02T05:21:42.607Z",
+      "processing": "2025-11-02T05:21:45.374Z",
+      "shipping": "2025-11-02T05:21:46.710Z",
+      "delivered": "2025-11-02T05:21:51.398Z",
+      "processing_return": "2025-11-02T05:22:06.130Z",
+      "completed": "2025-11-02T05:22:17.615Z"
+    },
+    "createdAt": "2025-11-02T04:55:02.589Z",
+    "updatedAt": "2025-11-08T01:00:10.632Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6906ed6e5edfc736650cabc0",
+    "OrderID": "ORD61678706140",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3278909",
+        "productName": "Mật ong Viethoney chai thủy tinh 300g",
+        "quantity": 1,
+        "price": 44000,
+        "image": "https://lh3.googleusercontent.com/xNjJzNW_HKHdZFWBt9SWf2p-_YTgFlZgYf3o9d4p24FUNUvk8Zeq_0IUV75VblkLc8sDsH-fiYiuTsCkhRhQ1_axMdFy_36D=rw",
+        "unit": "Chai",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Mật ong",
+        "_id": "6906ed6e5edfc736650cabc1"
+      },
+      {
+        "sku": "3063659",
+        "productName": "Mật ong Viethoney chai nhựa 300g",
+        "quantity": 1,
+        "price": 40000,
+        "image": "https://lh3.googleusercontent.com/LEOnbomCScir_zRYhrdJAAs_9ocbFPcknWWMpHOcjLVrTY9uMX5Uw1_S8CZzAXyWy0lSh_mViLO-sDNC1Ga584o4JVcau4c=rw",
+        "unit": "Chai",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Mật ong",
+        "_id": "6906ed6e5edfc736650cabc2"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 84000,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 8400,
+    "totalAmount": 122400,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-02T05:34:38.706Z",
+      "cancelled": "2025-11-02T05:39:53.495Z"
+    },
+    "createdAt": "2025-11-02T05:34:38.707Z",
+    "updatedAt": "2025-11-08T01:00:10.633Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6906eeae5edfc736650cac8a",
+    "OrderID": "ORD61998131021",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3486014",
+        "productName": "Mật ong hoa cà phê Co.op Select 50ml",
+        "quantity": 1,
+        "price": 25925,
+        "image": "https://lh3.googleusercontent.com/2zBnz0ECBoGN2kvQTiXHfd8IU38sYo0Wy1y6U0wBCEuHv1tZCyI5JjMJTNT-t_PGdU8bVqJj6sMpBtugs3yA2cydWhF960y3=rw",
+        "unit": "Hủ",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "",
+        "_id": "6906eeae5edfc736650cac8b"
+      },
+      {
+        "sku": "3486015",
+        "productName": "Mật ong hoa chôm chôm Co.op Select 50ml",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/Uho4EVbJj-TgB8LwMaY38qacvH8-SHDMj3buxNNyfL_pJKn9bwG__-D2hKR8kCAADG5baiT7ex_dTA3hCyv6TSXcfvlX27aM=rw",
+        "unit": "Hủ",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "",
+        "_id": "6906eeae5edfc736650cac8c"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 50150,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 5015,
+    "totalAmount": 85165,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "returned",
+    "routes": {
+      "pending": "2025-11-02T05:39:58.131Z",
+      "confirmed": "2025-11-02T05:40:06.182Z",
+      "processing": "2025-11-02T05:40:08.916Z",
+      "shipping": "2025-11-02T05:40:17.965Z",
+      "delivered": "2025-11-02T05:40:19.125Z",
+      "processing_return": "2025-11-02T05:41:11.436Z",
+      "returning": "2025-11-02T05:41:16.984Z",
+      "returned": "2025-11-02T05:43:54.003Z"
+    },
+    "createdAt": "2025-11-02T05:39:58.131Z",
+    "updatedAt": "2025-11-08T01:00:10.634Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69073b81ff49b6f0cd508828",
+    "OrderID": "ORD81665731413",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3322627",
+        "productName": "Nấm hương tươi 200g -LTVN",
+        "quantity": 1,
+        "price": 32000,
+        "image": "https://lh3.googleusercontent.com/zYynvpfbrru3O65EXxMCiNZ6fzhpJDYR5BCKP1yRyXQhYKM6gtIQ4B7tJcvLL7tlYc8gdoOKr-iM77360LLy6aaLLf_SBHtXqQ=rw",
+        "unit": "Phần",
+        "category": "Rau củ",
+        "subcategory": "Nấm",
+        "_id": "69073b81ff49b6f0cd508829"
+      },
+      {
+        "sku": "3382687",
+        "productName": "Nấm sò trắng VN 500g – LTVN",
+        "quantity": 1,
+        "price": 29900,
+        "image": "https://lh3.googleusercontent.com/4ao9mSEZ8ZZFa8uvsXPFTdTOcACVZ0tiKfXmvoYfsQ0rzzBcbVEq_OQGk_ejPl6X8XWBDeMOGcA3nPFU9gC-dXHz0lDiNbk=rw",
+        "unit": "Phần",
+        "category": "Rau củ",
+        "subcategory": "Nấm",
+        "_id": "69073b81ff49b6f0cd50882a"
+      },
+      {
+        "sku": "3448545",
+        "productName": "Nấm đùi gà baby 200g – LTVN",
+        "quantity": 1,
+        "price": 29000,
+        "image": "https://lh3.googleusercontent.com/qbjlKZeIk43Sb4hgiKeO-O8imgkA9zuipKr8qoJQJCcvF9NDccK-ggGoPH07c8dqAr8qZEokOjX3cr3icSkkmuJz66NARkORoQ=rw",
+        "unit": "Phần",
+        "category": "Rau củ",
+        "subcategory": "Nấm",
+        "_id": "69073b81ff49b6f0cd50882b"
+      },
+      {
+        "sku": "3579025",
+        "productName": "Nấm hương khô Xuân Hồng gói 50g",
+        "quantity": 1,
+        "price": 22000,
+        "image": "https://lh3.googleusercontent.com/upxL9UUeFenqpmXdiOlyNv3vZRQbSXmU_l_FrmX3Tbr6v27jygKqfJqm3Qv4bij6BaBBMPthejzi6i0lOJCi8dRi3NItiQ1JWg=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Nấm",
+        "_id": "69073b81ff49b6f0cd50882c"
+      },
+      {
+        "sku": "3583624",
+        "productName": "Cà phê sữa 3in1 Chất Vina hộp 240g",
+        "quantity": 1,
+        "price": 41325,
+        "image": "https://lh3.googleusercontent.com/8BvsgjeIgpMGBjvRGb2wJgDoAtAiLRYYhaV6JtfVubCwxzvVWej0EYxS6LE6i8XFAV-nyM4ohxxvC9FGYDWsX6knDPMarwa1zg=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "69073b81ff49b6f0cd50882d"
+      },
+      {
+        "sku": "3150382",
+        "productName": "Cà Phê Trung Nguyên G7 Hòa Tan Đen 15 gói x 2g",
+        "quantity": 1,
+        "price": 37145,
+        "image": "https://lh3.googleusercontent.com/eLxDXJEGsxW6xsJqQVKmsnPfN9oMVuV8ei8nLoo1zwTV2G3Ox-91JVvu4USVfMnFNaIBvyCk52MBkGwuS7cWyp8UplCWLVwIig=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "69073b81ff49b6f0cd50882e"
+      },
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69073b81ff49b6f0cd50882f"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69073b81ff49b6f0cd508830"
+      },
+      {
+        "sku": "3457993",
+        "productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+        "quantity": 1,
+        "price": 48000,
+        "image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69073b81ff49b6f0cd508831"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 311620,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 31162,
+    "vatRate": 10,
+    "vatAmount": 31162,
+    "totalAmount": 311620,
+    "code": "WELCOME10",
+    "promotionName": "Giảm 10% cho đơn đầu tiên",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-02T11:07:45.731Z",
+      "confirmed": "2025-11-02T11:07:57.064Z",
+      "processing": "2025-11-02T11:08:00.807Z",
+      "shipping": "2025-11-02T11:08:01.972Z",
+      "delivered": "2025-11-02T11:08:03.479Z",
+      "processing_return": "2025-11-02T14:35:47.399Z",
+      "completed": "2025-11-03T10:57:03.605Z"
+    },
+    "createdAt": "2025-11-02T11:07:45.731Z",
+    "updatedAt": "2025-11-08T01:00:10.635Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69074ae34fab4e1f25ca9760",
+    "OrderID": "ORD85603145006",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69074ae34fab4e1f25ca9761"
+      },
+      {
+        "sku": "3408730",
+        "productName": "Rau đay 200g – GFM",
+        "quantity": 1,
+        "price": 9900,
+        "image": "https://lh3.googleusercontent.com/AUKE5efCbniaE88CXYS137C4hzFChg4DYMF-nZfBzv5dObn3UkT5phcRWP2BCRvAU0ED4npIGRF4ZJuoaAC1i7JVMr0fMhZD=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau lá",
+        "_id": "69074ae34fab4e1f25ca9762"
+      },
+      {
+        "sku": "3457993",
+        "productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+        "quantity": 1,
+        "price": 48000,
+        "image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69074ae34fab4e1f25ca9763"
+      },
+      {
+        "sku": "3359027",
+        "productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
+        "quantity": 1,
+        "price": 19805,
+        "image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69074ae34fab4e1f25ca9764"
+      },
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69074ae34fab4e1f25ca9765"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69074ae34fab4e1f25ca9766"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 240455,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 24046,
+    "totalAmount": 264501,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-02T12:13:23.145Z",
+      "confirmed": "2025-11-02T14:43:57.266Z",
+      "processing": "2025-11-02T14:43:58.755Z",
+      "shipping": "2025-11-02T14:43:59.641Z",
+      "delivered": "2025-11-02T14:44:01.972Z",
+      "completed": "2025-11-03T08:09:56.043Z"
+    },
+    "createdAt": "2025-11-02T12:13:23.145Z",
+    "updatedAt": "2025-11-08T01:00:10.636Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088606aab65aaec0b4ac83",
+    "OrderID": "ORD66278442426",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3102435",
+        "productName": "Rong biển Gim Hete xanh dương 8 gói x 2g",
+        "quantity": 1,
+        "price": 26000,
+        "image": "https://lh3.googleusercontent.com/bREsCeoBnQAPnhL00_NXIqWqQ_FSAZBV18ji9z3pzYTqSVkVgjXr297vPvX0YYIOQxzY-PRW3DkiDyhP6k-Mcyk99LoMqIlEbA=rw",
+        "unit": "Lốc",
+        "category": "Rong biển",
+        "subcategory": "",
+        "_id": "69088606aab65aaec0b4ac84"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 26000,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 2600,
+    "totalAmount": 58600,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T10:37:58.442Z",
+      "confirmed": "2025-11-03T10:38:03.279Z",
+      "processing": "2025-11-03T10:38:05.829Z",
+      "shipping": "2025-11-03T10:38:07.463Z",
+      "delivered": "2025-11-03T10:38:12.301Z",
+      "processing_return": "2025-11-03T10:38:19.614Z",
+      "completed": "2025-11-03T10:38:26.359Z"
+    },
+    "createdAt": "2025-11-03T10:37:58.442Z",
+    "updatedAt": "2025-11-08T01:00:10.637Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908862faab65aaec0b50688",
+    "OrderID": "ORD66319357723",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3102435",
+        "productName": "Rong biển Gim Hete xanh dương 8 gói x 2g",
+        "quantity": 1,
+        "price": 26000,
+        "image": "https://lh3.googleusercontent.com/bREsCeoBnQAPnhL00_NXIqWqQ_FSAZBV18ji9z3pzYTqSVkVgjXr297vPvX0YYIOQxzY-PRW3DkiDyhP6k-Mcyk99LoMqIlEbA=rw",
+        "unit": "Lốc",
+        "category": "Rong biển",
+        "subcategory": "Rong, tảo biển",
+        "_id": "6908862faab65aaec0b50689"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 26000,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 2600,
+    "totalAmount": 58600,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T10:38:39.357Z",
+      "confirmed": "2025-11-03T10:38:43.966Z",
+      "processing": "2025-11-03T10:38:45.750Z",
+      "shipping": "2025-11-03T10:38:46.681Z",
+      "delivered": "2025-11-03T10:38:48.808Z",
+      "completed": "2025-11-03T11:00:00.252Z"
+    },
+    "createdAt": "2025-11-03T10:38:39.358Z",
+    "updatedAt": "2025-11-08T01:00:10.637Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088766aab65aaec0b5a84d",
+    "OrderID": "ORD66630812273",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 2,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088766aab65aaec0b5a84e"
+      },
+      {
+        "sku": "3457993",
+        "productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+        "quantity": 1,
+        "price": 48000,
+        "image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69088766aab65aaec0b5a84f"
+      },
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088766aab65aaec0b5a850"
+      },
+      {
+        "sku": "3445088",
+        "productName": "Nước yến sào Thiên Việt có đường 15% hộp 6 hủ x 70ml",
+        "quantity": 1,
+        "price": 252500,
+        "image": "https://lh3.googleusercontent.com/DZKXz1K9UgUShOkesltzYKHxmwDczE62BBM5R_QHkODJYaoAjg12ApYsfScKMKuV4etOFFunPQBOUhuHAD0Arzx2AQOauoeG=rw",
+        "unit": "Hộp",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Nước yến",
+        "_id": "69088766aab65aaec0b5a851"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 396975,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 39698,
+    "totalAmount": 436673,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T10:43:50.812Z",
+      "confirmed": "2025-11-03T10:43:53.512Z",
+      "processing": "2025-11-03T10:43:55.293Z",
+      "shipping": "2025-11-03T10:43:56.013Z",
+      "delivered": "2025-11-03T10:43:57.341Z",
+      "completed": "2025-11-03T10:56:35.806Z"
+    },
+    "createdAt": "2025-11-03T10:43:50.812Z",
+    "updatedAt": "2025-11-08T01:00:10.638Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088997aab65aaec0b60406",
+    "OrderID": "ORD67191460789",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088997aab65aaec0b60407"
+      },
+      {
+        "sku": "3555338",
+        "productName": "Bột bánh đúc cốt dừa Taky 250g",
+        "quantity": 4,
+        "price": 16900,
+        "image": "https://lh3.googleusercontent.com/QEKcxNWG5Yk3_BW1_N71sqdsL6QYLvXvmbJCRZrbLfiTvz6CZfKvB5nwV_zp6cBVVvExD6i9yki5OIfmhHkfkz3WXHGIMG53=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088997aab65aaec0b60408"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 91825,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 9183,
+    "totalAmount": 131008,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T10:53:11.460Z",
+      "confirmed": "2025-11-03T10:53:15.450Z",
+      "processing": "2025-11-03T10:53:17.790Z",
+      "shipping": "2025-11-03T10:53:18.687Z",
+      "delivered": "2025-11-03T10:53:20.271Z",
+      "completed": "2025-11-03T10:53:29.776Z"
+    },
+    "createdAt": "2025-11-03T10:53:11.460Z",
+    "updatedAt": "2025-11-08T01:00:10.639Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088b55aab65aaec0b68834",
+    "OrderID": "ORD67637490735",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088b55aab65aaec0b68835"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088b55aab65aaec0b68836"
+      },
+      {
+        "sku": "3457993",
+        "productName": "Ca cao hoà tan 6 trong 1 Napo hộp 10x22g",
+        "quantity": 1,
+        "price": 48000,
+        "image": "https://lh3.googleusercontent.com/DgncT05-f5rnX1vTtMQQ8CYwVIO3XYG6SNN8kmddV6Pl1KlECcaUA-Dpj_C-k0RRKwHo9xVkhICYd6UuGhtVHgzT6JXSTCPp=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69088b55aab65aaec0b68837"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 120250,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 12025,
+    "totalAmount": 162275,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T11:00:37.491Z",
+      "confirmed": "2025-11-03T11:00:41.471Z",
+      "processing": "2025-11-03T11:00:43.188Z",
+      "shipping": "2025-11-03T11:00:43.971Z",
+      "delivered": "2025-11-03T11:00:44.919Z",
+      "completed": "2025-11-03T11:00:49.134Z"
+    },
+    "createdAt": "2025-11-03T11:00:37.491Z",
+    "updatedAt": "2025-11-08T01:00:10.639Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088c18aab65aaec0b6e389",
+    "OrderID": "ORD67832781085",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3158047",
+        "productName": "Bột cacao Good Night hộp giấy 150g",
+        "quantity": 1,
+        "price": 82500,
+        "image": "https://lh3.googleusercontent.com/aeezj8iqPQTl9dOC7cMcZ4pQ2gojsU6EldWQAcqH50xQnFLMSbr8AUFDPjHSpuhdAsXbE6v3DhenzzxQ2GTSaXCGo0aZolk=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69088c18aab65aaec0b6e38a"
+      },
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088c18aab65aaec0b6e38b"
+      },
+      {
+        "sku": "3408730",
+        "productName": "Rau đay 200g – GFM",
+        "quantity": 1,
+        "price": 9900,
+        "image": "https://lh3.googleusercontent.com/AUKE5efCbniaE88CXYS137C4hzFChg4DYMF-nZfBzv5dObn3UkT5phcRWP2BCRvAU0ED4npIGRF4ZJuoaAC1i7JVMr0fMhZD=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau lá",
+        "_id": "69088c18aab65aaec0b6e38c"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 182900,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 18290,
+    "totalAmount": 231190,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T11:03:52.781Z",
+      "confirmed": "2025-11-03T11:03:56.344Z",
+      "processing": "2025-11-03T11:03:59.904Z",
+      "shipping": "2025-11-03T11:04:00.584Z",
+      "delivered": "2025-11-03T11:04:01.448Z",
+      "completed": "2025-11-03T11:04:05.343Z"
+    },
+    "createdAt": "2025-11-03T11:03:52.781Z",
+    "updatedAt": "2025-11-08T01:00:10.640Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088c85aab65aaec0b71aa7",
+    "OrderID": "ORD67941689724",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3158047",
+        "productName": "Bột cacao Good Night hộp giấy 150g",
+        "quantity": 1,
+        "price": 82500,
+        "image": "https://lh3.googleusercontent.com/aeezj8iqPQTl9dOC7cMcZ4pQ2gojsU6EldWQAcqH50xQnFLMSbr8AUFDPjHSpuhdAsXbE6v3DhenzzxQ2GTSaXCGo0aZolk=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Ca cao",
+        "_id": "69088c85aab65aaec0b71aa8"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 82500,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 8250,
+    "totalAmount": 120750,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T11:05:41.689Z",
+      "confirmed": "2025-11-03T11:05:44.414Z",
+      "processing": "2025-11-03T11:05:46.419Z",
+      "shipping": "2025-11-03T11:05:47.692Z",
+      "delivered": "2025-11-03T11:05:48.998Z",
+      "completed": "2025-11-03T11:05:52.383Z"
+    },
+    "createdAt": "2025-11-03T11:05:41.689Z",
+    "updatedAt": "2025-11-08T01:00:10.640Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "69088cc5aab65aaec0b75b33",
+    "OrderID": "ORD68005100068",
+    "CustomerID": "CUS000002",
+    "shippingInfo": {
+      "fullName": "Nguyen Hera",
+      "phone": "0815275677",
+      "email": "huyennn23406@microsoft.com",
+      "address": {
+        "city": "hn",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69088cc5aab65aaec0b75b34"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 90500,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 9050,
+    "totalAmount": 129550,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T11:06:45.100Z",
+      "confirmed": "2025-11-03T11:06:57.841Z",
+      "processing": "2025-11-03T11:06:58.510Z",
+      "shipping": "2025-11-03T11:07:00.152Z",
+      "delivered": "2025-11-03T11:07:01.068Z",
+      "processing_return": "2025-11-03T11:07:13.440Z",
+      "completed": "2025-11-03T11:07:18.215Z"
+    },
+    "createdAt": "2025-11-03T11:06:45.100Z",
+    "updatedAt": "2025-11-08T01:00:10.641Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908cf0d1f29b33e8667e39c",
+    "OrderID": "ORD84973952161",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6908cf0d1f29b33e8667e39d"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 48025,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4803,
+    "totalAmount": 82828,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-03T15:49:33.952Z",
+      "cancelled": "2025-11-03T15:49:37.382Z"
+    },
+    "createdAt": "2025-11-03T15:49:33.952Z",
+    "updatedAt": "2025-11-03T15:49:37.382Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908cf1e1f29b33e86682caf",
+    "OrderID": "ORD84990805895",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "6908cf1e1f29b33e86682cb0"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 48025,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4803,
+    "totalAmount": 82828,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-03T15:49:50.805Z",
+      "confirmed": "2025-11-03T15:49:54.339Z",
+      "processing": "2025-11-03T15:49:56.074Z",
+      "shipping": "2025-11-03T15:49:56.872Z",
+      "delivered": "2025-11-03T15:49:57.843Z",
+      "processing_return": "2025-11-03T15:50:03.937Z",
+      "completed": "2025-11-03T15:50:11.720Z"
+    },
+    "createdAt": "2025-11-03T15:49:50.805Z",
+    "updatedAt": "2025-11-03T15:50:11.720Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908d2061f29b33e8668ce63",
+    "OrderID": "ORD85734092527",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "6908d2061f29b33e8668ce64"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 48025,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4803,
+    "totalAmount": 82828,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "delivered",
+    "routes": {
+      "pending": "2025-11-03T16:02:14.092Z",
+      "confirmed": "2025-11-03T16:02:18.509Z",
+      "processing": "2025-11-03T16:02:19.991Z",
+      "shipping": "2025-11-03T16:02:20.851Z",
+      "delivered": "2025-11-03T16:02:21.636Z"
+    },
+    "createdAt": "2025-11-03T16:02:14.092Z",
+    "updatedAt": "2025-11-03T16:02:21.636Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908d21a1f29b33e8668fbd7",
+    "OrderID": "ORD85754394729",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3423530",
+        "productName": "Cà phê sữa hòa tan Nescafé 3in1 hộp 10 gói x 24g",
+        "quantity": 1,
+        "price": 44650,
+        "image": "https://lh3.googleusercontent.com/wzJEWm0o1OapcyWBqn2MBFEXuPRh-cXnHvTKx_e_DcsRUzRUuNbMkKtCQDyXN2WrEdaWKrzqSqjWa7k7O-KvZPXfRg6zAzwFQQ=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6908d21a1f29b33e8668fbd8"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 44650,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4465,
+    "totalAmount": 79115,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "delivered",
+    "routes": {
+      "pending": "2025-11-03T16:02:34.394Z",
+      "confirmed": "2025-11-03T16:02:37.743Z",
+      "processing": "2025-11-03T16:03:20.131Z",
+      "shipping": "2025-11-03T16:03:21.026Z",
+      "delivered": "2025-11-03T16:03:21.931Z"
+    },
+    "createdAt": "2025-11-03T16:02:34.394Z",
+    "updatedAt": "2025-11-03T16:03:21.931Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908d22d1f29b33e8669171b",
+    "OrderID": "ORD85773989135",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3521939",
+        "productName": "Cà phê uống liền My Café Latte vị Mild 220ml – CX – F",
+        "quantity": 1,
+        "price": 42750,
+        "image": "https://lh3.googleusercontent.com/CNZ8myCPMHE9Tz86vO9HaAJFYshMIDDZJcpCjIx0Y-JmK5x57gIaO9oxTmw3lZ1JESUmPymCGkvqNt9FMq46nqTYUbRe1Ov-=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6908d22d1f29b33e8669171c"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 42750,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4275,
+    "totalAmount": 77025,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "delivered",
+    "routes": {
+      "pending": "2025-11-03T16:02:53.989Z",
+      "confirmed": "2025-11-03T16:03:03.882Z",
+      "processing": "2025-11-03T16:03:09.188Z",
+      "shipping": "2025-11-03T16:03:12.994Z",
+      "delivered": "2025-11-03T16:03:13.836Z"
+    },
+    "createdAt": "2025-11-03T16:02:53.989Z",
+    "updatedAt": "2025-11-03T16:03:13.836Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6908d2331f29b33e86692034",
+    "OrderID": "ORD85779636034",
+    "CustomerID": "CUS000001",
+    "shippingInfo": {
+      "fullName": "Nguyễn Như Huyền",
+      "phone": "0815275677",
+      "email": "genecarlesi80y3@ceptos.com",
+      "address": {
+        "city": "hcm",
+        "district": "q2",
+        "ward": "p1",
+        "detail": "39 Nguyễn Huệ"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3583624",
+        "productName": "Cà phê sữa 3in1 Chất Vina hộp 240g",
+        "quantity": 1,
+        "price": 41325,
+        "image": "https://lh3.googleusercontent.com/8BvsgjeIgpMGBjvRGb2wJgDoAtAiLRYYhaV6JtfVubCwxzvVWej0EYxS6LE6i8XFAV-nyM4ohxxvC9FGYDWsX6knDPMarwa1zg=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6908d2331f29b33e86692035"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 41325,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4133,
+    "totalAmount": 75458,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "delivered",
+    "routes": {
+      "pending": "2025-11-03T16:02:59.636Z",
+      "confirmed": "2025-11-03T16:03:02.887Z",
+      "processing": "2025-11-03T16:03:07.171Z",
+      "shipping": "2025-11-03T16:03:10.358Z",
+      "delivered": "2025-11-03T16:03:11.239Z"
+    },
+    "createdAt": "2025-11-03T16:02:59.636Z",
+    "updatedAt": "2025-11-03T16:03:11.239Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f81c1fee2be43bf3c17be",
+    "OrderID": "ORD23937364882",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "quang-tri",
+        "district": "quan-3",
+        "ward": "phuong-3",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 2,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "690f81c1fee2be43bf3c17bf"
+      },
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "690f81c1fee2be43bf3c17c0"
+      },
+      {
+        "sku": "3412005",
+        "productName": "Sả cây 100g – Huy Vũ",
+        "quantity": 1,
+        "price": 4200,
+        "image": "https://lh3.googleusercontent.com/RpGjf_gN1pms5DpH6-tBuRzLRtcFRlqNC1yuODGX_SDvlb0uOVCpmUQJXgzly4dnZWKDmUzKU0BDhmq9ry_XqQNiJthpwa0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "690f81c1fee2be43bf3c17c1"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 100675,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 10068,
+    "totalAmount": 140743,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-08T17:45:37.371Z",
+      "confirmed": "2025-11-08T18:05:01.829Z",
+      "completed": "2025-11-08T18:46:15.197Z",
+      "delivered": "2025-11-08T18:24:12.384Z",
+      "shipping": "2025-11-08T18:45:37.371Z"
+    },
+    "createdAt": "2025-11-08T17:45:37.371Z",
+    "updatedAt": "2025-11-08T18:46:15.197Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f89ed89a68e8f05e31887",
+    "OrderID": "ORD26029179190",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3544062",
+        "productName": "Hạt sen tươi Co.op Select 150g",
+        "quantity": 1,
+        "price": 36465,
+        "image": "https://lh3.googleusercontent.com/wvP10HqW5tHD5x8abmRmRlqx6gEiZ3vlpgJhE2Gu_L5sQYFqw-cM6kW7QtqQby_lO1N1YGAIbdCevoFz5aIY9pBOe2asIl0J=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Đậu",
+        "_id": "690f89ed89a68e8f05e31888"
+      },
+      {
+        "sku": "3583861",
+        "productName": "Đậu đen sấy giòn Co.op Select hộp 200g",
+        "quantity": 1,
+        "price": 42330,
+        "image": "https://lh3.googleusercontent.com/YHf8zJLk49h7Isu-iuB9cUalpc37vkK68hBRevJ5WxTYRT3a6YzxAVqE1dQxU1wJsbD8omZJlVCPAZdbh_BosCw9CyD77_LS=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Đậu",
+        "_id": "690f89ed89a68e8f05e31889"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 78795,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 7880,
+    "totalAmount": 116675,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-08T18:20:29.190Z",
+      "confirmed": "2025-11-08T18:21:09.857Z",
+      "completed": "2025-11-08T18:24:12.381Z",
+      "delivered": "2025-11-08T18:24:12.381Z",
+      "shipping": "2025-11-08T19:20:29.189Z",
+      "processing_return": "2025-11-08T18:26:57.976Z",
+      "cancelled": "2025-11-08T18:27:17.031Z"
+    },
+    "createdAt": "2025-11-08T18:20:29.189Z",
+    "updatedAt": "2025-11-08T18:27:17.031Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f8baa89a68e8f05e318b4",
+    "OrderID": "ORD26474375542",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "690f8baa89a68e8f05e318b5"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 48025,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4803,
+    "totalAmount": 82828,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-08T18:27:54.377Z",
+      "cancelled": "2025-11-08T18:28:16.646Z"
+    },
+    "createdAt": "2025-11-08T18:27:54.377Z",
+    "updatedAt": "2025-11-08T18:28:16.646Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f94a2846cf7191a8a3b41",
+    "OrderID": "ORD28770208362",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3463808",
+        "productName": "Nấm mèo Co.op Select 150g",
+        "quantity": 1,
+        "price": 12665,
+        "image": "https://lh3.googleusercontent.com/8FC0MQGP3rQJzwLkP7V4DoNGJFonr6jUqmR0Nw2IaJK1p7Nd8kGim2GBg5kg3RgHG6XGiYkqchhNjVAnCrx-8ty-LRCx1qk=rw",
+        "unit": "Hộp",
+        "category": "Rau củ",
+        "subcategory": "Nấm",
+        "_id": "690f94a2846cf7191a8a3b42"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 12665,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 1267,
+    "totalAmount": 43932,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-08T19:06:10.216Z",
+      "confirmed": "2025-11-08T19:06:45.291Z",
+      "delivered": "2025-11-08T19:18:49.541Z",
+      "completed": "2025-11-08T19:18:49.541Z"
+    },
+    "createdAt": "2025-11-08T19:06:10.215Z",
+    "updatedAt": "2025-11-08T19:18:49.541Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f97f9846cf7191a8a824f",
+    "OrderID": "ORD29625558182",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "Bột ngũ cốc yến mạch hạt chia Co.op Select 15 gói x 30g",
+        "quantity": 1,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "690f97f9846cf7191a8a8250"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 48025,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 4803,
+    "totalAmount": 82828,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-08T19:20:25.565Z",
+      "confirmed": "2025-11-08T19:20:36.885Z",
+      "delivered": "2025-11-08T19:20:48.023Z",
+      "completed": "2025-11-08T19:20:48.023Z"
+    },
+    "createdAt": "2025-11-08T19:20:25.565Z",
+    "updatedAt": "2025-11-08T19:20:48.023Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f9a8f846cf7191a8ac98d",
+    "OrderID": "ORD30287522044",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514633",
+        "productName": "Khoai tây vàng Co.op Select kg – VietFarm",
+        "quantity": 1,
+        "price": 32215,
+        "image": "https://lh3.googleusercontent.com/Mcw6KzEdR1ZL28-UBJdAN8jv-BDqzo_Hp9vfLUa7EC6YeVw-VR6FSu15a1uBP7PyFN5bZgo3gG5FRtpg6_QwtbTeJWUKdZtUdA=rw",
+        "unit": "Kg",
+        "category": "Rau củ",
+        "subcategory": "Củ",
+        "_id": "690f9a8f846cf7191a8ac98e"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 32215,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 3222,
+    "totalAmount": 65437,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "returned",
+    "routes": {
+      "pending": "2025-11-08T19:31:27.527Z",
+      "confirmed": "2025-11-09T06:53:57.860Z",
+      "processing_return": "2025-11-09T07:05:31.103Z",
+      "returning": "2025-11-09T07:06:52.008Z",
+      "returned": "2025-11-09T07:14:41.297Z"
+    },
+    "createdAt": "2025-11-08T19:31:27.527Z",
+    "updatedAt": "2025-11-09T07:14:41.297Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "690f9b02faa1208cc9d80891",
+    "OrderID": "ORD30402588657",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3561766",
+        "productName": "Gạo giống Nhật Co.op Select 5 kg – King Green",
+        "quantity": 1,
+        "price": 109650,
+        "image": "https://lh3.googleusercontent.com/bZg6f35XwCiuYRwZasRaJT7HxBinuLRWUD6UldNNxbvqI51srDpbMApEfSQe90A-t-UTj8X_Zv8238qq9918D16Ol864wefX=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Gạo",
+        "_id": "690f9b02faa1208cc9d80892"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 109650,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 10965,
+    "totalAmount": 150615,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-08T19:33:22.593Z",
+      "confirmed": "2025-11-09T06:53:53.223Z",
+      "processing_return": "2025-11-09T06:54:19.448Z",
+      "cancelled": "2025-11-09T06:54:45.237Z"
+    },
+    "createdAt": "2025-11-08T19:33:22.593Z",
+    "updatedAt": "2025-11-09T06:54:45.237Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "691062d4bbfcccec9ae70e7e",
+    "OrderID": "ORD81556591598",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "691062d4bbfcccec9ae70e7f"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 24225,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 2423,
+    "totalAmount": 56648,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-09T09:45:56.597Z",
+      "cancelled": "2025-11-09T10:07:52.862Z"
+    },
+    "createdAt": "2025-11-09T09:45:56.597Z",
+    "updatedAt": "2025-11-09T10:07:52.862Z",
+    "__v": 0,
+    "cancelReason": ""
+  },
+  {
+    "_id": "6910666e5970ae9d3c60790f",
+    "OrderID": "ORD82478832093",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "quang-tri",
+        "district": "quan-3",
+        "ward": "phuong-3",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910666e5970ae9d3c607910"
+      },
+      {
+        "sku": "3568653",
+        "productName": "Ngò tây Co.op Select 50g",
+        "quantity": 1,
+        "price": 5015,
+        "image": "https://lh3.googleusercontent.com/doa90TZ83qjqQDBMY5YZ4ySXUir0MdeOJ-OsmGqjzkols9Z2VOPfljdTRdsDPu1WLP0fzd2MbjrVnv9myakJnGqWkuh1sbH0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6910666e5970ae9d3c607911"
+      },
+      {
+        "sku": "3412005",
+        "productName": "Sả cây 100g – Huy Vũ",
+        "quantity": 1,
+        "price": 4200,
+        "image": "https://lh3.googleusercontent.com/RpGjf_gN1pms5DpH6-tBuRzLRtcFRlqNC1yuODGX_SDvlb0uOVCpmUQJXgzly4dnZWKDmUzKU0BDhmq9ry_XqQNiJthpwa0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6910666e5970ae9d3c607912"
+      },
+      {
+        "sku": "3414941",
+        "productName": "Giá sống 250g – TKCO",
+        "quantity": 1,
+        "price": 6200,
+        "image": "https://lh3.googleusercontent.com/iib-0wR40P0ZHxkL7d_Fd5jGj-QgykHDlEto2DbtlyMWuRWIr7Cf5uFURf8MAdPPPN3czPAwI8okmgIzlJO6ns2-zJ4FgfwW_g=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau mầm / Giá đỗ",
+        "_id": "6910666e5970ae9d3c607913"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 105915,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 10592,
+    "totalAmount": 146507,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-09T10:01:18.838Z",
+      "cancelled": "2025-11-09T10:07:46.332Z"
+    },
+    "createdAt": "2025-11-09T10:01:18.838Z",
+    "updatedAt": "2025-11-09T10:07:46.332Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910983fc00ec7dd5f8d322b",
+    "OrderID": "ORD95231292007",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910983fc00ec7dd5f8d322c"
+      },
+      {
+        "sku": "3359031",
+        "productName": "Bột gạo lọc Co.op Select 400g",
+        "quantity": 1,
+        "price": 12920,
+        "image": "https://lh3.googleusercontent.com/0OHaQsk_7O1Rm2jLZWpzbmwSCoo0FOgFYBCMTzPRAJvXW08p_AgKaZ2Nqh5rBR5CVKVNU7UuV9SkFLTrapbEUogqiUx4p4hw=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910983fc00ec7dd5f8d322d"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 37145,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 3715,
+    "totalAmount": 70860,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T13:33:51.298Z",
+      "confirmed": "2025-11-09T13:34:11.062Z",
+      "completed": "2025-11-09T13:34:38.446Z",
+      "delivered": "2025-11-09T13:34:30.012Z"
+    },
+    "createdAt": "2025-11-09T13:33:51.298Z",
+    "updatedAt": "2025-11-09T13:34:38.447Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910a1a4327be806662a6dfa",
+    "OrderID": "ORD97636588260",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910a1a4327be806662a6dfb"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 24225,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 2423,
+    "totalAmount": 56648,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T14:13:56.600Z",
+      "confirmed": "2025-11-09T14:14:13.029Z",
+      "completed": "2025-11-09T14:14:25.825Z",
+      "delivered": "2025-11-09T14:14:21.176Z"
+    },
+    "createdAt": "2025-11-09T14:13:56.600Z",
+    "updatedAt": "2025-11-09T14:14:25.825Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910a2f3327be806662ac7f5",
+    "OrderID": "ORD97971016602",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3545967",
+        "productName": "Lá hương thảo Co.op Organic 30g-Quỳnh Lam",
+        "quantity": 1,
+        "price": 9900,
+        "image": "https://lh3.googleusercontent.com/Gej_a4eyDdOldtnxfS8AqJvvi25zuZWgo_i5LkQIfG3UMh4YlnTlc82qZbzAGtVd65-HPeiQHdFlOr9F3Mpp8VHEvfpRSvQjqg=rw",
+        "unit": "Bịch",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6910a2f3327be806662ac7f6"
+      },
+      {
+        "sku": "3418309",
+        "productName": "Bún bò Kiều Trang 500g",
+        "quantity": 1,
+        "price": 9900,
+        "image": "https://lh3.googleusercontent.com/Kd7GXy5yiILPeciiacsSKopkFmY0N-M1SrLqh6eTlmRzJ_c4t2NLd-zRm04Df2olvlFS4jOIcPyWOR1jbGsE9orhHHA45SPR=rw",
+        "unit": "Bịch",
+        "category": "Thực phẩm khô",
+        "subcategory": "Bún tươi",
+        "_id": "6910a2f3327be806662ac7f7"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 19800,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 1980,
+    "totalAmount": 51780,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T14:19:31.026Z",
+      "confirmed": "2025-11-09T14:19:41.063Z",
+      "completed": "2025-11-09T14:19:55.378Z",
+      "delivered": "2025-11-09T14:19:49.870Z"
+    },
+    "createdAt": "2025-11-09T14:19:31.025Z",
+    "updatedAt": "2025-11-09T14:19:55.378Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910a47b327be806662b107c",
+    "OrderID": "ORD98363237650",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3455309",
+        "productName": "Bột cà ri Ông Chà Và 20g",
+        "quantity": 1,
+        "price": 6900,
+        "image": "https://lh3.googleusercontent.com/G-2x6FVauiziAJjheQ39mLfLhlnMC1tfHd1QP8mMkeBx0vAmVManQKBqddv8nRr3sFTdBTaOEJcRVqIsYVdx1XQT7wnUUTw=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910a47b327be806662b107d"
+      },
+      {
+        "sku": "3423714",
+        "productName": "Bột chiên giòn nêm sẵn Meizan 150g",
+        "quantity": 1,
+        "price": 6600,
+        "image": "https://lh3.googleusercontent.com/s6P05gJVBlHZ6Qv7CCH-UdmwtgvhZp7vi5QSugdZtTW7ATcS7dr1cWWuDgPxu4lhv-kN0Vxx0DaR4aI3dzdkgayB0yHW21xFzA=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910a47b327be806662b107e"
+      },
+      {
+        "sku": "3430850",
+        "productName": "Rau ngò rí 50g – GFM",
+        "quantity": 1,
+        "price": 6500,
+        "image": "https://lh3.googleusercontent.com/ruFrUh0d1qpyNOMjOaupzTISCJviCnMivzg3I3MU2bA9mCNC5GkCxH-tKVdkzxdLShMPnsPHucajrfWKyBBcyrP0gjYMEM0d=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6910a47b327be806662b107f"
+      },
+      {
+        "sku": "3414941",
+        "productName": "Giá sống 250g – TKCO",
+        "quantity": 1,
+        "price": 6200,
+        "image": "https://lh3.googleusercontent.com/iib-0wR40P0ZHxkL7d_Fd5jGj-QgykHDlEto2DbtlyMWuRWIr7Cf5uFURf8MAdPPPN3czPAwI8okmgIzlJO6ns2-zJ4FgfwW_g=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau mầm / Giá đỗ",
+        "_id": "6910a47b327be806662b1080"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 26200,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 2620,
+    "totalAmount": 58820,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T14:26:03.242Z",
+      "confirmed": "2025-11-09T14:26:16.570Z",
+      "completed": "2025-11-09T14:26:23.239Z",
+      "delivered": "2025-11-09T14:26:23.239Z"
+    },
+    "createdAt": "2025-11-09T14:26:03.242Z",
+    "updatedAt": "2025-11-09T14:26:23.239Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910a5b6327be806662b3dbe",
+    "OrderID": "ORD98678343325",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3311512",
+        "productName": "Cà phê sữa Phố Mac hộp 10 gói x 24g",
+        "quantity": 1,
+        "price": 63175,
+        "image": "https://lh3.googleusercontent.com/lxARHXrTIiJXJX9aB2o_2aausDPvTBb9qgVNFQrvVYWJl9BSAAJCVXpwQo46rb6wFUskYU2NU2bO_L6rESqjoQW3Gu62QDj3=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6910a5b6327be806662b3dbf"
+      },
+      {
+        "sku": "3562303",
+        "productName": "Cà phê hòa tan đen đá The Coffee House hộp 14x16g",
+        "quantity": 1,
+        "price": 65550,
+        "image": "https://lh3.googleusercontent.com/hgjgCsKwjFz9m6evyPO-m0hkqIi0oq9EB5R0sQ6Wm6GA6hUegn8kUJPpytWO334otRo6mKiTJrDExIvmTn9wIujT11DWqEt47g=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6910a5b6327be806662b3dc0"
+      },
+      {
+        "sku": "3138561",
+        "productName": "Cà phê Nescafé 3in1 nguyên bản 20 gói x 16g",
+        "quantity": 1,
+        "price": 70205,
+        "image": "https://lh3.googleusercontent.com/okWl6D2GMwcROtCyadtQ-dGu_mcLC0LL1CG99cse36ngO-qANxa8uY97T8eZlIFW1u3pqMg6MJ4c-Yl761P4PiVWVVutBxQs=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6910a5b6327be806662b3dc1"
+      },
+      {
+        "sku": "3577932",
+        "productName": "Cà phê hòa tan G7 Gold Picasso 14 x 18g",
+        "quantity": 1,
+        "price": 71250,
+        "image": "https://lh3.googleusercontent.com/rwObioyeYBN3o5KeDjSXIAeH8UAq0vCDbFhc3r7wyNulkk8Y6r4PKn9HECoxYFUCsPsEjlyvVGu5LLNhlSP14l9weH4Avt2q=rw",
+        "unit": "Cái",
+        "category": "Cà phê, Cacao",
+        "subcategory": "Cà phê",
+        "_id": "6910a5b6327be806662b3dc2"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 270180,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 27018,
+    "totalAmount": 297198,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T14:31:18.347Z",
+      "confirmed": "2025-11-09T14:31:30.295Z",
+      "completed": "2025-11-09T14:31:43.307Z",
+      "delivered": "2025-11-09T14:31:43.307Z"
+    },
+    "createdAt": "2025-11-09T14:31:18.347Z",
+    "updatedAt": "2025-11-09T14:31:43.307Z",
+    "__v": 0
+  },
+  {
+    "_id": "6910aecc792a873720343fc8",
+    "OrderID": "ORD01004267786",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3533434",
+        "productName": "Mật ong ruồi Xuân Nguyên 225g",
+        "quantity": 1,
+        "price": 206000,
+        "image": "https://lh3.googleusercontent.com/8l-SgnVPPJvw3pQuyzlSd9op5wvJTv129X7Zf8p9UT1tc-GXPCD4vaawY-7oOSKE7GIFML2_vWTPTk6WdnHDfUtj9nsyNaoX=rw",
+        "unit": "Hộp",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Mật ong",
+        "_id": "6910aecc792a873720343fc9"
+      },
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6910aecc792a873720343fca"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 296500,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 29650,
+    "totalAmount": 326150,
+    "code": "FREESHIP50K",
+    "promotionName": "Miễn phí vận chuyển cho đơn từ 50,000đ",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-09T15:10:04.276Z",
+      "confirmed": "2025-11-09T15:11:25.896Z",
+      "completed": "2025-11-09T15:11:39.101Z",
+      "delivered": "2025-11-09T15:11:39.101Z"
+    },
+    "createdAt": "2025-11-09T15:10:04.276Z",
+    "updatedAt": "2025-11-09T15:11:39.101Z",
+    "__v": 0
+  },
+  {
+    "_id": "69121696ad36ba153f790bac",
+    "OrderID": "ORD93110096922",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3568649",
+        "productName": "Ớt trái cây baby Co.op Select 150g",
+        "quantity": 1,
+        "price": 16915,
+        "image": "https://lh3.googleusercontent.com/nyaRqF16aSpVtbzI7ifp44PboX2YkJEGNMsPZpX8N62kd3LgXm8g17i0vOO7BAro15mHWCyBmVmXg_jxOArM7ei5C8NCtsU=rw",
+        "unit": "Hộp",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "69121696ad36ba153f790bad"
+      },
+      {
+        "sku": "3568650",
+        "productName": "Ớt ngọt Palermo Co.op Select 300g",
+        "quantity": 1,
+        "price": 42415,
+        "image": "https://lh3.googleusercontent.com/jtmRzYHIaZpN9mMMNZP4Uet5FfvCbclhO2LYtz3A9-96f0cz6FyLU8_NcvRTMrNSvw3z3cdd8muVfF0b7TU5qOv2lLCvU5M=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "69121696ad36ba153f790bae"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 59330,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 11866,
+    "vatRate": 10,
+    "vatAmount": 5933,
+    "totalAmount": 83397,
+    "code": "BLACKFRIDAY20",
+    "promotionName": "Black Friday - Giảm 20%",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "returned",
+    "routes": {
+      "pending": "2025-11-10T16:45:10.110Z",
+      "confirmed": "2025-11-10T16:46:06.087Z",
+      "processing_return": "2025-11-10T16:51:22.226Z",
+      "returning": "2025-11-10T16:52:00.614Z",
+      "returned": "2025-11-10T16:52:18.953Z"
+    },
+    "createdAt": "2025-11-10T16:45:10.110Z",
+    "updatedAt": "2025-11-10T16:52:18.953Z",
+    "__v": 0
+  },
+  {
+    "_id": "69122153bfd5a102643f4c04",
+    "OrderID": "ORD95859059341",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "Sóc Trăng",
+        "district": "941",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3134162",
+        "productName": "Bột chiên đa dụng Mikko gói 340g",
+        "quantity": 5,
+        "price": 17200,
+        "image": "https://lh3.googleusercontent.com/X8FUDJCMYEcyT_bO_jKbncNubrVj9Qc3bojYrNORJrU5gw1nl5lLg1RtSIEXWkv_Y2LEvOP7KjUSlwWO4B1NUOhvik6YayHp9A=rw",
+        "unit": "",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69122153bfd5a102643f4c05"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 86000,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 0,
+    "vatAmount": 0,
+    "totalAmount": 116000,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "processing",
+    "routes": {
+      "pending": "2025-11-10T17:30:59.075Z",
+      "confirmed": "2025-11-11T11:12:49.982Z",
+      "processing": "2025-11-11T11:13:00.247Z"
+    },
+    "createdAt": "2025-11-10T17:30:59.075Z",
+    "updatedAt": "2025-11-11T11:13:00.247Z",
+    "__v": 0
+  },
+  {
+    "_id": "6913197207b285ba221d3ace",
+    "OrderID": "ORD59378163745",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "soc-trang",
+        "district": "soc-trang",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3004998",
+        "productName": "Nước yến ngân nhĩ Tribeco lon 240ml",
+        "quantity": 1,
+        "price": 6200,
+        "image": "https://lh3.googleusercontent.com/hlqBEbpWbwjbb_mDgz6SMoh3t3gaN6vcnuRClpDJvCEWvPDgbe2W7xlMLgj7_PWlbM_sX63xUHi6Ws-GU6IWC6vKKRYsmgR7OQ=rw",
+        "unit": "Lon",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Nước yến",
+        "_id": "6913197207b285ba221d3acf"
+      },
+      {
+        "sku": "3412005",
+        "productName": "Sả cây 100g – Huy Vũ",
+        "quantity": 1,
+        "price": 4200,
+        "image": "https://lh3.googleusercontent.com/RpGjf_gN1pms5DpH6-tBuRzLRtcFRlqNC1yuODGX_SDvlb0uOVCpmUQJXgzly4dnZWKDmUzKU0BDhmq9ry_XqQNiJthpwa0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6913197207b285ba221d3ad0"
+      },
+      {
+        "sku": "3568653",
+        "productName": "Ngò tây Co.op Select 50g",
+        "quantity": 1,
+        "price": 5015,
+        "image": "https://lh3.googleusercontent.com/doa90TZ83qjqQDBMY5YZ4ySXUir0MdeOJ-OsmGqjzkols9Z2VOPfljdTRdsDPu1WLP0fzd2MbjrVnv9myakJnGqWkuh1sbH0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6913197207b285ba221d3ad1"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 15415,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 1542,
+    "totalAmount": 46957,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "Thay đổi số lượng",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-11T11:09:38.174Z",
+      "cancelled": "2025-11-11T11:10:21.455Z"
+    },
+    "createdAt": "2025-11-11T11:09:38.174Z",
+    "updatedAt": "2025-11-11T11:10:21.455Z",
+    "__v": 0
+  },
+  {
+    "_id": "69131a4607b285ba221d826a",
+    "OrderID": "ORD59590874656",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "69131a4607b285ba221d826b"
+      },
+      {
+        "sku": "3533434",
+        "productName": "Mật ong ruồi Xuân Nguyên 225g",
+        "quantity": 1,
+        "price": 206000,
+        "image": "https://lh3.googleusercontent.com/8l-SgnVPPJvw3pQuyzlSd9op5wvJTv129X7Zf8p9UT1tc-GXPCD4vaawY-7oOSKE7GIFML2_vWTPTk6WdnHDfUtj9nsyNaoX=rw",
+        "unit": "Hộp",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "",
+        "_id": "69131a4607b285ba221d826c"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 296500,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 29650,
+    "totalAmount": 326150,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-11T11:13:10.880Z",
+      "confirmed": "2025-11-11T11:13:21.215Z",
+      "processing_return": "2025-11-11T11:13:41.201Z",
+      "completed": "2025-11-11T11:13:53.254Z"
+    },
+    "createdAt": "2025-11-11T11:13:10.880Z",
+    "updatedAt": "2025-11-11T11:13:53.254Z",
+    "__v": 0
+  },
+  {
+    "_id": "69139f590063d3af6921749d",
+    "OrderID": "ORD93657722375",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "soc-trang",
+        "district": "soc-trang",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69139f590063d3af6921749e"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 90500,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 9050,
+    "totalAmount": 129550,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "processing_return",
+    "routes": {
+      "pending": "2025-11-11T20:40:57.733Z",
+      "confirmed": "2025-11-11T20:41:53.174Z",
+      "processing_return": "2025-11-11T20:53:06.958Z"
+    },
+    "createdAt": "2025-11-11T20:40:57.733Z",
+    "updatedAt": "2025-11-11T20:53:06.958Z",
+    "__v": 0
+  },
+  {
+    "_id": "6913a6c70063d3af6921d67d",
+    "OrderID": "ORD95559431943",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "soc-trang",
+        "district": "soc-trang",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3587604",
+        "productName": "Bột sắn dây ướp hoa bưởi Xuân Nguyên 500g",
+        "quantity": 1,
+        "price": 90500,
+        "image": "https://lh3.googleusercontent.com/DUgx3-azx9_nCdx3Vk8l6reBf4WvrIaxoyMFNTOQfYks95xY4MoNc9lEv7ix-WcZchHFPo3fLOCV45LoqLbT3oz4T2tm9NfhyA=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6913a6c70063d3af6921d67e"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 90500,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 9050,
+    "totalAmount": 129550,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "processing_return",
+    "routes": {
+      "pending": "2025-11-11T21:12:39.437Z",
+      "confirmed": "2025-11-11T21:12:59.925Z",
+      "processing_return": "2025-11-11T21:14:04.691Z"
+    },
+    "createdAt": "2025-11-11T21:12:39.437Z",
+    "updatedAt": "2025-11-11T21:14:04.691Z",
+    "__v": 0
+  },
+  {
+    "_id": "69143b9f54b86251c02d3840",
+    "OrderID": "ORD33663680017",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3533434",
+        "productName": "Mật ong ruồi Xuân Nguyên 225g",
+        "quantity": 50,
+        "price": 185400,
+        "image": "https://lh3.googleusercontent.com/8l-SgnVPPJvw3pQuyzlSd9op5wvJTv129X7Zf8p9UT1tc-GXPCD4vaawY-7oOSKE7GIFML2_vWTPTk6WdnHDfUtj9nsyNaoX=rw",
+        "unit": "Hộp",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "Mật ong",
+        "_id": "69143b9f54b86251c02d3841"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 9270000,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 927000,
+    "totalAmount": 10197000,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-12T07:47:43.693Z",
+      "confirmed": "2025-11-12T07:48:40.830Z",
+      "completed": "2025-11-12T07:48:54.466Z",
+      "delivered": "2025-11-12T07:48:54.466Z"
+    },
+    "createdAt": "2025-11-12T07:47:43.692Z",
+    "updatedAt": "2025-11-12T07:48:54.466Z",
+    "__v": 0
+  },
+  {
+    "_id": "69143e4654b86251c02d5c92",
+    "OrderID": "ORD34342624231",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3359027",
+        "productName": "Bột 5 loại đậu hạt sen Co.op Select 350g",
+        "quantity": 1,
+        "price": 19805,
+        "image": "https://lh3.googleusercontent.com/mWTuW_5mSQwFGPPrlgK8VFEt8rXPgdq5GmZlDRnZ_O_n248YYc2oUUGStCaPZP0Br3ybbD5t-A7o0lJ_1CHafgI2kP4Vw3o=rw",
+        "unit": "Hộp",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69143e4654b86251c02d5c93"
+      },
+      {
+        "sku": "3555338",
+        "productName": "Bột bánh đúc cốt dừa Taky 250g",
+        "quantity": 1,
+        "price": 16900,
+        "image": "https://lh3.googleusercontent.com/QEKcxNWG5Yk3_BW1_N71sqdsL6QYLvXvmbJCRZrbLfiTvz6CZfKvB5nwV_zp6cBVVvExD6i9yki5OIfmhHkfkz3WXHGIMG53=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "69143e4654b86251c02d5c94"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "69143e4654b86251c02d5c95"
+      },
+      {
+        "sku": "3562303",
+        "productName": "Cà phê hòa tan đen đá The Coffee House hộp 14x16g",
+        "quantity": 1,
+        "price": 65550,
+        "image": "https://lh3.googleusercontent.com/hgjgCsKwjFz9m6evyPO-m0hkqIi0oq9EB5R0sQ6Wm6GA6hUegn8kUJPpytWO334otRo6mKiTJrDExIvmTn9wIujT11DWqEt47g=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69143e4654b86251c02d5c96"
+      },
+      {
+        "sku": "3311512",
+        "productName": "Cà phê sữa Phố Mac hộp 10 gói x 24g",
+        "quantity": 1,
+        "price": 63175,
+        "image": "https://lh3.googleusercontent.com/lxARHXrTIiJXJX9aB2o_2aausDPvTBb9qgVNFQrvVYWJl9BSAAJCVXpwQo46rb6wFUskYU2NU2bO_L6rESqjoQW3Gu62QDj3=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69143e4654b86251c02d5c97"
+      },
+      {
+        "sku": "3577932",
+        "productName": "Cà phê hòa tan G7 Gold Picasso 14 x 18g",
+        "quantity": 1,
+        "price": 71250,
+        "image": "https://lh3.googleusercontent.com/rwObioyeYBN3o5KeDjSXIAeH8UAq0vCDbFhc3r7wyNulkk8Y6r4PKn9HECoxYFUCsPsEjlyvVGu5LLNhlSP14l9weH4Avt2q=rw",
+        "unit": "Cái",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69143e4654b86251c02d5c98"
+      },
+      {
+        "sku": "3138561",
+        "productName": "Cà phê Nescafé 3in1 nguyên bản 20 gói x 16g",
+        "quantity": 1,
+        "price": 70205,
+        "image": "https://lh3.googleusercontent.com/okWl6D2GMwcROtCyadtQ-dGu_mcLC0LL1CG99cse36ngO-qANxa8uY97T8eZlIFW1u3pqMg6MJ4c-Yl761P4PiVWVVutBxQs=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69143e4654b86251c02d5c99"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 331110,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 33111,
+    "totalAmount": 364221,
+    "code": "FREESHIP50K",
+    "promotionName": "Miễn phí vận chuyển cho đơn từ 50,000đ",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-12T07:59:02.633Z",
+      "confirmed": "2025-11-12T07:59:20.489Z",
+      "completed": "2025-11-12T07:59:40.459Z",
+      "delivered": "2025-11-12T07:59:40.459Z"
+    },
+    "createdAt": "2025-11-12T07:59:02.632Z",
+    "updatedAt": "2025-11-12T07:59:40.459Z",
+    "__v": 0
+  },
+  {
+    "_id": "6914472bed66589e539d8e2b",
+    "OrderID": "ORD36619399374",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [],
+    "paymentMethod": "cod",
+    "subtotal": 0,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 0,
+    "totalAmount": 30000,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "cancelled",
+    "routes": {
+      "pending": "2025-11-12T08:36:59.413Z",
+      "cancelled": "2025-11-12T08:58:10.351Z"
+    },
+    "createdAt": "2025-11-12T08:36:59.413Z",
+    "updatedAt": "2025-11-12T08:58:10.351Z",
+    "__v": 0
+  },
+  {
+    "_id": "69144c422ae3cb1c1862fbaa",
+    "OrderID": "ORD37922378907",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3138561",
+        "productName": "Cà phê Nescafé 3in1 nguyên bản 20 gói x 16g",
+        "quantity": 1,
+        "price": 70205,
+        "image": "https://lh3.googleusercontent.com/okWl6D2GMwcROtCyadtQ-dGu_mcLC0LL1CG99cse36ngO-qANxa8uY97T8eZlIFW1u3pqMg6MJ4c-Yl761P4PiVWVVutBxQs=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69144c422ae3cb1c1862fbab"
+      },
+      {
+        "sku": "3577932",
+        "productName": "Cà phê hòa tan G7 Gold Picasso 14 x 18g",
+        "quantity": 1,
+        "price": 71250,
+        "image": "https://lh3.googleusercontent.com/rwObioyeYBN3o5KeDjSXIAeH8UAq0vCDbFhc3r7wyNulkk8Y6r4PKn9HECoxYFUCsPsEjlyvVGu5LLNhlSP14l9weH4Avt2q=rw",
+        "unit": "Cái",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69144c422ae3cb1c1862fbac"
+      },
+      {
+        "sku": "3311512",
+        "productName": "Cà phê sữa Phố Mac hộp 10 gói x 24g",
+        "quantity": 1,
+        "price": 63175,
+        "image": "https://lh3.googleusercontent.com/lxARHXrTIiJXJX9aB2o_2aausDPvTBb9qgVNFQrvVYWJl9BSAAJCVXpwQo46rb6wFUskYU2NU2bO_L6rESqjoQW3Gu62QDj3=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69144c422ae3cb1c1862fbad"
+      },
+      {
+        "sku": "3562303",
+        "productName": "Cà phê hòa tan đen đá The Coffee House hộp 14x16g",
+        "quantity": 1,
+        "price": 65550,
+        "image": "https://lh3.googleusercontent.com/hgjgCsKwjFz9m6evyPO-m0hkqIi0oq9EB5R0sQ6Wm6GA6hUegn8kUJPpytWO334otRo6mKiTJrDExIvmTn9wIujT11DWqEt47g=rw",
+        "unit": "Hộp",
+        "category": "Cà phê, Cacao",
+        "subcategory": "",
+        "_id": "69144c422ae3cb1c1862fbae"
+      },
+      {
+        "sku": "3263551",
+        "productName": "Bột bánh xèo Co.op Select 1kg",
+        "quantity": 1,
+        "price": 24225,
+        "image": "https://lh3.googleusercontent.com/zvIZxw-u2rE95Qrz9kh_IcyYiWhXMZ6_45yA2R1ChlpT7uVoJTQP0_FyHZ99SjrJGvcoxbVheaPAlh75tB8oyrUBWUQbx4XD=rw",
+        "unit": "Gói",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "",
+        "_id": "69144c422ae3cb1c1862fbaf"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 294405,
+    "shippingFee": 30000,
+    "shippingDiscount": 30000,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 29441,
+    "totalAmount": 323846,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "completed",
+    "routes": {
+      "pending": "2025-11-12T08:58:42.386Z",
+      "confirmed": "2025-11-12T08:58:58.458Z",
+      "completed": "2025-11-12T08:59:18.040Z",
+      "delivered": "2025-11-12T08:59:18.040Z"
+    },
+    "createdAt": "2025-11-12T08:58:42.386Z",
+    "updatedAt": "2025-11-12T08:59:18.040Z",
+    "__v": 0
+  },
+  {
+    "_id": "6914678568dffe848aadfc2f",
+    "OrderID": "ORD44901413729",
+    "CustomerID": "CUS000003",
+    "shippingInfo": {
+      "fullName": "Trần Thanh Thịnh",
+      "phone": "0987655755",
+      "email": "huynhhuong1825@gmail.com",
+      "address": {
+        "city": "ha-noi",
+        "district": "ha-dong",
+        "ward": "dong-mai",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3412005",
+        "productName": "",
+        "quantity": 1,
+        "price": 4200,
+        "image": "https://lh3.googleusercontent.com/RpGjf_gN1pms5DpH6-tBuRzLRtcFRlqNC1yuODGX_SDvlb0uOVCpmUQJXgzly4dnZWKDmUzKU0BDhmq9ry_XqQNiJthpwa0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "Rau gia vị",
+        "_id": "6914dc77aca348cae5d9ae02"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 4200,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 0,
+    "vatAmount": 0,
+    "totalAmount": 34620,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {},
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "confirmed",
+    "routes": {
+      "pending": "2025-11-12T10:55:01.431Z",
+      "confirmed": "2025-11-12T19:13:59.015Z"
+    },
+    "createdAt": "2025-11-12T10:55:01.430Z",
+    "updatedAt": "2025-11-12T19:13:59.015Z",
+    "__v": 0
+  },
+  {
+    "_id": "6914d5c0aca348cae5d9a342",
+    "OrderID": "ORD73120073079",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "soc-trang",
+        "district": "soc-trang",
+        "ward": "3",
+        "detail": "143 Nguyễn Thị Minh Khai"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3514277",
+        "productName": "",
+        "quantity": 9,
+        "price": 48025,
+        "image": "https://lh3.googleusercontent.com/FyvY__zaxpF3EGPLmlHQABqNUFtQoaKvW-t7mO4gYPgLuqzLUE6YYrztVbMj8XwFUouH_PG-RgRyXiUjJ659zzIrPP4Pi7ZL=rw",
+        "unit": "Bịch",
+        "category": "Lương thực - ngũ cốc",
+        "subcategory": "Bột",
+        "_id": "6914db4faca348cae5d9adfd"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 432225,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 0,
+    "vatAmount": 0,
+    "totalAmount": 475448,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {},
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "confirmed",
+    "routes": {
+      "pending": "2025-11-12T18:45:20.081Z",
+      "confirmed": "2025-11-12T19:09:03.977Z",
+      "completed": "2025-11-12T18:46:53.117Z",
+      "delivered": "2025-11-12T18:46:53.117Z"
+    },
+    "createdAt": "2025-11-12T18:45:20.081Z",
+    "updatedAt": "2025-11-12T19:09:03.977Z",
+    "__v": 0
+  },
+  {
+    "_id": "69155dc6aca348cae5d9b777",
+    "OrderID": "ORD07942743327",
+    "CustomerID": "CUS000004",
+    "shippingInfo": {
+      "fullName": "Phạm Thái Huỳnh Hương",
+      "phone": "0965813408",
+      "email": "huongpth23411@st.uel.edu.vn",
+      "address": {
+        "city": "can-tho",
+        "district": "quan-1",
+        "ward": "phuong-1",
+        "detail": "123 Trần Hưng Đạo"
+      },
+      "deliveryMethod": "standard",
+      "warehouseAddress": "20 Đường Lê Lợi, phường Cái Khế, Quận Ninh Kiều, TP. Cần Thơ",
+      "notes": ""
+    },
+    "items": [
+      {
+        "sku": "3568653",
+        "productName": "Ngò tây Co.op Select 50g",
+        "quantity": 1,
+        "price": 5015,
+        "image": "https://lh3.googleusercontent.com/doa90TZ83qjqQDBMY5YZ4ySXUir0MdeOJ-OsmGqjzkols9Z2VOPfljdTRdsDPu1WLP0fzd2MbjrVnv9myakJnGqWkuh1sbH0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "",
+        "_id": "69155dc6aca348cae5d9b778"
+      },
+      {
+        "sku": "3412005",
+        "productName": "Sả cây 100g – Huy Vũ",
+        "quantity": 1,
+        "price": 4200,
+        "image": "https://lh3.googleusercontent.com/RpGjf_gN1pms5DpH6-tBuRzLRtcFRlqNC1yuODGX_SDvlb0uOVCpmUQJXgzly4dnZWKDmUzKU0BDhmq9ry_XqQNiJthpwa0=rw",
+        "unit": "Gói",
+        "category": "Rau củ",
+        "subcategory": "",
+        "_id": "69155dc6aca348cae5d9b779"
+      },
+      {
+        "sku": "3004998",
+        "productName": "Nước yến ngân nhĩ Tribeco lon 240ml",
+        "quantity": 1,
+        "price": 6200,
+        "image": "https://lh3.googleusercontent.com/hlqBEbpWbwjbb_mDgz6SMoh3t3gaN6vcnuRClpDJvCEWvPDgbe2W7xlMLgj7_PWlbM_sX63xUHi6Ws-GU6IWC6vKKRYsmgR7OQ=rw",
+        "unit": "Lon",
+        "category": "Thực phẩm bồi bổ",
+        "subcategory": "",
+        "_id": "69155dc6aca348cae5d9b77a"
+      }
+    ],
+    "paymentMethod": "cod",
+    "subtotal": 15415,
+    "shippingFee": 30000,
+    "shippingDiscount": 0,
+    "discount": 0,
+    "vatRate": 10,
+    "vatAmount": 1542,
+    "totalAmount": 46957,
+    "code": "",
+    "promotionName": "",
+    "wantInvoice": false,
+    "invoiceInfo": {
+      "companyName": "",
+      "taxId": "",
+      "invoiceEmail": "",
+      "invoiceAddress": ""
+    },
+    "consultantCode": "",
+    "cancelReason": "",
+    "status": "pending",
+    "routes": {
+      "pending": "2025-11-13T04:25:42.753Z"
+    },
+    "createdAt": "2025-11-13T04:25:42.753Z",
+    "updatedAt": "2025-11-13T04:25:42.753Z",
+    "__v": 0
+  }
 ]
